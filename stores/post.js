@@ -171,9 +171,9 @@ export const usePostStore = defineStore({
           console.log("data: ", data);
           this.allPosts.set(data.id, data);
           // if this is a reply
-          if (data.type === 'reply' && data.reply_to) {
+          if (data.type === "reply" && data.reply_to) {
             const replyStore = useReplyStore();
-            replyStore.editReply(pid, data);
+            replyStore.editReply(edit.id, data);
           }
           return true;
         }
@@ -198,7 +198,7 @@ export const usePostStore = defineStore({
         else {
           this.allPosts.delete(pid);
           if (deleteThis.reply_to)
-            replyStore.deleteReply(pid, deleteThis.reply_to);
+            await replyStore.deleteReply(pid, deleteThis.reply_to);
           return true;
         }
       } catch (error) {

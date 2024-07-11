@@ -89,7 +89,7 @@ const date = computed(() => {
   <div v-if="postStore.getProfile(post?.user_id)">
     <div class="w-full text-zinc-200">
       <!-- upper section -->
-      <div class="flex h-max w-full">
+      <div class="flex h-min w-full items-start">
         <!-- avatar -->
         <div
           :id="`${post.id}_avatar`"
@@ -130,8 +130,9 @@ const date = computed(() => {
         </div>
         <!-- spacing -->
         <div class="grow"></div>
-        <!-- post action menu -->
+        <!-- post action -->
         <div class="flex flex-col">
+          <!-- icon -->
           <div class="flex h-full items-center text-zinc-500">
             <IconsBadge
               size="small"
@@ -142,7 +143,7 @@ const date = computed(() => {
               <IconsMore />
             </IconsBadge>
           </div>
-          <!-- post action menu -->
+          <!-- menu -->
           <div class="relative -translate-x-52 translate-y-2">
             <UIPopupTransition>
               <UIPopupMenu
@@ -152,7 +153,6 @@ const date = computed(() => {
                 :id="`${post.id}_post_action_menu`"
                 :pid="menu_pid"
                 :uid="menu_uid"
-                class="noForward"
               ></UIPopupMenu>
             </UIPopupTransition>
           </div>

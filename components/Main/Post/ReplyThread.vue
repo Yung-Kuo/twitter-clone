@@ -137,13 +137,15 @@ const date = computed(() => {
           <!-- spacing -->
           <div class="grow"></div>
           <!-- post action -->
-          <div class="noForward flex flex-col">
+          <div class="flex flex-col">
+            <!-- icon -->
             <div class="flex h-full items-center text-zinc-500">
               <IconsBadge
                 size="small"
                 color="blue"
                 :id="`${post.id}_menu_icon`"
                 @mousedown="toggleMenu(post.id, post.user_id, 'post_action')"
+                class="noForward"
               >
                 <IconsMore />
               </IconsBadge>
@@ -261,7 +263,7 @@ const date = computed(() => {
           </div>
         </div>
         <!-- Share -->
-        <div class="noForward flex items-center">
+        <div class="noForward flex items-center pl-1">
           <IconsBadge size="small" color="blue">
             <IconsShare />
           </IconsBadge>

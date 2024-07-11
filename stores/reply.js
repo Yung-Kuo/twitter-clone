@@ -68,12 +68,17 @@ export const useReplyStore = defineStore({
           // store id into post's reply list
           // use reply_to as key
           this.postReplyId[data.reply_to].unshift(data.id);
-          // setReplies deals with list, thus [data]
-          const postStore = usePostStore();
-          postStore.setReplies([data]);
+          // user has replied & reply count
+          this.userHasReplied[data.reply_to] = true;
           if (this.replyCount[data.reply_to])
             this.replyCount[data.reply_to] += 1;
           else this.replyCount[data.reply_to] = 1;
+
+          // update the postStore
+          // setReplies deals with list, thus [data]
+          const postStore = usePostStore();
+          postStore.setReplies([data]);
+
           return true;
         }
         if (error) throw error;
@@ -92,6 +97,7 @@ export const useReplyStore = defineStore({
       this.postReplyId[reply_to] = this.postReplyId[reply_to].filter(
         (replyId) => replyId !== pid
       );
+      await this.fetchUserReplyStatus(reply_to);
       if (this.replyCount[reply_to] >= 1) this.replyCount[reply_to] -= 1;
     },
     async fetchReplies(pid) {
@@ -174,6 +180,7 @@ export const useReplyStore = defineStore({
             .eq("user_id", user.value.id)
             .limit(1);
           if (data.length) this.userHasReplied[pid] = true;
+          else this.userHasReplied[pid] = false;
           if (error) throw error;
         } catch (error) {}
       }

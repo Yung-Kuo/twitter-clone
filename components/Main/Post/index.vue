@@ -117,7 +117,7 @@ const date = computed(() => {
         </div>
       </div>
       <!-- right column -->
-      <div class="h-max flex-grow">
+      <div class="h-min flex-grow">
         <!-- upper section -->
         <div class="pl-2">
           <!-- user info -->
@@ -169,8 +169,8 @@ const date = computed(() => {
                   size="small"
                   color="blue"
                   :id="`${post.id}_menu_icon`"
-                  class="noForward"
                   @mousedown="toggleMenu(post.id, post.user_id, 'post_action')"
+                  class="noForward"
                 >
                   <IconsMore />
                 </IconsBadge>
@@ -292,7 +292,7 @@ const date = computed(() => {
             </div>
           </div>
           <!-- Share -->
-          <div class="noForward flex items-center">
+          <div class="noForward flex items-center pl-1">
             <IconsBadge size="small" color="blue">
               <IconsShare />
             </IconsBadge>
@@ -301,23 +301,25 @@ const date = computed(() => {
       </div>
     </div>
     <!-- if author has replied -->
-    <div v-if="post.showAuthorReply && authorReplyId">
-      <MainPostReplyThread
-        v-bind="postStore.getPost(authorReplyId)"
-        noForward
-      />
-      <div class="flex">
-        <!-- left column -->
-        <div class="flex w-10 flex-col items-center gap-2 py-2">
-          <span class="w-0 border border-zinc-800" />
-          <span class="w-0 border border-zinc-800" />
-          <span class="w-0 border border-zinc-800" />
-        </div>
-        <!-- right column -->
-        <div class="flex grow items-center">
-          <span class="text-sky-500">Show replies</span>
+    <UIPopupTransition class="duration-500">
+      <div v-if="post.showAuthorReply && authorReplyId">
+        <MainPostReplyThread
+          v-bind="postStore.getPost(authorReplyId)"
+          noForward
+        />
+        <div class="flex">
+          <!-- left column -->
+          <div class="flex w-10 flex-col items-center gap-2 py-2">
+            <span class="w-0 border border-zinc-800" />
+            <span class="w-0 border border-zinc-800" />
+            <span class="w-0 border border-zinc-800" />
+          </div>
+          <!-- right column -->
+          <div class="flex grow items-center">
+            <span class="text-sky-500">Show replies</span>
+          </div>
         </div>
       </div>
-    </div>
+    </UIPopupTransition>
   </MainSection>
 </template>

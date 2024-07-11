@@ -53,11 +53,11 @@ function focusoutSearchBar() {
         </div>
       </div>
       <div class="h-5 w-full"></div>
-      <div class="h-36 w-full rounded-xl border-2 border-zinc-800"></div>
+      <div class="h-36 w-full rounded-2xl border-2 border-zinc-800"></div>
       <div class="h-5 w-full"></div>
-      <div class="h-80 w-full rounded-xl border-2 border-zinc-800"></div>
+      <div class="h-80 w-full rounded-2xl border-2 border-zinc-800"></div>
       <div class="h-5 w-full"></div>
-      <div class="h-80 w-full rounded-xl border-2 border-zinc-800"></div>
+      <div class="h-80 w-full rounded-2xl border-2 border-zinc-800"></div>
     </div>
   </div>
 </template>

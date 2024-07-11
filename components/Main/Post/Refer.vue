@@ -63,7 +63,7 @@ const date = computed(() => {
       hoverPost($event, target_post === post ? (target_post = null) : null)
     "
     @mousedown="clickPost($event)"
-    class="stopHere cursor-pointer rounded-xl border-2 border-zinc-800 bg-black p-3 transition-all"
+    class="stopHere cursor-pointer rounded-2xl border-2 border-zinc-800 bg-black p-3 transition-all"
     :class="post.id"
   >
     <div class="w-full text-zinc-200">

@@ -224,7 +224,8 @@ function scrollToTarget() {
         <h1 class="h-1/2 text-xl font-bold text-gray-200">Post</h1>
       </template>
       <template #main>
-        <MainSection class="px-5">
+        <!-- upper section -->
+        <MainSection class="px-5 py-2">
           <!-- reply thread -->
           <ul v-if="thread.length">
             <li v-for="threadPost in thread" :key="threadPost.id">
@@ -232,9 +233,10 @@ function scrollToTarget() {
             </li>
           </ul>
           <div id="target" class="scroll-mt-14"></div>
-          <!-- single post -->
+          <!-- main post -->
           <MainPostSingle v-bind="post"></MainPostSingle>
         </MainSection>
+        <!-- lower section -->
         <div class="h-2/3">
           <!-- replies -->
           <ul>
