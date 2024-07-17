@@ -169,7 +169,7 @@ const date = computed(() => {
             <pre>{{ post.text }}</pre>
           </div>
           <!-- repost / quote -->
-          <div v-if="post.type === 'repost'" class="">
+          <div v-if="post.type === 'repost'">
             <MainPostRefer
               v-bind="postStore.getPost(post.reply_to)"
             ></MainPostRefer>

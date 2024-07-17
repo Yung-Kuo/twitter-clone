@@ -241,7 +241,7 @@ function scrollToTarget() {
           <!-- replies -->
           <ul>
             <li v-for="post in replyList" :key="post.id">
-              <MainPost v-bind="post" showAuthorReply></MainPost>
+              <MainPost :post="post" showAuthorReply />
             </li>
           </ul>
         </div>

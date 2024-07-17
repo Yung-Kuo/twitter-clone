@@ -338,7 +338,7 @@ const postList = computed(() => {
         <div class="min-h-screen">
           <ul>
             <li v-for="post in postList" :key="post.id">
-              <MainPost v-bind="post"></MainPost>
+              <MainPost :post="post"></MainPost>
             </li>
           </ul>
         </div>

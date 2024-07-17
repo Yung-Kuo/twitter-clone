@@ -243,7 +243,7 @@ async function fetchNewPost() {
         <!-- post list -->
         <ul>
           <li v-for="post in postList" :key="post.id">
-            <MainPost v-bind="post"></MainPost>
+            <MainPost :post="post"></MainPost>
           </li>
         </ul>
       </template>

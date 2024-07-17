@@ -99,7 +99,7 @@ const date = computed(() => {
       <!-- upper section -->
       <div class="pl-2">
         <!-- user info -->
-        <div class="flex">
+        <div class="flex h-10">
           <div class="noForward flex items-center">
             <div class="font-bold hover:underline">
               <!-- name -->
