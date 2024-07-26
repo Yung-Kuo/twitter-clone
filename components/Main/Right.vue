@@ -1,6 +1,7 @@
 <script setup>
 const handleWheelEvent = inject("handleWheelEvent");
 const getRect = inject("getRect");
+const menuGetRect = inject("menuGetRect", () => null);
 
 const search = ref("");
 const clicked = ref(false);
@@ -19,6 +20,7 @@ function focusoutSearchBar() {
     @wheel="
       handleWheelEvent($event, 'right');
       getRect();
+      menuGetRect();
     "
   >
     <div class="invisible w-0 xl:visible xl:w-full 2xl:w-4/5">
@@ -27,7 +29,7 @@ function focusoutSearchBar() {
         tabindex="0"
         @focusin="focusinSearchBar()"
         @focusout="focusoutSearchBar()"
-        class="flex h-12 w-full items-center gap-3 rounded-full border border-zinc-800 bg-zinc-800 px-3 text-zinc-500 focus-within:border-sky-500 focus-within:bg-black"
+        class="flex h-12 w-full items-center gap-3 rounded-full border-2 border-zinc-800 bg-zinc-800 px-3 text-zinc-500 focus-within:border-sky-500 focus-within:bg-black"
       >
         <div class="flex-none">
           <IconsBadge size="xsmall" :noHover="true">

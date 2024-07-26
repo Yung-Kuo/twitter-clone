@@ -1,7 +1,8 @@
 <script setup>
 const router = useRouter();
 const handleWheelEvent = inject("handleWheelEvent");
-const getRect = inject("getRect");
+const getRect = inject("getRect", () => null);
+const menuGetRect = inject("menuGetRect", () => null);
 </script>
 <template>
   <div
@@ -40,6 +41,7 @@ const getRect = inject("getRect");
       @wheel="
         handleWheelEvent($event, 'center');
         getRect();
+        menuGetRect();
       "
     >
       <slot name="main" />

@@ -6,16 +6,32 @@ export default function () {
   function getRect() {
     if (profileCardVis.value) {
       nextTick(() => {
+        // center
+        const center = document.getElementById("center");
+        const centerRect = center.getBoundingClientRect();
         // profile card
         const card = document.getElementById("profileCard");
         const cardRect = card.getBoundingClientRect();
         // hovered element
         const element = document.getElementById(hoveredElement.value);
         const rect = element.getBoundingClientRect();
-        card.style.top = `${rect.top + rect.height}px`;
-        card.style.left = `${
-          rect.left + rect.width / 2 - cardRect.width / 2
-        }px`;
+
+        // if there is still room at the bottom
+        if (rect.top + rect.height + cardRect.height + 20 < centerRect.height) {
+          card.style.top = `${rect.top + rect.height + 20}px`;
+          card.style.left = `${
+            rect.left + rect.width / 2 - cardRect.width / 2
+          }px`;
+        } else {
+          card.style.top = `${rect.top - cardRect.height - 20}px`;
+          card.style.left = `${
+            rect.left + rect.width / 2 - cardRect.width / 2
+          }px`;
+        }
+        console.log(
+          "card out of screen: ",
+          cardRect.top + cardRect.height > centerRect.height
+        );
       });
     }
   }

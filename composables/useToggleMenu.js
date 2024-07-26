@@ -20,13 +20,11 @@ export default function () {
     menu_pid.value = pid;
     menu_uid.value = uid;
     type.value = menuType;
-    console.log(type.value);
     showMenu.value = !showMenu.value;
-    // if (showMenu.value) menuGetRect();
+    if (showMenu.value) menuGetRect();
   }
   function handleClickOutside(event) {
     if (showMenu.value) {
-      console.log("menu_id: ", menu_id.value);
       const icon = document.getElementById(icon_id.value);
       const menu = document.getElementById(menu_id.value);
       if (!icon || !menu) {
@@ -39,9 +37,12 @@ export default function () {
     }
   }
   function menuGetRect() {
-    console.log("menuGetRect!!!");
+    // console.log("menuGetRect!!!");
     if (showMenu.value) {
       nextTick(() => {
+        // center
+        const center = document.getElementById("center");
+        const centerRect = center.getBoundingClientRect();
         // menu
         const menu = document.getElementById(menu_id.value);
         const menuRect = menu.getBoundingClientRect();
@@ -53,17 +54,38 @@ export default function () {
           // account
           menu.style.top = `${iconRect.top}px`;
           menu.style.left = `${iconRect.left}px`;
+        } else if (type.value === "post_action") {
+          // post action menu
+          if (
+            iconRect.top + iconRect.height + 10 + menuRect.height >
+            centerRect.height
+          ) {
+            if (
+              !menu.classList.contains("-translate-y-32", "-translate-x-10")
+            ) {
+              menu.classList.add("-translate-x-10", "-translate-y-32");
+              // menu.classList.remove("-translate-x-0", "-translate-y-0");
+            }
+          } else {
+            if (menu.classList.contains("-translate-y-32", "-translate-x-10")) {
+              // menu.classList.add("-translate-x-0", "-translate-y-0");
+              menu.classList.remove("-translate-x-10", "-translate-y-32");
+            }
+          }
+        } else if (type.value === "repost") {
+          // repost menu
+          if (iconRect.top + menuRect.height > centerRect.height) {
+            if (!menu.classList.contains("-translate-y-20")) {
+              menu.classList.add("-translate-y-20");
+              // menu.classList.remove("-translate-y-0");
+            }
+          } else {
+            if (menu.classList.contains("-translate-y-20")) {
+              // menu.classList.add("-translate-y-0");
+              menu.classList.remove("-translate-y-20");
+            }
+          }
         }
-        // else if (type.value === "post_action") {
-        //   // post action menu
-        //   menu.style.top = `${iconRect.top + iconRect.height + 10}px`;
-        //   menu.style.left = `${
-        //     iconRect.left + iconRect.width - menuRect.width
-        //   }px`;
-        // } else if (type.value === "repost") {
-        //   menu.style.top = `${iconRect.top}px`;
-        //   menu.style.left = `${iconRect.left + iconRect.width + 10}px`;
-        // }
       });
     }
   }

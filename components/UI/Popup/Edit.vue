@@ -48,7 +48,7 @@ const replyPost = computed(() => {
               <UIAvatar :user_id="user.id" size="small" />
             </div>
             <div
-              class="max-h-[20em] min-h-[8em] grow overflow-y-scroll rounded-xl border-2 border-zinc-800 px-1"
+              class="max-h-[20em] min-h-[8em] grow overflow-y-scroll rounded-xl border-2 border-zinc-800"
             >
               <MainPostTextarea v-model="newText" mode="edit" />
             </div>
@@ -74,9 +74,7 @@ const replyPost = computed(() => {
           <UIButton
             color="blue"
             :solid="true"
-            @mousedown="
-              emit('close', publishEdit())
-            "
+            @mousedown="emit('close', publishEdit())"
             >Post</UIButton
           >
         </div>

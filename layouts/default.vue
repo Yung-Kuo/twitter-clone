@@ -3,13 +3,12 @@
 </template>
 <style>
 /*  google font
+Ubuntu
+Varela
 Open Sans
-Montserrat
-Poppins
-Work Sans
 */
 body {
-  font-family: "Open Sans";
+  font-family: "Ubuntu";
 }
 pre {
   font-family: "Open Sans";

@@ -23,7 +23,7 @@ async function fetchFollow() {
 </script>
 <template>
   <div
-    class="invisible absolute z-30 h-80 w-72 translate-y-6 rounded-xl bg-black p-4 text-white shadow-3xl shadow-zinc-700 md:visible"
+    class="invisible absolute z-30 h-80 w-72 rounded-xl bg-black p-4 text-white shadow-3xl shadow-zinc-700 transition-all duration-100 md:visible"
   >
     <div class="flex justify-between">
       <NuxtLink :to="`/${userProfile?.username}`">
@@ -52,9 +52,9 @@ async function fetchFollow() {
         >
       </NuxtLink>
     </div>
-    <!-- introduction -->
+    <!-- description -->
     <div class="py-2">
-      <p>This is my introduction</p>
+      <pre>{{ userProfile?.description }}</pre>
     </div>
     <!-- following / followers -->
     <div class="pt-2 text-sm">

@@ -20,7 +20,8 @@ const replyStore = useReplyStore();
 const followingStore = useFollowingStore();
 // composables
 const { alertMode, alertMessage, errorTimeout, hasError } = useAlert();
-const { center, right, handleWheelEvent } = useWheelSync();
+// wheel sync
+const { handleWheelEvent } = useWheelSync();
 provide("handleWheelEvent", handleWheelEvent);
 // profile card
 const {

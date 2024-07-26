@@ -84,7 +84,7 @@ export const useProfileStore = defineStore({
       this.profile.last_name = data.last_name;
       this.profile.username = data.username;
       this.profile.avatar_url = data.avatar_url;
-      this.profile.website = data.website;
+      this.profile.description = data.description;
       this.profile.updated_at = new Date();
 
       this.loading = true;

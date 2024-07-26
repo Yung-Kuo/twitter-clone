@@ -73,15 +73,14 @@ function assignActionList() {
 }
 </script>
 <template>
-  <!-- relative -left-60 top-10 -->
   <div
-    class="absolute z-10 mb-5 flex h-max w-60 flex-col rounded-xl bg-black text-zinc-200 shadow-3xl shadow-zinc-700"
+    class="absolute z-10 mb-5 flex h-max w-60 flex-col rounded-xl bg-black text-zinc-200 shadow-3xl shadow-zinc-700 transition-all duration-200"
   >
     <ul>
       <li
         v-for="action in actionList"
         @mousedown="action.function"
-        class="flex h-10 w-full cursor-pointer items-center px-5 first:rounded-t-xl last:rounded-b-xl hover:bg-zinc-700 hover:bg-opacity-30 active:bg-opacity-40"
+        class="flex h-10 w-full cursor-pointer items-center px-5 transition-all duration-200 first:rounded-t-xl last:rounded-b-xl hover:bg-zinc-700 hover:bg-opacity-30 active:bg-opacity-40"
       >
         {{ action.name }}
       </li>

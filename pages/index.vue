@@ -14,7 +14,8 @@ const postStore = usePostStore();
 const { getError } = storeToRefs(store);
 // composables
 const { alertMode, alertMessage, errorTimeout, hasError } = useAlert();
-const { center, right, handleWheelEvent } = useWheelSync();
+// wheel sync
+const { handleWheelEvent } = useWheelSync();
 provide("handleWheelEvent", handleWheelEvent);
 // profile card
 const {

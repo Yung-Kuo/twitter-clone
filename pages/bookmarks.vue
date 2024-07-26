@@ -12,7 +12,8 @@ const user = useSupabaseUser();
 const router = useRouter();
 // composables
 const { alertMode, alertMessage, errorTimeout, hasError } = useAlert();
-const { center, right, handleWheelEvent } = useWheelSync();
+// wheel sync
+const { handleWheelEvent } = useWheelSync();
 provide("handleWheelEvent", handleWheelEvent);
 // profile card
 const {
@@ -190,7 +191,7 @@ const bookmarkList = computed(() => postStore.getBookmarkPosts);
       <template #main>
         <ul>
           <li v-for="post in bookmarkList" :key="post.id">
-            <MainPost v-bind="post"></MainPost>
+            <MainPost :post="post"></MainPost>
           </li>
         </ul>
       </template>

@@ -14,7 +14,8 @@ const route = useRoute();
 // composables
 //
 const { alertMode, alertMessage, errorTimeout, hasError } = useAlert();
-const { center, right, handleWheelEvent } = useWheelSync();
+// wheel sync
+const { handleWheelEvent } = useWheelSync();
 provide("handleWheelEvent", handleWheelEvent);
 // profile card
 const {
@@ -49,6 +50,7 @@ provide("useToggleMenu", {
   menuGetRect,
 });
 provide("toggleMenu", toggleMenu);
+provide("menuGetRect", menuGetRect);
 provide("toggleAccountMenu", { showMenu, type, menuGetRect });
 watch(icon_id, () => {
   nextTick();

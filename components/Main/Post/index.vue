@@ -153,7 +153,7 @@ const date = computed(() => {
               <!-- spacing -->
               <div class="grow"></div>
               <!-- post action -->
-              <div class="flex flex-col">
+              <div class="noForward flex flex-col">
                 <!-- icon -->
                 <div class="flex h-full items-center text-zinc-500">
                   <IconsBadge
@@ -163,7 +163,6 @@ const date = computed(() => {
                     @mousedown="
                       toggleMenu(post.id, post.user_id, 'post_action')
                     "
-                    class="noForward"
                   >
                     <IconsMore />
                   </IconsBadge>
@@ -180,7 +179,6 @@ const date = computed(() => {
                       :id="`${post.id}_post_action_menu`"
                       :pid="menu_pid"
                       :uid="menu_uid"
-                      class="noForward"
                     ></UIPopupMenu>
                   </UIPopupTransition>
                 </div>

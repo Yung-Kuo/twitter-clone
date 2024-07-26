@@ -17,16 +17,15 @@ const props = defineProps({
     default: false,
   },
 });
-const emit = defineEmits(["submit"]);
 const button_style = ref("");
 const blue_solid =
   "px-5 py-2 rounded-full bg-sky-500 text-white hover:bg-sky-600 active:bg-sky-700 font-semibold";
 const blue_hollow =
   "px-5 py-2 rounded-full border-2 border-sky-500 text-sky-500 hover:border-sky-400 hover:font-bold hover:text-sky-400 hover:ring-2 hover:ring-sky-400 active:bg-sky-400 active:text-black";
 const orange_solid =
-  "w-full px-0 py-2 md:py-3 rounded-md bg-orange-400 font-bold text-lg hover:bg-orange-500 active:bg-orange-600";
+  "w-full h-16 rounded-md bg-orange-400 font-bold text-xl hover:bg-orange-500 hover:text-zinc-800 active:bg-orange-600";
 const orange_hollow =
-  "w-full px-0 py-2 md:py-3 rounded-md border-2 border-orange-400 font-bold text-lg text-orange-400 hover:border-orange-500 hover:ring-2 hover:ring-orange-500 hover:text-orange-500 active:bg-orange-500 active:text-black";
+  "w-full h-16 rounded-md border-2 border-orange-400 font-bold text-xl text-orange-400 hover:border-orange-500 hover:ring-2 hover:ring-orange-500 hover:text-orange-500 active:bg-orange-500 active:text-black";
 const white_solid =
   "px-5 py-2 rounded-full bg-gray-200 font-bold text-black hover:bg-gray-300 active:bg-gray-400";
 const white_hollow =
@@ -60,9 +59,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- @click="props.active ? emit('submit') : null" -->
   <button
-    class="flex h-full items-center justify-center transition-all"
+    class="flex items-center justify-center transition-all"
     :class="{ [button_style]: true, grayscale: !props.active }"
   >
     <span>

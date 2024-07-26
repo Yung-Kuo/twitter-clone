@@ -38,7 +38,7 @@ onMounted(() => {
 </script>
 <template>
   <div
-    class="absolute z-10 flex h-max w-40 flex-col rounded-xl bg-black text-zinc-200 shadow-3xl shadow-zinc-700"
+    class="absolute z-10 flex h-max w-40 flex-col rounded-xl bg-black text-zinc-200 shadow-3xl shadow-zinc-700 transition-all duration-200"
   >
     <ul>
       <li v-for="action in actionList">

@@ -16,20 +16,13 @@ export default defineNuxtConfig({
   },
   googleFonts: {
     families: {
+      Ubuntu: {
+        wght: [300, 400, 500, 700],
+        ital: [300, 400, 500, 700],
+      },
+      Varela: true,
       "Open Sans": {
         wght: "300..800",
-        ital: "200..700",
-      },
-      Montserrat: {
-        wght: "200..900",
-        ital: "200..700",
-      },
-      Poppins: {
-        wght: "200..900",
-        ital: "200..700",
-      },
-      "Work Sans": {
-        wght: "200..900",
         ital: "200..700",
       },
     },

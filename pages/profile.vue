@@ -12,6 +12,10 @@ const postStore = usePostStore();
 const { getError } = storeToRefs(store);
 const { alertMode, alertMessage, errorTimeout, hasError } = useAlert();
 
+// wheel sync
+const { handleWheelEvent } = useWheelSync();
+provide("handleWheelEvent", handleWheelEvent);
+
 // post action menu / repost menu
 const {
   showMenu,
@@ -144,104 +148,116 @@ const usernameValidFlag = ref(true);
 const first_nameValidFlag = ref(true);
 const last_nameValidFlag = ref(true);
 const buttonActiveFlag = computed(() => {
-  if (
+  // if (
+  //   usernameValidFlag.value &&
+  //   first_nameValidFlag.value &&
+  //   last_nameValidFlag.value
+  // )
+  //   return true;
+  // else return false;
+  return (
     usernameValidFlag.value &&
     first_nameValidFlag.value &&
     last_nameValidFlag.value
-  )
-    return true;
-  else return false;
+  );
 });
 </script>
 
 <template>
   <div class="flex h-screen w-screen bg-black">
+    <UIAlert :mode="alertMode" :message="alertMessage" />
     <!-- navigation -->
     <MainLeft></MainLeft>
     <MainCenter>
+      <template #banner>
+        <h1 class="h-1/2 text-xl font-bold text-gray-200">Edit Profile</h1>
+      </template>
       <template #main>
-        <div
-          class="flex h-full w-full items-center justify-end overflow-scroll pb-40 pt-20"
-        >
-          <!--  -->
-          <div
-            class="flex h-full w-full items-center justify-center md:w-5/6 md:rounded-2xl"
-          >
-            <UIAlert :mode="alertMode" :message="alertMessage" />
-            <div class="w-3/4">
-              <!-- Avatar -->
-              <div class="flex items-center justify-center p-20">
-                <div class="grid grid-cols-1 grid-rows-1">
-                  <div class="col-start-1 row-start-1">
-                    <UIAvatar
-                      :file="src"
-                      :user_id="userProfile.id"
-                      size="large"
-                    ></UIAvatar>
-                  </div>
-                  <div
-                    class="z-10 col-start-1 row-start-1 rounded-full transition-all hover:bg-slate-900 hover:bg-opacity-60"
-                  >
-                    <label for="avatar" class="mb-8">
-                      <span
-                        class="flex h-full w-full cursor-pointer items-center justify-center text-transparent transition-all hover:text-white"
-                      >
-                        <IconsEdit class="text-4xl"></IconsEdit>
-                      </span>
-                      <input
-                        type="file"
-                        id="avatar"
-                        name="avatar"
-                        accept=".jpg, .jpeg, .png"
-                        @change="onFileSelected"
-                        class="hidden"
-                      />
-                    </label>
-                  </div>
+        <div class="flex w-full items-center justify-center">
+          <div class="flex w-3/4 flex-col gap-10 pb-40">
+            <!-- Avatar -->
+            <div class="flex items-center justify-center p-20">
+              <div class="grid grid-cols-1 grid-rows-1">
+                <div class="col-start-1 row-start-1">
+                  <UIAvatar
+                    :file="src"
+                    :user_id="userProfile.id"
+                    size="large"
+                  ></UIAvatar>
+                </div>
+                <div
+                  class="z-10 col-start-1 row-start-1 rounded-full transition-all hover:bg-slate-900 hover:bg-opacity-60"
+                >
+                  <label for="avatar" class="mb-8">
+                    <span
+                      class="flex h-full w-full cursor-pointer items-center justify-center text-transparent transition-all hover:text-white"
+                    >
+                      <IconsEdit class="text-4xl"></IconsEdit>
+                    </span>
+                    <input
+                      type="file"
+                      id="avatar"
+                      name="avatar"
+                      accept=".jpg, .jpeg, .png"
+                      @change="onFileSelected"
+                      class="hidden"
+                    />
+                  </label>
                 </div>
               </div>
-              <!-- first_name -->
-              <UIInput
-                id="first_name"
-                type="text"
-                v-model="userProfile.first_name"
-                :flag="first_nameValidFlag"
-                @updateValid="(value) => (first_nameValidFlag = value)"
-                >First Name
-              </UIInput>
-              <!-- last_name -->
-              <UIInput
-                id="last_name"
-                type="text"
-                v-model="userProfile.last_name"
-                :flag="last_nameValidFlag"
-                @updateValid="(value) => (last_nameValidFlag = value)"
-                >Last Name</UIInput
-              >
-              <!-- username -->
-              <UIInput
-                id="username"
-                type="text"
-                v-model="userProfile.username"
-                :firstEdit="firstEdit"
-                @edited="firstEdit = false"
-                :flag="usernameValidFlag"
-                @updateValid="(value) => (usernameValidFlag = value)"
-                >Username</UIInput
-              >
-              <!-- Update Profile -->
-              <UIButton
-                color="orange"
-                solid="true"
-                @click="updateProfile(userProfile)"
-                >Update Profile</UIButton
-              >
             </div>
+            <!-- first_name -->
+            <UIInput
+              id="first_name"
+              type="text"
+              v-model="userProfile.first_name"
+              :flag="first_nameValidFlag"
+              @updateValid="(value) => (first_nameValidFlag = value)"
+              >First Name
+            </UIInput>
+            <!-- last_name -->
+            <UIInput
+              id="last_name"
+              type="text"
+              v-model="userProfile.last_name"
+              :flag="last_nameValidFlag"
+              @updateValid="(value) => (last_nameValidFlag = value)"
+              >Last Name</UIInput
+            >
+            <!-- username -->
+            <UIInput
+              id="username"
+              type="text"
+              v-model="userProfile.username"
+              :firstEdit="firstEdit"
+              @edited="firstEdit = false"
+              :flag="usernameValidFlag"
+              @updateValid="(value) => (usernameValidFlag = value)"
+              >Username</UIInput
+            >
+            <!-- description -->
+
+            <div
+              class="no-wheel-sync flex max-h-[20em] min-h-[8em] grow flex-col overflow-y-scroll rounded-md border-2 border-zinc-600"
+            >
+              <MainPostTextarea
+                v-model="userProfile.description"
+                mode="description"
+              />
+            </div>
+            <!-- Update Profile -->
+            <UIButton
+              color="orange"
+              solid="true"
+              @click="updateProfile(userProfile)"
+              >Update Profile</UIButton
+            >
           </div>
+          d
         </div>
       </template>
     </MainCenter>
-    <!-- <MainRight></MainRight> -->
+    <MainRight />
   </div>
 </template>
 

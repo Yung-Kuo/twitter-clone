@@ -79,7 +79,7 @@ function inputFocusOut() {
     tabindex="0"
     @focusin="inputFocusIn"
     @focusout="inputFocusOut"
-    class="mb-10 grid h-16 w-full grid-cols-1 grid-rows-1 overflow-hidden rounded-md border focus-within:outline-none sm:h-20"
+    class="grid h-16 w-full grid-cols-1 grid-rows-1 overflow-hidden rounded-md border-2 border-zinc-600 focus-within:outline-none sm:h-20"
     :class="inputValidFlag ? inputValidClass : inputInvalidClass"
   >
     <div

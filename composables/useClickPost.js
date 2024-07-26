@@ -6,16 +6,10 @@ export default function () {
     const element = ref(null);
     element.value = event.target;
     while (element.value && element.value !== document.body) {
-      console.log("run click post");
       if (element?.value.classList.contains("noForward")) return;
       else if (element?.value.classList.contains(target_post.value.id)) break;
       element.value = element.value.parentElement;
     }
-    console.log(
-      `/${postStore.getUsername(target_post.value.user_id)}/post/${
-        target_post.value.id
-      }`
-    );
     navigateTo(
       `/${postStore.getUsername(target_post.value.user_id)}/post/${
         target_post.value.id

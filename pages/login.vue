@@ -10,8 +10,9 @@ const password = ref("");
 const emailValidFlag = ref(true);
 const passwordValidFlag = ref(true);
 const buttonActiveFlag = computed(() => {
-  if (emailValidFlag.value && passwordValidFlag.value) return true;
-  else return false;
+  // if (emailValidFlag.value && passwordValidFlag.value) return true;
+  // else return false;
+  return emailValidFlag.value && passwordValidFlag.value;
 });
 async function signUp() {
   if (!email.value) {
@@ -113,9 +114,9 @@ function validateEmail() {
     <UIAlert :mode="alertMode" :message="alertMessage" />
     <!-- center black block -->
     <div
-      class="flex h-full w-full items-center justify-center bg-black md:h-min md:w-3/5 md:rounded-2xl lg:h-min lg:w-2/5"
+      class="flex h-full w-full items-center justify-center bg-black md:h-min md:w-3/5 md:rounded-xl lg:h-min lg:w-2/5"
     >
-      <div class="flex w-4/5 flex-col px-10 py-20">
+      <div class="flex w-4/5 flex-col gap-10 px-10 py-20">
         <!-- email -->
         <UIInput
           type="email"
@@ -145,6 +146,7 @@ function validateEmail() {
             <UIButton
               color="orange"
               :solid="true"
+              :active="buttonActiveFlag"
               @click="buttonActiveFlag ? login() : null"
               >Login</UIButton
             >
@@ -153,6 +155,7 @@ function validateEmail() {
             <UIButton
               color="orange"
               :solid="false"
+              :active="buttonActiveFlag"
               @click="buttonActiveFlag ? signUp() : null"
               >Sign Up</UIButton
             >

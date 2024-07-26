@@ -2,6 +2,14 @@ export default function () {
   const center = ref(null);
   const right = ref(null);
   function handleWheelEvent(event, scroll_at) {
+    // console.log("wheel event: ", event);
+    const element = ref(null);
+    element.value = event.target;
+    while (element.value && element.value !== document.body) {
+      // while scroll within textarea
+      if (element.value?.classList.contains("no-wheel-sync")) return;
+      element.value = element.value.parentElement;
+    }
     // panel scroll
     center.value = document.getElementById("center");
     right.value = document.getElementById("right");
@@ -14,5 +22,5 @@ export default function () {
     }
   }
 
-  return { center, right, handleWheelEvent };
+  return { handleWheelEvent };
 }
