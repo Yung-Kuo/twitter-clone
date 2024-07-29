@@ -23,7 +23,9 @@ function focusoutSearchBar() {
       menuGetRect();
     "
   >
-    <div class="invisible w-0 xl:visible xl:w-full 2xl:w-4/5">
+    <div
+      class="invisible flex w-0 flex-col gap-5 xl:visible xl:w-full 2xl:w-4/5"
+    >
       <!-- search bar -->
       <div
         tabindex="0"
@@ -54,11 +56,12 @@ function focusoutSearchBar() {
           <IconsClose />
         </div>
       </div>
-      <div class="h-5 w-full"></div>
-      <div class="h-36 w-full rounded-2xl border-2 border-zinc-800"></div>
-      <div class="h-5 w-full"></div>
+      <div
+        class="h-36 w-full rounded-2xl border-2 border-zinc-800 px-4 py-3 text-zinc-200"
+      >
+        <h1 class="text-xl font-bold">Relevant People</h1>
+      </div>
       <div class="h-80 w-full rounded-2xl border-2 border-zinc-800"></div>
-      <div class="h-5 w-full"></div>
       <div class="h-80 w-full rounded-2xl border-2 border-zinc-800"></div>
     </div>
   </div>

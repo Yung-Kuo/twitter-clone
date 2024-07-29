@@ -35,10 +35,10 @@ export default function () {
     } else return false;
   }
   // retweet
-  async function publishRepost() {
+  async function publishRepost(pid) {
     const address = await postStore.uploadPost({
-      text: repost_pid.value,
-      reply_to: repost_pid.value,
+      text: pid,
+      reply_to: pid,
       type: "repost",
     });
     if (address) {

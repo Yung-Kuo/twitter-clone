@@ -17,4 +17,8 @@
 html {
   background-color: black;
 }
+pre {
+  white-space: break-spaces;
+  word-wrap: break-word;
+}
 </style>

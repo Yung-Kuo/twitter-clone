@@ -164,14 +164,14 @@ function scrollToTarget() {
       <UIAlert :mode="alertMode" :message="alertMessage" />
       <!-- Profile Card -->
       <UIPopupTransition leave-active-class="delay-200">
-        <UIProfileCard
+        <UIPopupProfileCard
           v-show="profileCardVis"
           id="profileCard"
           :userId="hoveredUserId"
           @mouseenter="showProfileCard(null, null)"
           @mouseleave="hideProfileCard()"
         >
-        </UIProfileCard>
+        </UIPopupProfileCard>
       </UIPopupTransition>
       <!-- Backdrop -->
       <UIPopupTransition>

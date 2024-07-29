@@ -35,7 +35,8 @@ export const useReplyStore = defineStore({
       };
     },
     getReplyCount(state) {
-      return (pid) => state.replyCount[pid];
+      return (pid) =>
+        state.replyCount[pid] > 0 ? state.replyCount[pid] : null;
     },
     checkReplied(state) {
       return (pid) => state.userHasReplied[pid] || false;
@@ -78,7 +79,7 @@ export const useReplyStore = defineStore({
           // setReplies deals with list, thus [data]
           const postStore = usePostStore();
           postStore.setReplies([data]);
-
+          await this.fetchAuthorReplyStatus(data.reply_to);
           return true;
         }
         if (error) throw error;
@@ -97,7 +98,11 @@ export const useReplyStore = defineStore({
       this.postReplyId[reply_to] = this.postReplyId[reply_to].filter(
         (replyId) => replyId !== pid
       );
+      if (this.authorHasReplied[reply_to] === pid) {
+        this.authorHasReplied[reply_to] = null;
+      }
       await this.fetchUserReplyStatus(reply_to);
+      await this.fetchAuthorReplyStatus(reply_to);
       if (this.replyCount[reply_to] >= 1) this.replyCount[reply_to] -= 1;
     },
     async fetchReplies(pid) {
@@ -205,8 +210,8 @@ export const useReplyStore = defineStore({
             .limit(1);
           if (data.length) {
             this.setReplies(data);
-            this.authorHasReplied[pid] = true;
-            return data[0].id;
+            this.authorHasReplied[pid] = data[0].id;
+            // return data[0].id;
           }
           if (error) throw error;
         } catch (error) {}

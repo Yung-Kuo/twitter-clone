@@ -17,7 +17,7 @@ const { newPost, repost_pid, publishPost, publishRepost, publishQuote } =
           </div>
         </div>
         <!-- right column -->
-        <div class="flex grow flex-col justify-between px-2">
+        <div class="flex w-[calc(100%-2rem)] flex-col justify-between px-2">
           <!-- post -->
           <div class="grow overflow-y-scroll pb-2">
             <MainPostTextarea

@@ -86,8 +86,8 @@ const date = computed(() => {
 });
 </script>
 <template>
-  <div v-if="postStore.getProfile(post?.user_id)">
-    <div class="w-full text-zinc-200">
+  <div class="w-full text-zinc-200" v-if="postStore.getProfile(post?.user_id)">
+    <MainSection>
       <!-- upper section -->
       <div class="flex h-min w-full items-start">
         <!-- avatar -->
@@ -159,137 +159,135 @@ const date = computed(() => {
         </div>
       </div>
       <!-- middle section -->
-      <MainSection>
-        <div class="flex h-full flex-col gap-3 py-3">
-          <!-- content -->
-          <div
-            v-if="post.type !== 'repost' || post.text !== post.reply_to"
-            class="w-full text-lg"
-          >
-            <pre>{{ post.text }}</pre>
-          </div>
-          <!-- repost / quote -->
-          <div v-if="post.type === 'repost'">
-            <MainPostRefer
-              v-bind="postStore.getPost(post.reply_to)"
-            ></MainPostRefer>
-          </div>
-          <div class="flex text-zinc-500">
-            <!-- timestamp -->
-            <div class="hover:underline">
-              <pre>{{ time }} · {{ date }}</pre>
-            </div>
-            <!-- edited -->
-            <div>
-              <pre v-if="post.edited"> · edited</pre>
-            </div>
-          </div>
-        </div>
-      </MainSection>
-      <!-- lower section -->
-      <!-- action buttons -->
-      <MainSection>
+      <div class="flex h-full w-full flex-col gap-3 py-3">
+        <!-- content -->
         <div
-          class="flex h-full items-center justify-between py-2 text-zinc-500"
+          v-if="post.type !== 'repost' || post.text !== post.reply_to"
+          class="w-full text-lg"
         >
-          <!-- Reply -->
-          <div class="flex w-12 items-center">
-            <IconsBadge
-              size="smallPlus"
-              color="blue"
-              :clicked="replyStore.checkReplied(post.id)"
-              @mousedown="clickReply(post.id)"
-            >
-              <IconsReply />
-            </IconsBadge>
-
-            <span
-              class="w-2"
-              :class="{ 'text-sky-500': replyStore.checkReplied(post.id) }"
-              >{{ replyStore.getReplyCount(post.id) }}</span
-            >
+          <pre>{{ post.text }}</pre>
+        </div>
+        <!-- repost / quote -->
+        <div v-if="post.type === 'repost'">
+          <MainPostRefer
+            v-bind="postStore.getPost(post.reply_to)"
+          ></MainPostRefer>
+        </div>
+        <div class="flex text-zinc-500">
+          <!-- timestamp -->
+          <div class="hover:underline">
+            <pre>{{ time }} · {{ date }}</pre>
           </div>
-          <!-- Repost -->
-          <div class="flex">
-            <div class="flex w-12 items-center">
-              <IconsBadge
-                size="smallPlus"
-                color="green"
-                :clicked="false"
-                :id="`${post.id}_repost_menu_icon`"
-                @mousedown="toggleMenu(post.id, post.user_id, 'repost')"
-              >
-                <IconsRepost />
-              </IconsBadge>
-              <span class="w-2"></span>
-            </div>
-            <!-- repost option menu -->
-            <div class="relative">
-              <UIPopupTransition>
-                <UIPopupRepostMenu
-                  v-if="showMenu && type === 'repost' && menu_pid === post.id"
-                  :id="`${post.id}_repost_menu`"
-                  :pid="menu_pid"
-                  @repost="publishRepost()"
-                  @quote="
-                    repost_pid = menu_pid;
-                    showPopupPost = true;
-                  "
-                  class="noForward"
-                ></UIPopupRepostMenu>
-              </UIPopupTransition>
-            </div>
-          </div>
-          <!-- Like -->
-          <div class="flex w-12 items-center">
-            <IconsBadge
-              size="smallPlus"
-              color="red"
-              :clicked="postStore.checkLike(post.id)"
-              @mousedown="clickLike(post.id)"
-            >
-              <IconsLike :solid="postStore.checkLike(post.id)" />
-            </IconsBadge>
-            <span
-              class="w-2"
-              :class="{ 'text-pink-600': postStore.checkLike(post.id) }"
-              >{{ postStore.getLikeCount(post.id) }}</span
-            >
-          </div>
-          <!-- Bookmark -->
-          <div class="flex w-12 items-center">
-            <IconsBadge
-              size="smallPlus"
-              color="blue"
-              :clicked="postStore.checkBookmark(post.id)"
-              @mousedown="clickBookmark(post.id)"
-            >
-              <IconsBookmark :solid="postStore.checkBookmark(post.id)" />
-            </IconsBadge>
-            <span
-              class="w-2"
-              :class="{ 'text-sky-500': postStore.checkBookmark(post.id) }"
-              >{{ postStore.getBookmarkCount(post.id) }}</span
-            >
-          </div>
-          <!-- Share -->
-          <div class="flex items-center">
-            <IconsBadge size="smallPlus" color="blue">
-              <IconsShare />
-            </IconsBadge>
+          <!-- edited -->
+          <div>
+            <pre v-if="post.edited"> · edited</pre>
           </div>
         </div>
-      </MainSection>
-      <!-- reply -->
-      <div class="flex w-full gap-2 py-5">
-        <UIAvatar :user_id="user.id" size="small" />
-        <div class="grow">
-          <MainPostTextarea v-model="reply" placeholder="Post your reply" />
-        </div>
-        <UIButton color="blue" :solid="true" @mousedown="publishReply(post.id)"
-          >Reply</UIButton
-        >
       </div>
+    </MainSection>
+    <!-- lower section -->
+    <!-- action buttons -->
+    <MainSection>
+      <div class="flex h-full items-center justify-between py-2 text-zinc-500">
+        <!-- Reply -->
+        <div class="flex w-12 items-center">
+          <IconsBadge
+            size="smallPlus"
+            color="blue"
+            :clicked="replyStore.checkReplied(post.id)"
+            @mousedown="clickReply(post.id)"
+          >
+            <IconsReply />
+          </IconsBadge>
+
+          <span
+            class="w-2"
+            :class="{ 'text-sky-500': replyStore.checkReplied(post.id) }"
+            >{{ replyStore.getReplyCount(post.id) }}</span
+          >
+        </div>
+        <!-- Repost -->
+        <div class="flex">
+          <div class="flex w-12 items-center">
+            <IconsBadge
+              size="smallPlus"
+              color="green"
+              :clicked="false"
+              :id="`${post.id}_repost_menu_icon`"
+              @mousedown="toggleMenu(post.id, post.user_id, 'repost')"
+            >
+              <IconsRepost />
+            </IconsBadge>
+            <span class="w-2"></span>
+          </div>
+          <!-- repost option menu -->
+          <div class="relative">
+            <UIPopupTransition>
+              <UIPopupRepostMenu
+                v-if="showMenu && type === 'repost' && menu_pid === post.id"
+                :id="`${post.id}_repost_menu`"
+                :pid="menu_pid"
+                @repost="publishRepost()"
+                @quote="
+                  repost_pid = menu_pid;
+                  showPopupPost = true;
+                "
+                class="noForward"
+              ></UIPopupRepostMenu>
+            </UIPopupTransition>
+          </div>
+        </div>
+        <!-- Like -->
+        <div class="flex w-12 items-center">
+          <IconsBadge
+            size="smallPlus"
+            color="red"
+            :clicked="postStore.checkLike(post.id)"
+            @mousedown="clickLike(post.id)"
+          >
+            <IconsLike :solid="postStore.checkLike(post.id)" />
+          </IconsBadge>
+          <span
+            class="w-2"
+            :class="{ 'text-pink-600': postStore.checkLike(post.id) }"
+            >{{ postStore.getLikeCount(post.id) }}</span
+          >
+        </div>
+        <!-- Bookmark -->
+        <div class="flex w-12 items-center">
+          <IconsBadge
+            size="smallPlus"
+            color="blue"
+            :clicked="postStore.checkBookmark(post.id)"
+            @mousedown="clickBookmark(post.id)"
+          >
+            <IconsBookmark :solid="postStore.checkBookmark(post.id)" />
+          </IconsBadge>
+          <span
+            class="w-2"
+            :class="{ 'text-sky-500': postStore.checkBookmark(post.id) }"
+            >{{ postStore.getBookmarkCount(post.id) }}</span
+          >
+        </div>
+        <!-- Share -->
+        <div class="flex items-center">
+          <IconsBadge size="smallPlus" color="blue">
+            <IconsShare />
+          </IconsBadge>
+        </div>
+      </div>
+    </MainSection>
+    <!-- reply -->
+    <div class="flex w-full gap-2 py-5">
+      <div class="h-min">
+        <UIAvatar :user_id="user.id" size="small" />
+      </div>
+      <div class="grow">
+        <MainPostTextarea v-model="reply" placeholder="Post your reply" />
+      </div>
+      <UIButton color="blue" :solid="true" @mousedown="publishReply(post.id)"
+        >Reply</UIButton
+      >
     </div>
   </div>
 </template>

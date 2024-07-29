@@ -71,7 +71,7 @@ const date = computed(() => {
 <template>
   <div
     v-if="postStore.getProfile(post?.user_id)"
-    class="flex h-max w-full text-gray-200 transition-all hover:cursor-pointer"
+    class="flex h-min w-full text-gray-200 transition-all hover:cursor-pointer"
     @mousedown="
       post.noForward ? null : ((target_post = post), clickPost($event))
     "
@@ -95,11 +95,11 @@ const date = computed(() => {
       </div>
     </div>
     <!-- right column -->
-    <div class="flex-grow">
+    <div class="flex w-[calc(100%-2.5rem)] flex-col">
       <!-- upper section -->
-      <div class="pl-2">
+      <div class="w-full pl-2">
         <!-- user info -->
-        <div class="flex h-10">
+        <div class="flex h-6">
           <div class="noForward flex items-center">
             <div class="font-bold hover:underline">
               <!-- name -->
@@ -139,7 +139,7 @@ const date = computed(() => {
           <!-- post action -->
           <div class="flex flex-col">
             <!-- icon -->
-            <div class="flex h-full items-center text-zinc-500">
+            <div class="flex h-min items-center text-zinc-500">
               <IconsBadge
                 size="small"
                 color="blue"
@@ -166,12 +166,16 @@ const date = computed(() => {
             </div>
           </div>
         </div>
+      </div>
+      <!-- middle section -->
+      <div class="w-full pl-2">
         <!-- content -->
-        <pre
+        <div
           v-if="post.type !== 'repost && post.text !== repost'"
-          class="w-min"
-          >{{ post.text }}</pre
+          class="w-full"
         >
+          <pre>{{ post.text }}</pre>
+        </div>
 
         <!-- repost / quote -->
         <div v-if="post.type === 'repost'" class="pt-3">
@@ -220,7 +224,7 @@ const date = computed(() => {
                   v-if="showMenu && type === 'repost' && menu_pid === post.id"
                   :id="`${post.id}_repost_menu`"
                   :pid="menu_pid"
-                  @repost="publishRepost()"
+                  @repost="publishRepost(menu_pid)"
                   @quote="
                     repost_pid = menu_pid;
                     showPopupPost = true;

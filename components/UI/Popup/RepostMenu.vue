@@ -32,7 +32,7 @@ const viewQuotes = {
 };
 const actionList = ref("");
 onMounted(() => {
-  repost_pid.value = props.pid;
+  // repost_pid.value = props.pid;
   actionList.value = [repost, quote, viewQuotes];
 });
 </script>

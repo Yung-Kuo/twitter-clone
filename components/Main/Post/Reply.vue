@@ -30,7 +30,7 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
 <template>
   <div
     v-if="postStore.getProfile(post?.user_id)"
-    class="flex h-max w-full cursor-pointer text-gray-200 transition-all"
+    class="flex h-min w-full text-gray-200 transition-all"
     :class="post.id"
     @mouseenter="target_post = post"
     @mouseover="!target_post ? (target_post = post) : null"
@@ -53,7 +53,7 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
       </div>
     </div>
     <!-- right column -->
-    <div class="flex-grow px-2">
+    <div class="w-[calc(100%-2.5rem)] px-2">
       <!-- upper section -->
       <div>
         <!-- user info -->
@@ -86,7 +86,7 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
         <!-- content -->
         <pre
           v-if="post.type !== 'repost && post.text !== repost'"
-          class="w-min"
+          class="w-full"
           >{{ post.text }}</pre
         >
         <div class="h-3"></div>

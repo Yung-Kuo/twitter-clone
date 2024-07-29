@@ -18,7 +18,9 @@ const props = defineProps({
 });
 const { post } = toRefs(props);
 
-const authorReplyId = ref(null);
+const authorReplyId = computed(() =>
+  replyStore.checkAuthorReplied(post.value?.id)
+);
 const authorReplyPost = computed(() => postStore.getPost(authorReplyId.value));
 onMounted(async () => {
   watchEffect(async () => {
@@ -28,9 +30,7 @@ onMounted(async () => {
     await postStore.fetchBookmarkCount(post.value?.id);
     await replyStore.fetchUserReplyStatus(post.value?.id);
     if (props.showAuthorReply) {
-      authorReplyId.value = await replyStore.fetchAuthorReplyStatus(
-        post.value?.id
-      );
+      await replyStore.fetchAuthorReplyStatus(post.value?.id);
     }
     // for quote tweet
     if (post.value?.reply_to && post?.type === "repost") {
@@ -79,10 +79,10 @@ const date = computed(() => {
 });
 </script>
 <template>
-  <MainSection>
+  <MainSection class="w-full">
     <!-- post -->
-    <MainPostHoverClickWrapper v-bind="post">
-      <div class="flex px-5 pt-5 text-zinc-200">
+    <MainPostHoverClickWrapper v-bind="post" class="w-full">
+      <div class="flex w-full px-5 pt-5 text-zinc-200">
         <!-- left column / avatar -->
         <div class="flex w-min flex-col">
           <!-- avatar for show post -->
@@ -106,99 +106,89 @@ const date = computed(() => {
           </div>
         </div>
         <!-- right column -->
-        <div class="flex h-min grow flex-col pb-2">
+        <div class="flex h-min w-[calc(100%-2.5rem)] flex-col pb-2">
           <!-- upper section -->
-          <div class="pl-2">
+          <div class="flex h-6 w-full pl-2">
             <!-- user info -->
-            <div class="flex h-10">
-              <div class="flex items-center">
-                <!-- name -->
+            <div class="flex h-min items-center">
+              <!-- name -->
+              <div
+                :id="`${post.id}_name`"
+                @mouseenter="showProfileCard($event.target.id, post.user_id)"
+                @mouseleave="hideProfileCard()"
+                class="noForward font-bold hover:underline"
+              >
+                <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
+                  <span class="noForward">
+                    {{ postStore.getName(post.user_id) }}
+                  </span>
+                </NuxtLink>
+              </div>
+              &ensp;
+              <div class="flex text-sm text-zinc-500">
+                <!-- username -->
                 <div
-                  :id="`${post.id}_name`"
+                  :id="`${post.id}_username`"
                   @mouseenter="showProfileCard($event.target.id, post.user_id)"
                   @mouseleave="hideProfileCard()"
-                  class="noForward font-bold hover:underline"
+                  class="noForward"
                 >
                   <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
-                    <span class="noForward">
-                      {{ postStore.getName(post.user_id) }}
-                    </span>
+                    <span> @{{ postStore.getUsername(post.user_id) }}</span>
                   </NuxtLink>
                 </div>
-                &ensp;
-                <div class="flex text-sm text-zinc-500">
-                  <!-- username -->
-                  <div
-                    :id="`${post.id}_username`"
-                    @mouseenter="
-                      showProfileCard($event.target.id, post.user_id)
-                    "
-                    @mouseleave="hideProfileCard()"
-                    class="noForward"
-                  >
-                    <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
-                      <span> @{{ postStore.getUsername(post.user_id) }}</span>
-                    </NuxtLink>
-                  </div>
+                <div class="flex">
                   <!-- timestamp -->
-                  <div>
-                    <pre> · {{ date }}</pre>
-                  </div>
+                  <pre> · {{ date }}</pre>
                   <!-- edited -->
-                  <div>
-                    <pre v-if="post.edited"> · edited</pre>
-                  </div>
+                  <pre v-if="post.edited"> · edited</pre>
                 </div>
               </div>
-              <!-- spacing -->
-              <div class="grow"></div>
-              <!-- post action -->
-              <div class="noForward flex flex-col">
-                <!-- icon -->
-                <div class="flex h-full items-center text-zinc-500">
-                  <IconsBadge
-                    size="small"
-                    color="blue"
-                    :id="`${post.id}_menu_icon`"
-                    @mousedown="
-                      toggleMenu(post.id, post.user_id, 'post_action')
+            </div>
+            <!-- spacing -->
+            <div class="grow"></div>
+            <!-- post action -->
+            <div class="noForward flex flex-col">
+              <!-- icon -->
+              <div class="flex h-min items-center text-zinc-500">
+                <IconsBadge
+                  size="small"
+                  color="blue"
+                  :id="`${post.id}_menu_icon`"
+                  @mousedown="toggleMenu(post.id, post.user_id, 'post_action')"
+                >
+                  <IconsMore />
+                </IconsBadge>
+              </div>
+              <!-- menu -->
+              <div class="relative -translate-x-52 translate-y-2">
+                <UIPopupTransition>
+                  <UIPopupMenu
+                    v-if="
+                      showMenu && type === 'post_action' && menu_pid === post.id
                     "
-                  >
-                    <IconsMore />
-                  </IconsBadge>
-                </div>
-                <!-- menu -->
-                <div class="relative -translate-x-52 translate-y-2">
-                  <UIPopupTransition>
-                    <UIPopupMenu
-                      v-if="
-                        showMenu &&
-                        type === 'post_action' &&
-                        menu_pid === post.id
-                      "
-                      :id="`${post.id}_post_action_menu`"
-                      :pid="menu_pid"
-                      :uid="menu_uid"
-                    ></UIPopupMenu>
-                  </UIPopupTransition>
-                </div>
+                    :id="`${post.id}_post_action_menu`"
+                    :pid="menu_pid"
+                    :uid="menu_uid"
+                  ></UIPopupMenu>
+                </UIPopupTransition>
               </div>
             </div>
           </div>
 
           <!-- middle section -->
-          <div class="pl-2">
+          <div class="flex w-full flex-col gap-3 pl-2">
             <!-- content -->
             <div
               v-if="post.type !== 'repost' || post.text !== post.reply_to"
-              class="w-min"
+              class="w-full whitespace-pre-line break-words"
             >
               <!-- text -->
               <pre>{{ post.text }}</pre>
             </div>
 
             <!-- repost / quote -->
-            <div v-if="post.type === 'repost'" class="noForward pt-3">
+            <div v-if="post.type === 'repost'" class="noForward">
               <MainPostRefer
                 v-bind="postStore.getPost(post.reply_to)"
               ></MainPostRefer>
@@ -249,7 +239,7 @@ const date = computed(() => {
                       "
                       :id="`${post.id}_repost_menu`"
                       :pid="menu_pid"
-                      @repost="publishRepost()"
+                      @repost="publishRepost(menu_pid)"
                       @quote="
                         repost_pid = menu_pid;
                         showPopupPost = true;
