@@ -1,3 +1,4 @@
+import { usePostStore } from "~/stores/post";
 export const useProfileStore = defineStore({
   id: "profile",
   state: () => ({
@@ -78,6 +79,7 @@ export const useProfileStore = defineStore({
     async updateProfile(data) {
       const client = useSupabaseClient();
       const user = useSupabaseUser();
+      const postStore = usePostStore();
 
       this.profile.id = user.value.id;
       this.profile.first_name = data.first_name;
@@ -99,6 +101,7 @@ export const useProfileStore = defineStore({
         this.error = error.message;
       } finally {
         this.loading = false;
+        postStore.setProfile(this.profile);
       }
     },
     async downloadAvatar(avatarUrl) {
@@ -158,5 +161,4 @@ export const useProfileStore = defineStore({
       this.error = "";
     },
   },
-  // persist: true,
 });

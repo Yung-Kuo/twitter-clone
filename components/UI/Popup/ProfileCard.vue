@@ -6,24 +6,19 @@ const { userId } = toRefs(props);
 const user = useSupabaseUser();
 const postStore = usePostStore();
 const followingStore = useFollowingStore();
-const userProfile = ref("");
+const userProfile = computed(() => postStore.getProfile(userId?.value));
 onMounted(async () => {
-  await fetchFollow();
+  watchEffect(async () => {
+    if (userId?.value) {
+      await followingStore.fetchUserFollowing(userId?.value);
+      await followingStore.fetchUserFollowers(userId?.value);
+    }
+  });
 });
-watch(userId, async () => {
-  await fetchFollow();
-});
-async function fetchFollow() {
-  if (userId.value) {
-    userProfile.value = postStore.getProfile(userId?.value);
-    await followingStore.fetchUserFollowing(userId?.value);
-    await followingStore.fetchUserFollowers(userId?.value);
-  }
-}
 </script>
 <template>
   <div
-    class="invisible absolute z-30 h-80 w-72 rounded-xl bg-black p-4 text-white shadow-3xl shadow-zinc-700 transition-all duration-100 md:visible"
+    class="invisible absolute z-30 h-80 w-72 rounded-2xl bg-black p-4 text-white shadow-3xl shadow-zinc-700 transition-all duration-100 md:visible"
   >
     <div class="flex justify-between">
       <NuxtLink :to="`/${userProfile?.username}`">

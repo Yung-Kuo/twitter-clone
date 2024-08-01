@@ -12,7 +12,7 @@ const menuGetRect = inject("menuGetRect", () => null);
     <div
       id="banner"
       class="absolute left-0 top-0 z-20 flex h-14 w-full bg-transparent backdrop-blur-md"
-      :class="{ 'border-b border-zinc-800': $slots.mainBanner }"
+      :class="{ 'border-b-2 border-zinc-800': $slots.mainBanner }"
     >
       <!-- for index page -->
       <slot name="mainBanner" />
@@ -37,7 +37,7 @@ const menuGetRect = inject("menuGetRect", () => null);
     <!-- main section -->
     <div
       id="center"
-      class="scrollbar h-full w-full overflow-y-scroll pt-14"
+      class="scrollbar h-full w-full overflow-y-scroll py-14"
       @wheel="
         handleWheelEvent($event, 'center');
         getRect();

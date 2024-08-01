@@ -65,6 +65,7 @@ const {
 const { target_post, clickPost, hoverPost } = inject("clickPost");
 // action buttons
 const clickReply = inject("clickReply");
+const { pid, reply, publishReply } = inject("popupReply");
 const { clickLike, clickBookmark } = useLikeBookmark();
 
 // timestamp
@@ -93,8 +94,7 @@ const date = computed(() => {
             class="noForward rounded-full"
           >
             <NuxtLink :to="`/${postStore.getUsername(post?.user_id)}`">
-              <UIAvatar :user_id="post?.user_id" size="small" class="noForward">
-              </UIAvatar>
+              <UIAvatar :user_id="post?.user_id" size="small" class="noForward" />
             </NuxtLink>
           </div>
           <!-- thread -->
@@ -108,7 +108,7 @@ const date = computed(() => {
         <!-- right column -->
         <div class="flex h-min w-[calc(100%-2.5rem)] flex-col pb-2">
           <!-- upper section -->
-          <div class="flex h-6 w-full pl-2">
+          <div class="flex h-6 w-full items-center pl-2">
             <!-- user info -->
             <div class="flex h-min items-center">
               <!-- name -->
@@ -205,7 +205,10 @@ const date = computed(() => {
                   size="small"
                   color="blue"
                   :clicked="replyStore.checkReplied(post.id)"
-                  @mousedown="clickReply(post.id)"
+                  @mousedown="
+                    pid = post.id;
+                    clickReply(post.id);
+                  "
                 >
                   <IconsReply />
                 </IconsBadge>

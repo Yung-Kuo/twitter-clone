@@ -97,73 +97,71 @@ const date = computed(() => {
     <!-- right column -->
     <div class="flex w-[calc(100%-2.5rem)] flex-col">
       <!-- upper section -->
-      <div class="w-full pl-2">
+      <div class="flex h-6 w-full items-center pl-2">
         <!-- user info -->
-        <div class="flex h-6">
-          <div class="noForward flex items-center">
-            <div class="font-bold hover:underline">
-              <!-- name -->
-              <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
-                <div
-                  :id="`${post.id}_name`"
-                  @mouseenter="showProfileCard($event.target.id, post.user_id)"
-                  @mouseleave="hideProfileCard()"
-                >
-                  <span>
-                    {{ postStore.getName(post.user_id) }}
-                  </span>
-                </div>
-              </NuxtLink>
-            </div>
-            &ensp;
-            <div class="flex text-sm text-zinc-500">
-              <!-- username -->
-              <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
-                <div
-                  :id="`${post.id}_username`"
-                  @mouseenter="showProfileCard($event.target.id, post.user_id)"
-                  @mouseleave="hideProfileCard()"
-                >
-                  <span> @{{ postStore.getUsername(post.user_id) }}</span>
-                </div>
-              </NuxtLink>
-              <!-- timestamp -->
-              <div class="flex">
-                <pre> · {{ date }}</pre>
-                <pre v-if="post.edited"> · edited</pre>
+        <div class="noForward flex items-center">
+          <div class="font-bold hover:underline">
+            <!-- name -->
+            <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
+              <div
+                :id="`${post.id}_name`"
+                @mouseenter="showProfileCard($event.target.id, post.user_id)"
+                @mouseleave="hideProfileCard()"
+              >
+                <span>
+                  {{ postStore.getName(post.user_id) }}
+                </span>
               </div>
+            </NuxtLink>
+          </div>
+          &ensp;
+          <div class="flex text-sm text-zinc-500">
+            <!-- username -->
+            <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
+              <div
+                :id="`${post.id}_username`"
+                @mouseenter="showProfileCard($event.target.id, post.user_id)"
+                @mouseleave="hideProfileCard()"
+              >
+                <span> @{{ postStore.getUsername(post.user_id) }}</span>
+              </div>
+            </NuxtLink>
+            <!-- timestamp -->
+            <div class="flex">
+              <pre> · {{ date }}</pre>
+              <pre v-if="post.edited"> · edited</pre>
             </div>
           </div>
-          <!-- spacing -->
-          <div class="grow"></div>
-          <!-- post action -->
-          <div class="flex flex-col">
-            <!-- icon -->
-            <div class="flex h-min items-center text-zinc-500">
-              <IconsBadge
-                size="small"
-                color="blue"
-                :id="`${post.id}_menu_icon`"
-                @mousedown="toggleMenu(post.id, post.user_id, 'post_action')"
+        </div>
+        <!-- spacing -->
+        <div class="grow"></div>
+        <!-- post action -->
+        <div class="flex flex-col">
+          <!-- icon -->
+          <div class="flex h-min items-center text-zinc-500">
+            <IconsBadge
+              size="small"
+              color="blue"
+              :id="`${post.id}_menu_icon`"
+              @mousedown="toggleMenu(post.id, post.user_id, 'post_action')"
+              class="noForward"
+            >
+              <IconsMore />
+            </IconsBadge>
+          </div>
+          <!-- menu -->
+          <div class="relative -translate-x-52 translate-y-2">
+            <UIPopupTransition>
+              <UIPopupMenu
+                v-if="
+                  showMenu && type === 'post_action' && menu_pid === post.id
+                "
+                :id="`${post.id}_post_action_menu`"
+                :pid="menu_pid"
+                :uid="menu_uid"
                 class="noForward"
-              >
-                <IconsMore />
-              </IconsBadge>
-            </div>
-            <!-- menu -->
-            <div class="relative -translate-x-52 translate-y-2">
-              <UIPopupTransition>
-                <UIPopupMenu
-                  v-if="
-                    showMenu && type === 'post_action' && menu_pid === post.id
-                  "
-                  :id="`${post.id}_post_action_menu`"
-                  :pid="menu_pid"
-                  :uid="menu_uid"
-                  class="noForward"
-                ></UIPopupMenu>
-              </UIPopupTransition>
-            </div>
+              ></UIPopupMenu>
+            </UIPopupTransition>
           </div>
         </div>
       </div>

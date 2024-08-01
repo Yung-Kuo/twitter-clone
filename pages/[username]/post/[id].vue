@@ -106,7 +106,7 @@ onMounted(async () => {
     }
     if (!post.value) await postStore.fetchOnePost(route.params.id);
     if (!replyList.value) await replyStore.fetchReplies(post.value.id);
-    pid.value = post.value.id;
+    // pid.value = post.value.id;
     // reply thread
     if (post.value.type === "reply" && post.value.reply_to) {
       if (await traverseThread()) scrollToTarget();
@@ -227,7 +227,7 @@ function scrollToTarget() {
       </template>
       <template #main>
         <!-- upper section -->
-        <MainSection class="px-5 py-2">
+        <MainSection class="px-5 pt-2">
           <!-- reply thread -->
           <ul v-if="thread.length">
             <li v-for="threadPost in thread" :key="threadPost.id">
@@ -239,7 +239,7 @@ function scrollToTarget() {
           <MainPostSingle v-bind="post"></MainPostSingle>
         </MainSection>
         <!-- lower section -->
-        <div class="h-2/3">
+        <div class="min-h-[40rem]">
           <!-- replies -->
           <ul>
             <li v-for="post in replyList" :key="post.id">
@@ -249,6 +249,6 @@ function scrollToTarget() {
         </div>
       </template>
     </MainCenter>
-    <MainRight />
+    <MainRight :user_id="post.user_id" />
   </div>
 </template>

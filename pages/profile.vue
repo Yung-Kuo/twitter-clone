@@ -42,21 +42,21 @@ provide("menuGetRect", menuGetRect);
 provide("toggleAccountMenu", { showMenu, type, menuGetRect });
 
 onMounted(async () => {
-  watchEffect(() => {
+  watchEffect(async () => {
     if (!user.value) {
       navigateTo("/login");
     }
-  });
-  if (store.noProfile) {
-    await store.fetchProfile();
-    if (getError.value) {
-      alertMode.value = "error";
-      alertMessage.value = getError.value;
-      hasError();
+    if (store.noProfile) {
+      await store.fetchProfile();
+      if (getError.value) {
+        alertMode.value = "error";
+        alertMessage.value = getError.value;
+        hasError();
+      }
     }
-  }
-  Object.assign(userProfile, store.getProfile);
-  if (!userProfile.username) firstEdit.value = true;
+    Object.assign(userProfile, store.getProfile);
+    if (!userProfile.username) firstEdit.value = true;
+  });
 });
 
 const userProfile = reactive({});

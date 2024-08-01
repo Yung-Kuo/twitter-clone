@@ -120,7 +120,7 @@ const bookmarkList = computed(() => postStore.getBookmarkPosts);
       <!-- Alert -->
       <UIAlert :mode="alertMode" :message="alertMessage" />
       <!-- Profile Card -->
-      <UIPopupTransition>
+      <UIPopupTransition leave-active-class="delay-200">
         <UIPopupProfileCard
           v-show="profileCardVis"
           id="profileCard"

@@ -5,6 +5,10 @@ export default function () {
   const pid = ref("");
   const reply = ref("");
 
+  watch(pid, () => {
+    reply.value = "";
+  });
+
   function clickReply(post_id) {
     pid.value = post_id;
     showPopupReply.value = true;

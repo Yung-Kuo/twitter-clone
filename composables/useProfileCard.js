@@ -28,10 +28,6 @@ export default function () {
             rect.left + rect.width / 2 - cardRect.width / 2
           }px`;
         }
-        console.log(
-          "card out of screen: ",
-          cardRect.top + cardRect.height > centerRect.height
-        );
       });
     }
   }

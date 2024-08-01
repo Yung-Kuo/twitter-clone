@@ -18,7 +18,8 @@ html {
   background-color: black;
 }
 pre {
-  white-space: break-spaces;
+  /* white-space: break-spaces; */
+  white-space: pre-wrap;
   word-wrap: break-word;
 }
 </style>

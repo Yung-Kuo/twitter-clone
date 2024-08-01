@@ -17,7 +17,7 @@ const post = computed(() => postStore.getPost(pid.value));
       <!-- reply -->
       <div class="flex">
         <div class="h-min w-min">
-          <UIAvatar :user_id="post?.user_id" size="small"></UIAvatar>
+          <UIAvatar :user_id="user.id" size="small"></UIAvatar>
         </div>
         <div class="grow">
           <MainPostTextarea v-model="reply" placeholder="Post your reply" />

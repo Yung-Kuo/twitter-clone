@@ -1,7 +1,21 @@
 <script setup>
+import { usePostStore } from "~/stores/post";
+const postStore = usePostStore();
+
 const handleWheelEvent = inject("handleWheelEvent");
 const getRect = inject("getRect");
 const menuGetRect = inject("menuGetRect", () => null);
+
+const props = defineProps({
+  user_id: {
+    type: String,
+    default: null,
+  },
+});
+const userProfileList = computed(() => {
+  if (props?.user_id) return null;
+  else return postStore.getProfileList;
+});
 
 const search = ref("");
 const clicked = ref(false);
@@ -31,7 +45,7 @@ function focusoutSearchBar() {
         tabindex="0"
         @focusin="focusinSearchBar()"
         @focusout="focusoutSearchBar()"
-        class="flex h-12 w-full items-center gap-3 rounded-full border-2 border-zinc-800 bg-zinc-800 px-3 text-zinc-500 focus-within:border-sky-500 focus-within:bg-black"
+        class="flex h-12 w-full items-center gap-2 rounded-full border-2 border-zinc-800 bg-zinc-800 px-3 text-zinc-500 focus-within:border-sky-500 focus-within:bg-black"
       >
         <div class="flex-none">
           <IconsBadge size="xsmall" :noHover="true">
@@ -57,11 +71,27 @@ function focusoutSearchBar() {
         </div>
       </div>
       <div
-        class="h-36 w-full rounded-2xl border-2 border-zinc-800 px-4 py-3 text-zinc-200"
+        class="min-h-[8rem] w-full rounded-2xl border-2 border-zinc-800 px-4 py-3 text-zinc-200"
       >
-        <h1 class="text-xl font-bold">Relevant People</h1>
+        <div v-if="props.user_id" class="flex flex-col gap-4">
+          <h1 class="text-xl font-bold">Relevant People</h1>
+          <UIUserInfo :user_id="props.user_id" />
+        </div>
+        <div v-else class="flex flex-col gap-4">
+          <h1 class="text-xl font-bold">You might like</h1>
+          <ul class="flex flex-col gap-4">
+            <li v-for="userProfile in userProfileList">
+              <UIUserInfoCompact :user_id="userProfile.id" />
+            </li>
+          </ul>
+        </div>
       </div>
-      <div class="h-80 w-full rounded-2xl border-2 border-zinc-800"></div>
+
+      <div
+        class="flex min-h-[24rem] w-full flex-col gap-4 rounded-2xl border-2 border-zinc-800 px-4 py-3 text-zinc-200"
+      >
+        <h1 class="text-xl font-bold">Trends for you</h1>
+      </div>
       <div class="h-80 w-full rounded-2xl border-2 border-zinc-800"></div>
     </div>
   </div>

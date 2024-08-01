@@ -19,7 +19,7 @@ const post = defineProps({
 
 onMounted(async () => {
   watchEffect(async () => {
-    pid.value = post.id;
+    // pid.value = post.id;
     await replyStore.fetchReplies(post.id);
     await replyStore.fetchReplyCount(post.id);
     // await postStore.fetchLikes(user.value.id);
@@ -31,6 +31,7 @@ onMounted(async () => {
     }
     await replyStore.fetchUserReplyStatus(post.id);
   });
+  // pid.value = post.id;
 });
 
 // profile card
@@ -190,7 +191,7 @@ const date = computed(() => {
     <MainSection>
       <div class="flex h-full items-center justify-between py-2 text-zinc-500">
         <!-- Reply -->
-        <div class="flex w-12 items-center">
+        <div class="flex -translate-x-0 items-center">
           <IconsBadge
             size="smallPlus"
             color="blue"
@@ -208,7 +209,7 @@ const date = computed(() => {
         </div>
         <!-- Repost -->
         <div class="flex">
-          <div class="flex w-12 items-center">
+          <div class="flex items-center">
             <IconsBadge
               size="smallPlus"
               color="green"
@@ -238,7 +239,7 @@ const date = computed(() => {
           </div>
         </div>
         <!-- Like -->
-        <div class="flex w-12 items-center">
+        <div class="flex items-center">
           <IconsBadge
             size="smallPlus"
             color="red"
@@ -254,7 +255,7 @@ const date = computed(() => {
           >
         </div>
         <!-- Bookmark -->
-        <div class="flex w-12 items-center">
+        <div class="flex items-center">
           <IconsBadge
             size="smallPlus"
             color="blue"
@@ -270,7 +271,7 @@ const date = computed(() => {
           >
         </div>
         <!-- Share -->
-        <div class="flex items-center">
+        <div class="flex translate-x-1 items-center">
           <IconsBadge size="smallPlus" color="blue">
             <IconsShare />
           </IconsBadge>
@@ -282,12 +283,18 @@ const date = computed(() => {
       <div class="h-min">
         <UIAvatar :user_id="user.id" size="small" />
       </div>
-      <div class="grow">
-        <MainPostTextarea v-model="reply" placeholder="Post your reply" />
+      <div class="grow" @mousedown="pid = post.id">
+        <MainPostTextarea
+          v-model="reply"
+          placeholder="Post your reply"
+          :freeze="pid !== post.id"
+        />
       </div>
-      <UIButton color="blue" :solid="true" @mousedown="publishReply(post.id)"
-        >Reply</UIButton
-      >
+      <div>
+        <UIButton color="blue" :solid="true" @mousedown="publishReply(post.id)"
+          >Reply</UIButton
+        >
+      </div>
     </div>
   </div>
 </template>

@@ -178,7 +178,7 @@ const postList = computed(() => {
       <!-- Alert -->
       <UIAlert :mode="alertMode" :message="alertMessage" />
       <!-- Profile Card -->
-      <UIPopupTransition>
+      <UIPopupTransition leave-active-class="delay-200">
         <UIPopupProfileCard
           v-show="profileCardVis"
           id="profileCard"
@@ -243,8 +243,11 @@ const postList = computed(() => {
             {{ userProfile?.first_name }} {{ userProfile?.last_name }}
           </h1>
           <h3 class="h-1/2 text-sm text-gray-500">
-            {{ postStore.getUserPosts(userProfile.id).length }} post{{
-              postStore.getUserPosts(userProfile.id).length > 1 ? "s" : ""
+            {{ postStore.getUserPosts(userProfile.id).length }}
+            {{
+              postStore.getUserPosts(userProfile.id).length > 1
+                ? "posts"
+                : "post"
             }}
           </h3>
         </div>
@@ -253,7 +256,7 @@ const postList = computed(() => {
         <!-- user profile -->
         <MainSection>
           <!-- profile background image -->
-          <div class="h-56 w-full bg-zinc-800"></div>
+          <div class="h-52 w-full bg-zinc-800"></div>
           <!-- avatar -->
           <div
             class="relative -top-16 left-5 z-10 h-min w-min rounded-full ring-4 ring-black"
@@ -263,7 +266,7 @@ const postList = computed(() => {
           <!-- lower section -->
           <div class="relative -top-32 w-full p-5 text-gray-200">
             <!-- action buttons -->
-            <div class="top-16 flex h-10 w-full justify-end">
+            <div class="relative -top-4 flex h-10 w-full justify-end">
               <UIButtonFollow :uid="userProfile?.id"></UIButtonFollow>
             </div>
             <!-- user info -->
@@ -276,8 +279,10 @@ const postList = computed(() => {
               <h3 v-show="userProfile" class="text-sm text-gray-500">
                 @{{ userProfile?.username }}
               </h3>
-              <!-- introduction -->
-              <p class="text-gray-200">This is my introduction.</p>
+              <!-- description -->
+              <div class="py-3">
+                <pre class="text-gray-200">{{ userProfile?.description }}</pre>
+              </div>
               <!-- following -->
               <span>{{ followingStore.getUserFollowing.length }}&nbsp</span>
               <span class="pr-5 text-gray-500">Following</span>
@@ -336,7 +341,7 @@ const postList = computed(() => {
           </div>
         </MainSection>
         <!-- post list -->
-        <div class="min-h-screen">
+        <div class="min-h-[40rem]">
           <ul>
             <li v-for="post in postList" :key="post.id">
               <MainPost :post="post"></MainPost>

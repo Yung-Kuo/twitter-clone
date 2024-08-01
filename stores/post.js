@@ -66,13 +66,22 @@ export const usePostStore = defineStore({
       return (uid) => state.userProfile[uid]?.username;
     },
     getName(state) {
-      return (uid) =>
-        state.userProfile[uid]?.first_name +
-        " " +
-        state.userProfile[uid]?.last_name;
+      return (uid) => {
+        if (!uid) return null;
+        else {
+          return (
+            state.userProfile[uid]?.first_name +
+            " " +
+            state.userProfile[uid]?.last_name
+          );
+        }
+      };
     },
     getProfile(state) {
       return (uid) => state.userProfile[uid];
+    },
+    getProfileList(state) {
+      return state.userProfile;
     },
     getBookmarks(state) {
       return state.bookmarks;
@@ -364,6 +373,9 @@ export const usePostStore = defineStore({
           // console.log(this.userAvatars[uid]);
         }
       }
+    },
+    setProfile(data) {
+      this.userProfile[data.id] = data;
     },
     async fetchUserProfile(uid) {
       const client = useSupabaseClient();

@@ -55,7 +55,7 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
     <!-- right column -->
     <div class="w-[calc(100%-2.5rem)] px-2">
       <!-- upper section -->
-      <div>
+      <div class="flex flex-col">
         <!-- user info -->
         <div class="flex w-max items-center">
           <div class="font-bold hover:underline">
@@ -84,16 +84,17 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
           </div>
         </div>
         <!-- content -->
-        <pre
-          v-if="post.type !== 'repost && post.text !== repost'"
-          class="w-full"
-          >{{ post.text }}</pre
-        >
-        <div class="h-3"></div>
+        <div>
+          <pre
+            v-if="post.type !== 'repost && post.text !== repost'"
+            class="w-full"
+            >{{ post.text }}</pre
+          >
+        </div>
         <!-- repost / quote -->
         <div
           v-if="post.type === 'repost'"
-          class="max-h-[18em] overflow-y-scroll"
+          class="max-h-[20rem] overflow-y-scroll pt-3"
         >
           <MainPostRefer
             v-bind="postStore.getPost(post.reply_to)"
@@ -101,17 +102,14 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
         </div>
       </div>
       <!-- lower section -->
-      <div>
+      <div class="noForward cursor-default py-3">
         <!-- replying to -->
-        <div class="noForward cursor-default py-3">
-          <span class="text-zinc-500">Replying to </span>
-
-          <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
-            <span class="text-sky-500"
-              >@{{ postStore.getUsername(post.user_id) }}</span
-            >
-          </NuxtLink>
-        </div>
+        <span class="text-zinc-500">Replying to </span>
+        <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
+          <span class="text-sky-500"
+            >@{{ postStore.getUsername(post.user_id) }}</span
+          >
+        </NuxtLink>
       </div>
     </div>
   </div>

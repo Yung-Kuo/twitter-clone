@@ -20,7 +20,7 @@ const imgSize = ref(small);
 const xsmall = "h-6 w-6";
 const small = "h-10 w-10";
 const medium = "h-16 w-16";
-const large = "h-40 w-40";
+const large = "h-36 w-36";
 
 onMounted(async () => {
   if (!size.value) imgSize.value = small;
