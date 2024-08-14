@@ -48,7 +48,8 @@ provide("useToggleMenu", {
   menuGetRect,
 });
 provide("toggleMenu", toggleMenu);
-provide("toggleAccountMenu", { showMenu, type, menuGetRect });
+provide("menuGetRect", menuGetRect);
+provide("toggleAccountMenu", { showMenu, type, toggleMenu, menuGetRect });
 watch(icon_id, () => {
   nextTick();
   if (!showMenu.value) {

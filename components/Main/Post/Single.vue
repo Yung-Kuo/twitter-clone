@@ -62,6 +62,7 @@ const { pid, reply, publishReply } = inject("popupReply");
 const { target_post, clickPost, hoverPost } = inject("clickPost");
 // action button
 const clickReply = inject("clickReply");
+const showPopupReply = inject("showPopupReply");
 const { clickLike, clickBookmark } = useLikeBookmark();
 
 // timestamp
@@ -145,7 +146,7 @@ const date = computed(() => {
             </IconsBadge>
           </div>
           <!-- menu -->
-          <div class="relative -translate-x-52 translate-y-2">
+          <div class="relative z-10 -translate-x-52 translate-y-2">
             <UIPopupTransition>
               <UIPopupMenu
                 v-if="
@@ -271,7 +272,7 @@ const date = computed(() => {
           >
         </div>
         <!-- Share -->
-        <div class="flex translate-x-1 items-center">
+        <div class="relative z-0 flex translate-x-1 items-center">
           <IconsBadge size="smallPlus" color="blue">
             <IconsShare />
           </IconsBadge>
@@ -287,7 +288,7 @@ const date = computed(() => {
         <MainPostTextarea
           v-model="reply"
           placeholder="Post your reply"
-          :freeze="pid !== post.id"
+          :freeze="pid !== post.id || showPopupReply"
         />
       </div>
       <div>

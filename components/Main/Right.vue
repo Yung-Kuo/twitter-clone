@@ -30,7 +30,7 @@ function focusoutSearchBar() {
 <template>
   <div
     id="right"
-    class="invisible h-full w-0 overflow-y-scroll border-l-2 border-zinc-800 md:visible md:w-1/6 md:p-5 xl:w-3/10"
+    class="hidden h-full w-0 overflow-y-scroll border-l-2 border-zinc-800 md:visible md:block md:w-1/6 md:p-5 xl:w-3/10"
     @wheel="
       handleWheelEvent($event, 'right');
       getRect();
@@ -71,7 +71,7 @@ function focusoutSearchBar() {
         </div>
       </div>
       <div
-        class="min-h-[8rem] w-full rounded-2xl border-2 border-zinc-800 px-4 py-3 text-zinc-200"
+        class="min-h-[8rem] w-full rounded-2xl border-2 border-zinc-800 p-4 pt-3 text-zinc-200"
       >
         <div v-if="props.user_id" class="flex flex-col gap-4">
           <h1 class="text-xl font-bold">Relevant People</h1>

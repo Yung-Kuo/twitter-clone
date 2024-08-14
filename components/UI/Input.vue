@@ -1,25 +1,34 @@
 <script setup>
 const props = defineProps([
-  "modelValue",
   "id",
   "type",
   "flag",
   "inputOverwrite",
   "firstEdit",
 ]);
-const { modelValue, id, type, flag, inputOverwrite, firstEdit } = toRefs(props);
-const emit = defineEmits(["update:modelValue", "edited", "updateValid"]);
+const { id, type, flag, inputOverwrite, firstEdit } = toRefs(props);
+const text = defineModel("text");
+// const flag = defineModel('flag');
+const emit = defineEmits(["update:text", "edited", "updateValid"]);
+
+onMounted(() => {
+  if (text.value) {
+    inputFocusFlag.value = true;
+  } else {
+    inputFocusFlag.value = false;
+  }
+});
 
 // input invalid class
 const inputValidClass = [
-  "border-gray-400",
+  "border-zinc-600",
   "focus-within:border-sky-500",
   "focus-within:ring-1",
   "focus-within:ring-sky-500",
 ];
 const inputInvalidClass = ["border-orange-400", "ring-1", "ring-orange-400"];
 const inputValidFlag = ref(true);
-watch(modelValue, (curVal) => {
+watch(text, (curVal) => {
   // unvalid
   if (!curVal) inputValidFlag.value = false;
   // focus
@@ -44,7 +53,6 @@ watch(modelValue, (curVal) => {
       inputValidFlag.value = true;
     }
   }
-  emit("update:modelValue", curVal);
   emit("updateValid", inputValidFlag.value);
 });
 
@@ -66,7 +74,7 @@ function inputFocusIn() {
   inputFocusFlag.value = true;
 }
 function inputFocusOut() {
-  if (modelValue.value) {
+  if (text.value) {
     inputFocusFlag.value = true;
   } else {
     inputFocusFlag.value = false;
@@ -79,7 +87,7 @@ function inputFocusOut() {
     tabindex="0"
     @focusin="inputFocusIn"
     @focusout="inputFocusOut"
-    class="grid h-16 w-full grid-cols-1 grid-rows-1 overflow-hidden rounded-md border-2 border-zinc-600 focus-within:outline-none sm:h-20"
+    class="grid h-16 w-full grid-cols-1 grid-rows-1 overflow-hidden rounded-md border-2 transition-all focus-within:outline-transparent sm:h-20"
     :class="inputValidFlag ? inputValidClass : inputInvalidClass"
   >
     <div
@@ -92,10 +100,9 @@ function inputFocusOut() {
       <input
         :type="type"
         :id="id"
-        :value="modelValue"
-        @input="$emit('update:modelValue', $event.target.value)"
+        v-model="text"
         @keydown="stopInputOverwrite"
-        class="h-full w-full bg-black text-xl text-gray-200 focus:outline-none sm:text-2xl md:text-3xl"
+        class="h-full w-full bg-black text-xl text-gray-200 focus:outline focus:outline-transparent sm:text-2xl md:text-3xl"
       />
     </div>
   </div>

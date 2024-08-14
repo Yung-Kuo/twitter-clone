@@ -1,5 +1,5 @@
 <template>
-  <div class="h-min">
+  <div class="h-min text-xl text-zinc-200">
     <IconsBadge class="xl:hidden">
       <slot name="sm-menu" />
     </IconsBadge>

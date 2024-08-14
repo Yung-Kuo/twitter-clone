@@ -52,19 +52,10 @@ const date = computed(() => {
 });
 </script>
 <template>
-  <div
-    v-if="postStore.getProfile(post?.user_id)"
-    @mouseenter="
-      target_post = post;
-      hoverPost($event);
-    "
-    @mouseover="!target_post ? ((target_post = post), hoverPost($event)) : null"
-    @mouseleave="
-      hoverPost($event, target_post === post ? (target_post = null) : null)
-    "
-    @mousedown="clickPost($event)"
-    class="stopHere flex w-full cursor-pointer flex-col gap-2 rounded-2xl border-2 border-zinc-800 bg-black p-3 text-zinc-200 transition-colors duration-200"
-    :class="post.id"
+  <MainPostHoverClickWrapper
+    :post="post"
+    hasRing
+    class="flex w-full cursor-pointer flex-col gap-2 rounded-2xl border-2 border-zinc-800 bg-black p-3 text-zinc-200 transition-colors duration-200"
   >
     <!-- upper section -->
     <div class="flex h-min w-full">
@@ -122,5 +113,5 @@ const date = computed(() => {
         ></MainPostRefer>
       </div>
     </div>
-  </div>
+  </MainPostHoverClickWrapper>
 </template>

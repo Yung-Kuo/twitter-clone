@@ -33,7 +33,11 @@ onMounted(async () => {
       await replyStore.fetchAuthorReplyStatus(post.value?.id);
     }
     // for quote tweet
-    if (post.value?.reply_to && post?.type === "repost") {
+    if (
+      post.value?.reply_to &&
+      post.value?.type === "repost" &&
+      !postStore.getPost(post.value.reply_to)
+    ) {
       await postStore.fetchOnePost(post.value?.reply_to);
     }
   });
@@ -82,21 +86,21 @@ const date = computed(() => {
 <template>
   <MainSection class="w-full">
     <!-- post -->
-    <MainPostHoverClickWrapper v-bind="post" class="w-full">
+    <MainPostHoverClickWrapper :post="post">
       <div class="flex w-full px-5 pt-5 text-zinc-200">
         <!-- left column / avatar -->
         <div class="flex w-min flex-col">
           <!-- avatar for show post -->
-          <div
-            :id="`${post.id}_avatar`"
-            @mouseenter="showProfileCard($event.target.id, post.user_id)"
-            @mouseleave="hideProfileCard()"
-            class="noForward rounded-full"
-          >
-            <NuxtLink :to="`/${postStore.getUsername(post?.user_id)}`">
-              <UIAvatar :user_id="post?.user_id" size="small" class="noForward" />
-            </NuxtLink>
-          </div>
+          <NuxtLink :to="`/${postStore.getUsername(post?.user_id)}`">
+            <UIAvatar
+              :id="`${post.id}_avatar`"
+              :user_id="post?.user_id"
+              size="small"
+              class="noForward"
+              @mouseenter="showProfileCard($event.target.id, post.user_id)"
+              @mouseleave="hideProfileCard()"
+            />
+          </NuxtLink>
           <!-- thread -->
           <div
             v-if="props.showAuthorReply && authorReplyId"
@@ -108,9 +112,9 @@ const date = computed(() => {
         <!-- right column -->
         <div class="flex h-min w-[calc(100%-2.5rem)] flex-col pb-2">
           <!-- upper section -->
-          <div class="flex h-6 w-full items-center pl-2">
+          <div class="flex h-5 w-full items-center pl-2">
             <!-- user info -->
-            <div class="flex h-min items-center">
+            <div class="flex h-min items-center leading-tight">
               <!-- name -->
               <div
                 :id="`${post.id}_name`"
@@ -196,7 +200,10 @@ const date = computed(() => {
           </div>
 
           <!-- lower section -->
-          <div class="flex justify-between pt-2 text-zinc-500">
+          <div
+            class="flex justify-between pt-2 text-zinc-500"
+            :class="{ 'pb-2': props.showAuthorReply && authorReplyId }"
+          >
             <!-- action buttons -->
             <div class="flex grow justify-between">
               <!-- Reply -->
@@ -298,33 +305,28 @@ const date = computed(() => {
       </div>
     </MainPostHoverClickWrapper>
     <!-- if the author has replied -->
-    <UIPopupTransition>
-      <MainPostHoverClickWrapper
+    <div class="noForward">
+      <MainPostReplyThread
+        :post="authorReplyPost"
         v-if="props.showAuthorReply && authorReplyId"
-        v-bind="authorReplyPost"
-      >
-        <div class="px-5">
-          <MainPostReplyThread v-bind="authorReplyPost" noForward />
+        class="px-5"
+      />
+    </div>
+    <MainPostHoverClickWrapper
+      v-if="props.showAuthorReply && authorReplyId"
+      :post="post"
+    >
+      <div class="flex px-5">
+        <div class="flex w-10 flex-col items-center gap-2 py-2">
+          <span class="w-0 border border-zinc-800" />
+          <span class="w-0 border border-zinc-800" />
+          <span class="w-0 border border-zinc-800" />
         </div>
-      </MainPostHoverClickWrapper>
-    </UIPopupTransition>
-    <UIPopupTransition>
-      <MainPostHoverClickWrapper
-        v-if="props.showAuthorReply && authorReplyId"
-        v-bind="post"
-      >
-        <div class="flex px-5">
-          <div class="flex w-10 flex-col items-center gap-2 py-2">
-            <span class="w-0 border border-zinc-800" />
-            <span class="w-0 border border-zinc-800" />
-            <span class="w-0 border border-zinc-800" />
-          </div>
-          <div class="flex grow items-center">
-            <span class="text-sky-500">Show replies</span>
-          </div>
+        <div class="flex grow items-center">
+          <span class="text-sky-500">Show replies</span>
         </div>
-      </MainPostHoverClickWrapper>
-    </UIPopupTransition>
+      </div>
+    </MainPostHoverClickWrapper>
   </MainSection>
 </template>
 

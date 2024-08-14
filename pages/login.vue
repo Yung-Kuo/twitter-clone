@@ -121,8 +121,7 @@ function validateEmail() {
         <UIInput
           type="email"
           id="email"
-          :model-value="email"
-          @update:model-value="(value) => (email = value)"
+          v-model:text="email"
           :flag="emailValidFlag"
           @updateValid="(value) => (emailValidFlag = value)"
           >Email</UIInput
@@ -132,8 +131,7 @@ function validateEmail() {
         <UIInput
           type="password"
           id="password"
-          :model-value="password"
-          @update:model-value="(value) => (password = value)"
+          v-model:text="password"
           :flag="passwordValidFlag"
           @updateValid="(value) => (passwordValidFlag = value)"
           >Password</UIInput

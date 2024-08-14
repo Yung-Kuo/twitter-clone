@@ -51,7 +51,7 @@ provide("useToggleMenu", {
 });
 provide("toggleMenu", toggleMenu);
 provide("menuGetRect", menuGetRect);
-provide("toggleAccountMenu", { showMenu, type, menuGetRect });
+provide("toggleAccountMenu", { showMenu, type, toggleMenu, menuGetRect });
 watch(icon_id, () => {
   nextTick();
   if (!showMenu.value) {
@@ -212,18 +212,16 @@ async function fetchNewPost() {
           <!-- For you -->
           <NuxtLink>
             <UINavTab
-              tabName="For You"
-              :activeTab="activeTab"
-              @changeTab="(tab) => (activeTab = tab)"
+              :isActive="activeTab === 'For You'"
+              @mousedown="activeTab = 'For You'"
               >For You</UINavTab
             >
           </NuxtLink>
           <!-- Following -->
           <NuxtLink>
             <UINavTab
-              tabName="Following"
-              :activeTab="activeTab"
-              @changeTab="(tab) => (activeTab = tab)"
+              :isActive="activeTab === 'Following'"
+              @mousedown="activeTab = 'Following'"
               >Following</UINavTab
             >
           </NuxtLink>

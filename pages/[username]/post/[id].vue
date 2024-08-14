@@ -51,7 +51,7 @@ provide("useToggleMenu", {
 });
 provide("toggleMenu", toggleMenu);
 provide("menuGetRect", menuGetRect);
-provide("toggleAccountMenu", { showMenu, type, menuGetRect });
+provide("toggleAccountMenu", { showMenu, type, toggleMenu, menuGetRect });
 watch(icon_id, () => {
   nextTick();
   if (!showMenu.value) {
@@ -79,6 +79,7 @@ provide("repost_pid", repost_pid);
 // reply
 const { showPopupReply, pid, reply, clickReply, publishReply } = useReply();
 provide("clickReply", clickReply);
+provide("showPopupReply", showPopupReply);
 provide("popupReply", { pid, reply, publishReply });
 // edit
 const { showPopupEdit, editPost, newText, selectEditPost, publishEdit } =
@@ -227,16 +228,18 @@ function scrollToTarget() {
       </template>
       <template #main>
         <!-- upper section -->
-        <MainSection class="px-5 pt-2">
+        <MainSection class="noForward pt-2">
           <!-- reply thread -->
           <ul v-if="thread.length">
             <li v-for="threadPost in thread" :key="threadPost.id">
-              <MainPostReplyThread v-bind="threadPost" />
+              <MainPostReplyThread :post="threadPost" noHover class="px-5" />
             </li>
           </ul>
           <div id="target" class="scroll-mt-14"></div>
           <!-- main post -->
-          <MainPostSingle v-bind="post"></MainPostSingle>
+          <div class="px-5">
+            <MainPostSingle v-bind="post"></MainPostSingle>
+          </div>
         </MainSection>
         <!-- lower section -->
         <div class="min-h-[40rem]">

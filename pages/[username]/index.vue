@@ -56,7 +56,8 @@ provide("useToggleMenu", {
   menuGetRect,
 });
 provide("toggleMenu", toggleMenu);
-provide("toggleAccountMenu", { showMenu, type, menuGetRect });
+provide("menuGetRect", menuGetRect);
+provide("toggleAccountMenu", { showMenu, type, toggleMenu, menuGetRect });
 watch(icon_id, () => {
   nextTick();
   if (!showMenu.value) {
@@ -297,45 +298,39 @@ const postList = computed(() => {
           >
             <!-- Posts -->
             <UINavTab
-              tabName="Posts"
-              :activeTab="activeTab"
-              @changeTab="(tab) => (activeTab = tab)"
+              :isActive="activeTab === 'Posts'"
+              @mousedown="activeTab = 'Posts'"
               >Posts
             </UINavTab>
             <!-- Replies -->
             <UINavTab
-              tabName="Replies"
-              :activeTab="activeTab"
-              @changeTab="(tab) => (activeTab = tab)"
+              :isActive="activeTab === 'Replies'"
+              @mousedown="activeTab = 'Replies'"
               >Replies
             </UINavTab>
             <!-- Highlights -->
             <UINavTab
-              tabName="Highlights"
-              :activeTab="activeTab"
-              @changeTab="(tab) => (activeTab = tab)"
+              :isActive="activeTab === 'Highlights'"
+              @mousedown="activeTab = 'Highlights'"
             >
               Highlights</UINavTab
             >
             <!-- Articles -->
             <UINavTab
-              tabName="Articles"
-              :activeTab="activeTab"
-              @changeTab="(tab) => (activeTab = tab)"
+              :isActive="activeTab === 'Articles'"
+              @mousedown="activeTab = 'Articles'"
               >Articles
             </UINavTab>
             <!-- Media -->
             <UINavTab
-              tabName="Media"
-              :activeTab="activeTab"
-              @changeTab="(tab) => (activeTab = tab)"
+              :isActive="activeTab === 'Media'"
+              @mousedown="activeTab = 'Media'"
               >Media
             </UINavTab>
             <!-- Likes -->
             <UINavTab
-              tabName="Likes"
-              :activeTab="activeTab"
-              @changeTab="(tab) => (activeTab = tab)"
+              :isActive="activeTab === 'Likes'"
+              @mousedown="activeTab = 'Likes'"
               >Likes
             </UINavTab>
           </div>

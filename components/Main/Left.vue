@@ -8,8 +8,8 @@ const client = useSupabaseClient();
 const emit = defineEmits(["popupPost"]);
 const route = useRoute();
 // post action menu
-const toggleMenu = inject("toggleMenu");
-const { showMenu, type, menuGetRect } = inject("toggleAccountMenu");
+// const toggleMenu = inject("toggleMenu");
+const { showMenu, type, toggleMenu, menuGetRect } = inject("toggleAccountMenu");
 function stickyMenu() {
   if (showMenu.value && type.value === "account") menuGetRect();
 }
@@ -31,7 +31,7 @@ async function signOut() {
 </script>
 <template>
   <div
-    class="flex h-full w-1/6 justify-center border-r-2 border-zinc-800 text-xl text-zinc-200 xl:w-1/5 xl:justify-end 2xl:w-3/10"
+    class="flex h-full w-1/6 justify-center border-r-2 border-zinc-800 xl:w-1/5 xl:justify-end 2xl:w-3/10"
   >
     <!-- navigation -->
     <!-- align upper & lower section -->
@@ -42,7 +42,7 @@ async function signOut() {
     >
       <!-- upper section -->
       <div
-        class="flex flex-col items-center justify-center pt-10 xl:items-start"
+        class="flex flex-col items-center justify-center pt-10 text-xl text-zinc-200 xl:items-start"
       >
         <!-- home -->
         <NuxtLink to="/">
@@ -129,7 +129,7 @@ async function signOut() {
           <IconsBadge size="medium" class="xl:hidden">
             <IconsWrite></IconsWrite>
           </IconsBadge>
-          <div class="hidden h-14 w-40 xl:flex 2xl:w-60">
+          <div class="hidden h-14 w-52 xl:flex 2xl:w-60">
             <UIButton color="blue" :solid="true" class="w-full">Post</UIButton>
           </div>
         </div>
@@ -148,7 +148,7 @@ async function signOut() {
               v-if="showMenu && type === 'account'"
               id="account_menu"
               ref="account_menu"
-              class="absolute z-30 h-28 w-60 -translate-y-32 rounded-xl bg-black py-2 shadow-3xl shadow-zinc-700 transition-all"
+              class="absolute z-30 h-28 w-60 -translate-y-32 rounded-xl bg-black py-2 text-xl text-zinc-200 shadow-3xl shadow-zinc-700 transition-all"
             >
               <!-- edit profile -->
               <NuxtLink to="/profile">
@@ -180,7 +180,7 @@ async function signOut() {
               <UIAvatar :user_id="user.id" size="small"></UIAvatar>
             </template>
             <template #title>
-              <div class="flex flex-col pl-2 text-base">
+              <div class="flex h-min flex-col text-base leading-tight">
                 <span v-show="store.getName" class="font-bold">{{
                   store.getName
                 }}</span>

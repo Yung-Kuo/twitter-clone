@@ -16,6 +16,18 @@ const { alertMode, alertMessage, errorTimeout, hasError } = useAlert();
 const { handleWheelEvent } = useWheelSync();
 provide("handleWheelEvent", handleWheelEvent);
 
+// profile card
+const {
+  profileCardVis,
+  hoveredElement,
+  hoveredUserId,
+  getRect,
+  showProfileCard,
+  hideProfileCard,
+} = useProfileCard();
+provide("profileCard", { showProfileCard, hideProfileCard });
+provide("getRect", getRect);
+
 // post action menu / repost menu
 const {
   showMenu,
@@ -39,7 +51,7 @@ provide("useToggleMenu", {
 });
 provide("toggleMenu", toggleMenu);
 provide("menuGetRect", menuGetRect);
-provide("toggleAccountMenu", { showMenu, type, menuGetRect });
+provide("toggleAccountMenu", { showMenu, type, toggleMenu, menuGetRect });
 
 onMounted(async () => {
   watchEffect(async () => {
@@ -54,24 +66,29 @@ onMounted(async () => {
         hasError();
       }
     }
-    Object.assign(userProfile, store.getProfile);
-    if (!userProfile.username) firstEdit.value = true;
   });
+  Object.assign(userProfile, store.getProfile);
+  if (!userProfile.username) firstEdit.value = true;
 });
 
+// const userProfile = computed(() => store.getProfile);
 const userProfile = reactive({});
 const firstEdit = ref(false);
 watch(userProfile, (curVal) => {
+  console.log("username, firstEdit ", curVal.username, firstEdit.value);
   if (curVal.first_name || curVal.last_name) {
     // When there's a first_name or last_name
     if (firstEdit.value) {
+      console.log("fl auto");
       // When user edit username for the first time
       curVal.username = curVal.first_name + "_" + curVal.last_name;
     }
   } else if (!curVal.username && !curVal.first_name && !curVal.last_name) {
+    console.log("all empty");
     // When all fields are empty
     firstEdit.value = true;
   } else if (firstEdit.value) {
+    console.log("first edit empty");
     // During first edit, when user empty the first&last name field, empty the username field.
     curVal.username = "";
   }
@@ -136,6 +153,7 @@ async function updateProfile() {
       store.deleteOldAvatar(old_avatar_url.value);
       old_avatar_url.value = null;
     }
+    // userProfile.value = store.getProfile;
     Object.assign(userProfile, store.getProfile);
     alertMode.value = "notify";
     alertMessage.value = "Your profile has been updated!";
@@ -144,28 +162,36 @@ async function updateProfile() {
 }
 
 // input validation
-const usernameValidFlag = ref(true);
 const first_nameValidFlag = ref(true);
 const last_nameValidFlag = ref(true);
+const usernameValidFlag = ref(true);
 const buttonActiveFlag = computed(() => {
-  // if (
-  //   usernameValidFlag.value &&
-  //   first_nameValidFlag.value &&
-  //   last_nameValidFlag.value
-  // )
-  //   return true;
-  // else return false;
   return (
-    usernameValidFlag.value &&
     first_nameValidFlag.value &&
-    last_nameValidFlag.value
+    last_nameValidFlag.value &&
+    usernameValidFlag.value
   );
 });
 </script>
 
 <template>
   <div class="flex h-screen w-screen bg-black">
-    <UIAlert :mode="alertMode" :message="alertMessage" />
+    <!-- UI Popup -->
+    <div>
+      <!-- Alert -->
+      <UIAlert :mode="alertMode" :message="alertMessage" />
+      <!-- Profile Card -->
+      <UIPopupTransition leave-active-class="delay-200">
+        <UIPopupProfileCard
+          v-show="profileCardVis"
+          id="profileCard"
+          :userId="hoveredUserId"
+          @mouseenter="showProfileCard(null, null)"
+          @mouseleave="hideProfileCard()"
+        >
+        </UIPopupProfileCard>
+      </UIPopupTransition>
+    </div>
     <!-- navigation -->
     <MainLeft></MainLeft>
     <MainCenter>
@@ -181,7 +207,7 @@ const buttonActiveFlag = computed(() => {
                 <div class="col-start-1 row-start-1">
                   <UIAvatar
                     :file="src"
-                    :user_id="userProfile.id"
+                    :user_id="userProfile?.id"
                     size="large"
                   ></UIAvatar>
                 </div>
@@ -210,7 +236,7 @@ const buttonActiveFlag = computed(() => {
             <UIInput
               id="first_name"
               type="text"
-              v-model="userProfile.first_name"
+              v-model:text="userProfile.first_name"
               :flag="first_nameValidFlag"
               @updateValid="(value) => (first_nameValidFlag = value)"
               >First Name
@@ -219,26 +245,36 @@ const buttonActiveFlag = computed(() => {
             <UIInput
               id="last_name"
               type="text"
-              v-model="userProfile.last_name"
+              v-model:text="userProfile.last_name"
               :flag="last_nameValidFlag"
-              @updateValid="(value) => (last_nameValidFlag = value)"
+              @updateValid="
+                (value) => (
+                  (last_nameValidFlag = value),
+                  console.log('lastNameValidFlag: ', !!value)
+                )
+              "
               >Last Name</UIInput
             >
             <!-- username -->
             <UIInput
               id="username"
               type="text"
-              v-model="userProfile.username"
+              v-model:text="userProfile.username"
               :firstEdit="firstEdit"
               @edited="firstEdit = false"
               :flag="usernameValidFlag"
-              @updateValid="(value) => (usernameValidFlag = value)"
+              @updateValid="
+                (value) => (
+                  (usernameValidFlag = value),
+                  console.log('usernameValidFlag: ', !!value)
+                )
+              "
               >Username</UIInput
             >
             <!-- description -->
 
             <div
-              class="no-wheel-sync flex max-h-[20em] min-h-[8em] grow flex-col overflow-y-scroll rounded-md border-2 border-zinc-600"
+              class="no-wheel-sync flex max-h-[20em] min-h-[8em] grow flex-col overflow-y-scroll rounded-md border-2 border-zinc-600 transition-all focus-within:border-sky-500 focus-within:ring-1 focus-within:ring-sky-500"
             >
               <MainPostTextarea
                 v-model="userProfile.description"
@@ -248,7 +284,8 @@ const buttonActiveFlag = computed(() => {
             <!-- Update Profile -->
             <UIButton
               color="orange"
-              solid="true"
+              :solid="true"
+              :active="buttonActiveFlag"
               @click="updateProfile(userProfile)"
               >Update Profile</UIButton
             >

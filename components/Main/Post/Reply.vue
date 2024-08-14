@@ -28,15 +28,7 @@ const date = computed(() => {
 const { target_post, clickPost, hoverPost } = inject("clickPost");
 </script>
 <template>
-  <div
-    v-if="postStore.getProfile(post?.user_id)"
-    class="flex h-min w-full text-gray-200 transition-all"
-    :class="post.id"
-    @mouseenter="target_post = post"
-    @mouseover="!target_post ? (target_post = post) : null"
-    @mouseleave="target_post = null"
-    @mousedown="clickPost($event)"
-  >
+  <MainPostHoverClickWrapper :post="post" noHover class="flex hover:!bg-black">
     <!-- left column / avatar -->
     <div class="flex w-min flex-col">
       <!-- avatar for show post -->
@@ -94,7 +86,7 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
         <!-- repost / quote -->
         <div
           v-if="post.type === 'repost'"
-          class="max-h-[20rem] overflow-y-scroll pt-3"
+          class="max-h-[20rem] overflow-y-scroll pt-2"
         >
           <MainPostRefer
             v-bind="postStore.getPost(post.reply_to)"
@@ -102,7 +94,7 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
         </div>
       </div>
       <!-- lower section -->
-      <div class="noForward cursor-default py-3">
+      <div class="noForward cursor-default pb-4 pt-2">
         <!-- replying to -->
         <span class="text-zinc-500">Replying to </span>
         <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
@@ -112,5 +104,5 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
         </NuxtLink>
       </div>
     </div>
-  </div>
+  </MainPostHoverClickWrapper>
 </template>

@@ -4,9 +4,16 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@nuxtjs/supabase",
     "@pinia//nuxt",
-    "@vueuse/nuxt",
     "@nuxtjs/google-fonts",
   ],
+  vite: {
+    vue: {
+      script: {
+        defineModel: true,
+        propsDestructure: true,
+      },
+    },
+  },
   pinia: {
     autoImports: [
       // automatically imports `defineStore`

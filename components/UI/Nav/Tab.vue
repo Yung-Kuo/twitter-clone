@@ -1,16 +1,19 @@
 <script setup>
-const props = defineProps(["tabName", "activeTab"]);
-const emit = defineEmits(["changeTab"]);
+const props = defineProps({
+  isActive: {
+    type: Boolean,
+    default: false,
+  },
+});
 </script>
 <template>
   <div
-    @mousedown="emit('changeTab', props.tabName)"
     class="flex h-full w-full justify-center pt-2 transition-all hover:bg-zinc-800 hover:bg-opacity-50"
   >
     <div
       class="flex items-center justify-center border-b-4 transition-all"
       :class="
-        props.activeTab === props.tabName
+        props.isActive
           ? ' border-sky-500 font-bold text-zinc-200'
           : ' border-transparent text-zinc-500'
       "

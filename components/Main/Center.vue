@@ -14,20 +14,19 @@ const menuGetRect = inject("menuGetRect", () => null);
       class="absolute left-0 top-0 z-20 flex h-14 w-full bg-transparent backdrop-blur-md"
       :class="{ 'border-b-2 border-zinc-800': $slots.mainBanner }"
     >
+      <!-- test -->
       <!-- for index page -->
       <slot name="mainBanner" />
 
       <!-- for pages other than index page -->
-      <div v-if="$slots.banner" class="flex">
-        <div class="flex h-full w-10 items-center px-2">
+      <div v-if="$slots.banner" class="flex gap-6 pl-5">
+        <div class="flex h-full w-min items-center">
           <NuxtLink @click="router.back()">
             <IconsBadge size="small" class="text-white">
               <IconsBack></IconsBack>
             </IconsBadge>
           </NuxtLink>
         </div>
-        <!-- spacing -->
-        <div class="w-6"></div>
         <!-- header -->
         <div class="flex h-full items-center pl-1">
           <slot name="banner" />
@@ -54,4 +53,7 @@ const menuGetRect = inject("menuGetRect", () => null);
   width: 0px;
   height: 0px;
 }
+/* #center {
+  scrollbar-width: none;
+} */
 </style>
