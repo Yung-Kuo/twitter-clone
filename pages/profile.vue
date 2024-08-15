@@ -294,7 +294,7 @@ const buttonActiveFlag = computed(() => {
         </div>
       </template>
     </MainCenter>
-    <MainRight />
+    <!-- <MainRight /> -->
   </div>
 </template>
 

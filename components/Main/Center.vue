@@ -5,13 +5,11 @@ const getRect = inject("getRect", () => null);
 const menuGetRect = inject("menuGetRect", () => null);
 </script>
 <template>
-  <div
-    class="relative w-5/6 border-r-2 border-zinc-800 md:w-4/6 md:border-0 xl:w-1/2 2xl:w-2/5"
-  >
+  <div class="relative h-full grow overflow-y-hidden">
     <!-- top banner -->
     <div
       id="banner"
-      class="absolute left-0 top-0 z-20 flex h-14 w-full bg-transparent backdrop-blur-md"
+      class="absolute left-0 top-0 z-20 flex h-14 w-full bg-transparent backdrop-blur-md md:w-5/6 md:border-0 xl:w-5/8 2xl:w-3/5"
       :class="{ 'border-b-2 border-zinc-800': $slots.mainBanner }"
     >
       <!-- test -->
@@ -36,24 +34,27 @@ const menuGetRect = inject("menuGetRect", () => null);
     <!-- main section -->
     <div
       id="center"
-      class="scrollbar h-full w-full overflow-y-scroll py-14"
+      class="flex h-full w-full overflow-y-scroll"
       @wheel="
         handleWheelEvent($event, 'center');
         getRect();
         menuGetRect();
       "
     >
-      <slot name="main" />
+      <div class="h-max py-14 md:w-5/6 xl:w-5/8 2xl:w-3/5">
+        <slot name="main" />
+      </div>
+      <MainRight />
     </div>
   </div>
 </template>
 
 <style>
-#center::-webkit-scrollbar {
+/* #center::-webkit-scrollbar {
   width: 0px;
   height: 0px;
 }
-/* #center {
+#center {
   scrollbar-width: none;
 } */
 </style>

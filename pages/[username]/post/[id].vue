@@ -252,6 +252,6 @@ function scrollToTarget() {
         </div>
       </template>
     </MainCenter>
-    <MainRight :user_id="post.user_id" />
+    <!-- <MainRight :user_id="post.user_id" /> -->
   </div>
 </template>

@@ -345,6 +345,6 @@ const postList = computed(() => {
         </div>
       </template>
     </MainCenter>
-    <MainRight />
+    <!-- <MainRight /> -->
   </div>
 </template>

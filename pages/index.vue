@@ -247,6 +247,6 @@ async function fetchNewPost() {
         </ul>
       </template>
     </MainCenter>
-    <MainRight />
+    <!-- <MainRight /> -->
   </div>
 </template>

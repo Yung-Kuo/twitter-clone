@@ -197,6 +197,6 @@ const bookmarkList = computed(() => postStore.getBookmarkPosts);
         </ul>
       </template>
     </MainCenter>
-    <MainRight />
+    <!-- <MainRight /> -->
   </div>
 </template>
