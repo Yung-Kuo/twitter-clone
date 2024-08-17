@@ -16,7 +16,7 @@ const emit = defineEmits(["close"]);
       </div>
     </div>
     <!-- center -->
-    <div class="flex grow flex-col overflow-y-auto px-2 pt-3">
+    <div class="flex grow flex-col overflow-y-auto px-2 pt-2">
       <slot name="center" />
     </div>
 

@@ -13,7 +13,9 @@ const post = computed(() => postStore.getPost(pid.value));
   <UIPopupDraft @close="emit('close')">
     <template #center>
       <!-- replying post -->
+      <!-- <div class="max-h-[40rem] min-h-full overflow-y-scroll"> -->
       <MainPostReply v-bind="post"></MainPostReply>
+      <!-- </div> -->
       <!-- reply -->
       <div class="flex">
         <div class="h-min w-min">

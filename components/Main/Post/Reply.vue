@@ -76,21 +76,18 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
           </div>
         </div>
         <!-- content -->
-        <div>
+        <div class="flex max-h-[18rem] flex-col gap-3 overflow-y-scroll pt-2">
           <pre
             v-if="post.type !== 'repost && post.text !== repost'"
             class="w-full"
             >{{ post.text }}</pre
           >
-        </div>
-        <!-- repost / quote -->
-        <div
-          v-if="post.type === 'repost'"
-          class="max-h-[20rem] overflow-y-scroll pt-2"
-        >
-          <MainPostRefer
-            v-bind="postStore.getPost(post.reply_to)"
-          ></MainPostRefer>
+          <!-- repost / quote -->
+          <div v-if="post.type === 'repost'">
+            <MainPostRefer
+              v-bind="postStore.getPost(post.reply_to)"
+            ></MainPostRefer>
+          </div>
         </div>
       </div>
       <!-- lower section -->

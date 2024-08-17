@@ -48,19 +48,21 @@ const replyPost = computed(() => {
               <UIAvatar :user_id="user.id" size="small" />
             </div>
             <div
-              class="max-h-[20em] min-h-[8em] grow overflow-y-scroll rounded-xl border-2 border-zinc-800"
+              class="grow overflow-y-scroll rounded-2xl border-2 border-zinc-800"
             >
-              <MainPostTextarea v-model="newText" mode="edit" />
+              <div class="max-h-[20em] min-h-[8em] overflow-y-scroll px-1">
+                <MainPostTextarea v-model="newText" mode="edit" />
+              </div>
+              <!-- refer post -->
+              <div
+                v-if="editPost?.type === 'repost' && editPost?.reply_to"
+                class="grow overflow-y-scroll p-3"
+              >
+                <MainPostRefer
+                  v-bind="postStore.getPost(editPost?.reply_to)"
+                ></MainPostRefer>
+              </div>
             </div>
-          </div>
-          <!-- refer post -->
-          <div
-            v-if="editPost?.type === 'repost' && editPost?.reply_to"
-            class="grow overflow-y-scroll pt-3"
-          >
-            <MainPostRefer
-              v-bind="postStore.getPost(editPost?.reply_to)"
-            ></MainPostRefer>
           </div>
         </div>
       </div>
