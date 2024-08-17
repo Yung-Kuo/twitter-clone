@@ -5,7 +5,7 @@ const getRect = inject("getRect", () => null);
 const menuGetRect = inject("menuGetRect", () => null);
 </script>
 <template>
-  <div class="relative h-full w-5/6 overflow-y-hidden">
+  <div class="relative h-full w-full overflow-y-hidden md:w-5/6">
     <!-- top banner -->
     <div
       id="banner"

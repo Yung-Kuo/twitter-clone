@@ -94,7 +94,9 @@ const date = computed(() => {
         <!-- upper section -->
         <div class="flex h-6 w-full items-center pl-2">
           <!-- user info -->
-          <div class="noForward flex items-center">
+          <div
+            class="noForward flex items-center overflow-x-scroll whitespace-nowrap"
+          >
             <div class="font-bold hover:underline">
               <!-- name -->
               <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
@@ -122,7 +124,7 @@ const date = computed(() => {
                 </div>
               </NuxtLink>
               <!-- timestamp -->
-              <div class="flex">
+              <div class="flex w-max">
                 <pre> · {{ date }}</pre>
                 <pre v-if="post.edited"> · edited</pre>
               </div>

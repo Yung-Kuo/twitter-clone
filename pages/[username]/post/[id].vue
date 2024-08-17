@@ -232,12 +232,16 @@ function scrollToTarget() {
           <!-- reply thread -->
           <ul v-if="thread.length">
             <li v-for="threadPost in thread" :key="threadPost.id">
-              <MainPostReplyThread :post="threadPost" noHover class="px-5" />
+              <MainPostReplyThread
+                :post="threadPost"
+                noHover
+                class="px-2 md:px-5"
+              />
             </li>
           </ul>
           <div id="target" class="scroll-mt-14"></div>
           <!-- main post -->
-          <div class="px-5">
+          <div class="px-2 md:px-5">
             <MainPostSingle v-bind="post"></MainPostSingle>
           </div>
         </MainSection>

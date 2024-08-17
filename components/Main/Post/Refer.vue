@@ -66,7 +66,9 @@ const date = computed(() => {
         </NuxtLink>
       </div>
       <!-- user info -->
-      <div class="flex items-center px-2 leading-tight">
+      <div
+        class="flex items-center overflow-x-scroll whitespace-nowrap px-2 leading-tight"
+      >
         <!-- name -->
         <div class="noForward font-bold hover:underline">
           <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
@@ -76,21 +78,19 @@ const date = computed(() => {
           </NuxtLink>
         </div>
         &ensp;
-        <!-- username -->
-        <div class="noForward text-sm text-zinc-500">
-          <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
-            <span class="noForward">
-              @{{ postStore.getUsername(post.user_id) }}</span
-            >
-          </NuxtLink>
-        </div>
         <div class="flex text-sm text-zinc-500">
-          <!-- timestamp -->
-          <div>
-            <pre> · {{ date }}</pre>
+          <!-- username -->
+          <div class="noForward">
+            <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
+              <span class="noForward">
+                @{{ postStore.getUsername(post.user_id) }}</span
+              >
+            </NuxtLink>
           </div>
-          <!-- edited -->
-          <div>
+          <div class="flex w-max">
+            <!-- timestamp -->
+            <pre> · {{ date }}</pre>
+            <!-- edited -->
             <pre v-if="post.edited"> · edited</pre>
           </div>
         </div>

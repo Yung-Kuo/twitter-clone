@@ -31,13 +31,13 @@ async function signOut() {
 </script>
 <template>
   <div
-    class="flex h-full w-1/6 justify-center border-r-2 border-zinc-800 xl:w-1/5 xl:justify-end 2xl:w-3/10"
+    class="hidden h-full w-1/6 justify-center border-r-2 border-zinc-800 md:flex xl:w-1/5 xl:justify-end 2xl:w-3/10"
   >
     <!-- navigation -->
     <!-- align upper & lower section -->
     <div
       id="left"
-      class="flex h-full w-max flex-col overflow-y-scroll px-5"
+      class="flex h-full w-max flex-col overflow-y-scroll md:px-5"
       @wheel="stickyMenu()"
     >
       <!-- upper section -->
@@ -137,60 +137,55 @@ async function signOut() {
       <!-- height filler -->
       <div class="grow"></div>
       <!-- lower section -->
-      <div
-        class="flex w-full flex-col items-center justify-center py-5 xl:justify-start"
-      >
-        <!-- account -->
-        <div class="w-full">
-          <!-- account menu -->
-          <UIPopupTransition>
-            <div
-              v-if="showMenu && type === 'account'"
-              id="account_menu"
-              ref="account_menu"
-              class="absolute z-30 h-28 w-60 -translate-y-32 rounded-xl bg-black py-2 text-xl text-zinc-200 shadow-3xl shadow-zinc-700 transition-all"
-            >
-              <!-- edit profile -->
-              <NuxtLink to="/profile">
-                <div
-                  class="flex h-1/2 w-full items-center justify-start p-5 transition-all hover:bg-zinc-900 active:bg-zinc-800"
-                >
-                  Edit Profile
-                </div>
-              </NuxtLink>
-              <!-- sign out -->
+      <div class="w-full py-5">
+        <!-- account menu -->
+        <UIPopupTransition>
+          <div
+            v-if="showMenu && type === 'account'"
+            id="account_menu"
+            ref="account_menu"
+            class="absolute z-30 h-28 w-60 -translate-y-32 rounded-xl bg-black py-2 text-xl text-zinc-200 shadow-3xl shadow-zinc-700 transition-all"
+          >
+            <!-- edit profile -->
+            <NuxtLink to="/profile">
               <div
-                @click="signOut()"
                 class="flex h-1/2 w-full items-center justify-start p-5 transition-all hover:bg-zinc-900 active:bg-zinc-800"
               >
-                Sign Out
+                Edit Profile
               </div>
+            </NuxtLink>
+            <!-- sign out -->
+            <div
+              @click="signOut()"
+              class="flex h-1/2 w-full items-center justify-start p-5 transition-all hover:bg-zinc-900 active:bg-zinc-800"
+            >
+              Sign Out
             </div>
-          </UIPopupTransition>
+          </div>
+        </UIPopupTransition>
 
-          <!-- account icon -->
-          <MainMenuEntry
-            id="account_menu_icon"
-            @mousedown="toggleMenu(null, user.id, 'account')"
-          >
-            <template #sm-menu>
-              <UIAvatar :user_id="user.id" size="small"></UIAvatar>
-            </template>
-            <template #lg-menu>
-              <UIAvatar :user_id="user.id" size="small"></UIAvatar>
-            </template>
-            <template #title>
-              <div class="flex h-min flex-col text-base leading-tight">
-                <span v-show="store.getName" class="font-bold">{{
-                  store.getName
-                }}</span>
-                <span v-show="store.getUsername" class="text-zinc-500"
-                  >@{{ store.getUsername }}</span
-                >
-              </div>
-            </template>
-          </MainMenuEntry>
-        </div>
+        <!-- account icon -->
+        <MainMenuEntry
+          id="account_menu_icon"
+          @mousedown="toggleMenu(null, user.id, 'account')"
+        >
+          <template #sm-menu>
+            <UIAvatar :user_id="user.id" size="small"></UIAvatar>
+          </template>
+          <template #lg-menu>
+            <UIAvatar :user_id="user.id" size="small"></UIAvatar>
+          </template>
+          <template #title>
+            <div class="flex h-min flex-col text-base leading-tight">
+              <span v-show="store.getName" class="font-bold">{{
+                store.getName
+              }}</span>
+              <span v-show="store.getUsername" class="text-zinc-500"
+                >@{{ store.getUsername }}</span
+              >
+            </div>
+          </template>
+        </MainMenuEntry>
       </div>
     </div>
   </div>
@@ -200,5 +195,8 @@ async function signOut() {
 #left::-webkit-scrollbar {
   width: 0px;
   height: 0px;
+}
+#left {
+  scrollbar-width: none;
 }
 </style>

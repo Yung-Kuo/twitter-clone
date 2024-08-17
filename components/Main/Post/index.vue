@@ -87,7 +87,7 @@ const date = computed(() => {
   <MainSection class="w-full">
     <!-- post -->
     <MainPostHoverClickWrapper :post="post">
-      <div class="flex w-full px-5 pt-5 text-zinc-200">
+      <div class="flex w-full px-2 pt-2 text-zinc-200 md:px-5 md:pt-5">
         <!-- left column / avatar -->
         <div class="flex w-min flex-col">
           <!-- avatar for show post -->
@@ -114,13 +114,15 @@ const date = computed(() => {
           <!-- upper section -->
           <div class="flex h-5 w-full items-center pl-2">
             <!-- user info -->
-            <div class="flex h-min items-center leading-tight">
+            <div
+              class="flex items-center overflow-x-scroll whitespace-nowrap leading-tight"
+            >
               <!-- name -->
               <div
                 :id="`${post.id}_name`"
                 @mouseenter="showProfileCard($event.target.id, post.user_id)"
                 @mouseleave="hideProfileCard()"
-                class="noForward font-bold hover:underline"
+                class="noForward w-max font-bold hover:underline"
               >
                 <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
                   <span class="noForward">
@@ -135,13 +137,13 @@ const date = computed(() => {
                   :id="`${post.id}_username`"
                   @mouseenter="showProfileCard($event.target.id, post.user_id)"
                   @mouseleave="hideProfileCard()"
-                  class="noForward"
+                  class="noForward w-max"
                 >
                   <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
                     <span> @{{ postStore.getUsername(post.user_id) }}</span>
                   </NuxtLink>
                 </div>
-                <div class="flex">
+                <div class="flex w-max">
                   <!-- timestamp -->
                   <pre> · {{ date }}</pre>
                   <!-- edited -->
@@ -305,18 +307,16 @@ const date = computed(() => {
       </div>
     </MainPostHoverClickWrapper>
     <!-- if the author has replied -->
-    <div class="noForward">
-      <MainPostReplyThread
-        :post="authorReplyPost"
-        v-if="props.showAuthorReply && authorReplyId"
-        class="px-5"
-      />
-    </div>
+    <MainPostReplyThread
+      :post="authorReplyPost"
+      v-if="props.showAuthorReply && authorReplyId"
+      class="noForward px-2 md:px-5"
+    />
     <MainPostHoverClickWrapper
       v-if="props.showAuthorReply && authorReplyId"
       :post="post"
     >
-      <div class="flex px-5">
+      <div class="flex px-2 md:px-5">
         <div class="flex w-10 flex-col items-center gap-2 py-2">
           <span class="w-0 border border-zinc-800" />
           <span class="w-0 border border-zinc-800" />

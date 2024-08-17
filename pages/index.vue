@@ -208,7 +208,7 @@ async function fetchNewPost() {
       <!-- header -->
       <template #mainBanner>
         <!-- feed tab -->
-        <div class="grid h-full flex-grow grid-cols-2">
+        <div class="grid h-full grow grid-cols-2">
           <!-- For you -->
           <NuxtLink>
             <UINavTab
@@ -227,9 +227,20 @@ async function fetchNewPost() {
           </NuxtLink>
         </div>
         <!-- settings -->
-        <div class="flex h-full w-14 items-center justify-center">
+        <div
+          class="hidden h-full w-6 items-center justify-center md:block md:w-14"
+        >
           <NuxtLink>
-            <IconsBadge size="small" class="text-xl text-zinc-200">
+            <IconsBadge
+              size="small"
+              class="hidden text-xl text-zinc-200 md:flex"
+            >
+              <IconsSettings></IconsSettings>
+            </IconsBadge>
+            <IconsBadge
+              size="xsmall"
+              class="block text-xl text-zinc-200 md:hidden"
+            >
               <IconsSettings></IconsSettings>
             </IconsBadge>
           </NuxtLink>

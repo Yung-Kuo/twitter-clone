@@ -49,7 +49,7 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
       <!-- upper section -->
       <div class="flex flex-col">
         <!-- user info -->
-        <div class="flex w-max items-center">
+        <div class="flex w-max items-center whitespace-nowrap">
           <div class="font-bold hover:underline">
             <!-- name -->
             <div class="noForward">
@@ -61,16 +61,15 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
             </div>
           </div>
           &ensp;
-          <div class="flex text-zinc-500">
+          <div class="flex w-max text-zinc-500">
             <!-- username -->
             <div class="noForward">
               <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
                 <span> @{{ postStore.getUsername(post.user_id) }}</span>
               </NuxtLink>
             </div>
-            <span class="flex w-3 justify-center">·</span>
             <!-- post time -->
-            <pre>{{ date }}</pre>
+            <pre> · {{ date }}</pre>
             <!-- edited -->
             <pre v-if="post.edited"> · edited</pre>
           </div>
