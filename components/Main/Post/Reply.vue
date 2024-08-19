@@ -28,7 +28,11 @@ const date = computed(() => {
 const { target_post, clickPost, hoverPost } = inject("clickPost");
 </script>
 <template>
-  <MainPostHoverClickWrapper :post="post" noHover class="flex hover:!bg-black">
+  <MainPostHoverClickWrapper
+    :post="post"
+    noHover
+    class="flex gap-2 hover:!bg-black"
+  >
     <!-- left column / avatar -->
     <div class="flex w-min flex-col">
       <!-- avatar for show post -->
@@ -45,7 +49,7 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
       </div>
     </div>
     <!-- right column -->
-    <div class="w-[calc(100%-2.5rem)] px-2">
+    <div class="w-[calc(100%-2.5rem)]">
       <!-- upper section -->
       <div class="flex flex-col">
         <!-- user info -->

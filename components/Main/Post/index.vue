@@ -87,7 +87,7 @@ const date = computed(() => {
   <MainSection class="w-full">
     <!-- post -->
     <MainPostHoverClickWrapper :post="post">
-      <div class="flex w-full px-2 pt-2 text-zinc-200 md:px-5 md:pt-5">
+      <div class="flex w-full p-3 pb-0 text-zinc-200 md:p-5 md:pb-0">
         <!-- left column / avatar -->
         <div class="flex w-min flex-col">
           <!-- avatar for show post -->

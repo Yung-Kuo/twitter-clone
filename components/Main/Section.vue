@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full border-b-2 border-zinc-800">
+  <div class="w-full border-b border-zinc-800 md:border-b-2">
     <slot />
   </div>
 </template>

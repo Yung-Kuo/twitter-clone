@@ -55,7 +55,7 @@ const date = computed(() => {
   <MainPostHoverClickWrapper
     :post="post"
     hasRing
-    class="flex w-full cursor-pointer flex-col gap-2 rounded-2xl border-2 border-zinc-800 bg-black p-3 text-zinc-200 transition-colors duration-200"
+    class="flex w-full cursor-pointer flex-col gap-2 rounded-2xl border border-zinc-800 bg-black p-3 text-zinc-200 transition-colors duration-200 md:border-2"
   >
     <!-- upper section -->
     <div class="flex h-min w-full">

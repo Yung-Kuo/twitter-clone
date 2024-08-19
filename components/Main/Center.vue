@@ -10,7 +10,7 @@ const menuGetRect = inject("menuGetRect", () => null);
     <div
       id="banner"
       class="absolute left-0 top-0 z-20 flex h-14 w-full bg-transparent backdrop-blur-md md:w-5/6 xl:w-5/8 2xl:w-3/5"
-      :class="{ 'border-b-2 border-zinc-800': $slots.mainBanner }"
+      :class="{ 'border-b border-zinc-800 md:border-b-2': $slots.mainBanner }"
     >
       <!-- test -->
       <!-- for index page -->

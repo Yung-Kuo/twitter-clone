@@ -28,8 +28,8 @@ const post = computed(() => postStore.getPost(pid.value));
     </template>
 
     <template #button>
+      <!-- action buttons -->
       <div class="flex justify-between">
-        <!-- action buttons -->
         <div></div>
         <UIButton
           color="blue"

@@ -9,7 +9,7 @@ const { newPost, repost_pid, publishPost, publishRepost, publishQuote } =
 <template>
   <UIPopupDraft @close="emit('close')" class="min-h-[40%]">
     <template #center>
-      <div class="flex grow">
+      <div class="flex grow gap-2">
         <!-- left column -->
         <div class="w-min">
           <div class="w-min">
@@ -17,9 +17,9 @@ const { newPost, repost_pid, publishPost, publishRepost, publishQuote } =
           </div>
         </div>
         <!-- right column -->
-        <div class="flex w-[calc(100%-2rem)] flex-col justify-between px-2">
+        <div class="flex w-[calc(100%-2rem)] flex-col justify-between gap-3">
           <!-- post -->
-          <div class="grow overflow-y-scroll pb-2">
+          <div class="grow overflow-y-scroll">
             <MainPostTextarea
               v-model="newPost"
               placeholder="What is happening?!"
@@ -27,7 +27,7 @@ const { newPost, repost_pid, publishPost, publishRepost, publishQuote } =
           </div>
           <!-- repost -->
           <!-- refer post -->
-          <div v-if="repost_pid" class="noForward pt-3">
+          <div v-if="repost_pid" class="noForward">
             <MainPostRefer
               v-bind="postStore.getPost(repost_pid)"
             ></MainPostRefer>
@@ -36,20 +36,18 @@ const { newPost, repost_pid, publishPost, publishRepost, publishQuote } =
       </div>
     </template>
     <template #button>
-      <div class="flex w-full flex-col">
-        <MainSection class="w-full" />
-        <!-- action buttons -->
-        <div class="flex justify-between pt-4">
-          <div></div>
-          <UIButton
-            color="blue"
-            :solid="true"
-            @mousedown="
-              emit('close', repost_pid ? publishQuote() : publishPost())
-            "
-            >Post</UIButton
-          >
-        </div>
+      <MainSection class="w-full" />
+      <!-- action buttons -->
+      <div class="flex justify-between">
+        <div></div>
+        <UIButton
+          color="blue"
+          :solid="true"
+          @mousedown="
+            emit('close', repost_pid ? publishQuote() : publishPost())
+          "
+          >Post</UIButton
+        >
       </div>
     </template>
   </UIPopupDraft>

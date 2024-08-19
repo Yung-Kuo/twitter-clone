@@ -48,7 +48,7 @@ const replyPost = computed(() => {
               <UIAvatar :user_id="user.id" size="small" />
             </div>
             <div
-              class="grow overflow-y-scroll rounded-2xl border-2 border-zinc-800"
+              class="grow overflow-y-scroll rounded-2xl border border-zinc-800 md:border-2"
             >
               <div class="max-h-[20em] min-h-[8em] overflow-y-scroll px-1">
                 <MainPostTextarea v-model="newText" mode="edit" />
@@ -68,18 +68,16 @@ const replyPost = computed(() => {
       </div>
     </template>
     <template #button>
-      <div class="flex w-full flex-col">
-        <MainSection class="w-full" />
-        <!-- action buttons -->
-        <div class="flex justify-between pt-4">
-          <div></div>
-          <UIButton
-            color="blue"
-            :solid="true"
-            @mousedown="emit('close', publishEdit())"
-            >Post</UIButton
-          >
-        </div>
+      <MainSection class="w-full" />
+      <!-- action buttons -->
+      <div class="flex justify-between">
+        <div></div>
+        <UIButton
+          color="blue"
+          :solid="true"
+          @mousedown="emit('close', publishEdit())"
+          >Post</UIButton
+        >
       </div>
     </template>
   </UIPopupDraft>

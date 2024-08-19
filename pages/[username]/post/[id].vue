@@ -235,13 +235,13 @@ function scrollToTarget() {
               <MainPostReplyThread
                 :post="threadPost"
                 noHover
-                class="px-2 md:px-5"
+                class="px-3 md:px-5"
               />
             </li>
           </ul>
           <div id="target" class="scroll-mt-14"></div>
           <!-- main post -->
-          <div class="px-2 md:px-5">
+          <div class="px-3 md:px-5">
             <MainPostSingle v-bind="post"></MainPostSingle>
           </div>
         </MainSection>
