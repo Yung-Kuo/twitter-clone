@@ -30,7 +30,7 @@ const replyPost = computed(() => {
 
         <!-- main content -->
         <div
-          class="flex grow flex-col justify-between"
+          class="flex grow flex-col"
           :class="
             editPost?.type === 'repost' || editPost?.type === 'post'
               ? 'pl-2'
