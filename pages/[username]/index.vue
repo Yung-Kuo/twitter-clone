@@ -237,6 +237,7 @@ const postList = computed(() => {
     </div>
     <!-- layout -->
     <MainLeft @popupPost="showPopupPost = !showPopupPost" />
+    <MainBottom />
     <MainCenter>
       <template #banner>
         <div class="h-full pt-1">

@@ -180,6 +180,7 @@ const bookmarkList = computed(() => postStore.getBookmarkPosts);
 
     <!-- layout -->
     <MainLeft @popupPost="showPopupPost = !showPopupPost" />
+    <MainBottom />
     <MainCenter>
       <template #banner>
         <div class="flex flex-col">

@@ -222,6 +222,7 @@ function scrollToTarget() {
     </div>
     <!-- layout -->
     <MainLeft @popupPost="showPopupPost = !showPopupPost" />
+    <MainBottom />
     <MainCenter>
       <template #banner>
         <h1 class="h-1/2 text-xl font-bold text-gray-200">Post</h1>
