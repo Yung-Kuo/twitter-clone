@@ -101,7 +101,7 @@ const date = computed(() => {
       <!-- content -->
       <div
         v-if="post.type !== 'repost' || post.text !== post.reply_to"
-        class="text-base leading-tight"
+        class="pb-1 text-base leading-tight"
         :class="post.type !== 'repost' ? 'pb-1' : null"
       >
         <pre>{{ post.text }}</pre>

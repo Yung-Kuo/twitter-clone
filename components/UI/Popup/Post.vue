@@ -5,6 +5,10 @@ const postStore = usePostStore();
 const emit = defineEmits(["close"]);
 const { newPost, repost_pid, publishPost, publishRepost, publishQuote } =
   inject("writePost");
+
+onMounted(() => {
+  newPost.value = "";
+});
 </script>
 <template>
   <UIPopupDraft @close="emit('close')" class="min-h-[40%]">
@@ -17,9 +21,9 @@ const { newPost, repost_pid, publishPost, publishRepost, publishQuote } =
           </div>
         </div>
         <!-- right column -->
-        <div class="flex w-[calc(100%-2rem)] flex-col justify-between gap-3">
+        <div class="flex w-full flex-col gap-3">
           <!-- post -->
-          <div class="grow overflow-y-scroll">
+          <div class="min-h-[5rem] w-full overflow-y-scroll">
             <MainPostTextarea
               v-model="newPost"
               placeholder="What is happening?!"
@@ -27,7 +31,7 @@ const { newPost, repost_pid, publishPost, publishRepost, publishQuote } =
           </div>
           <!-- repost -->
           <!-- refer post -->
-          <div v-if="repost_pid" class="noForward">
+          <div v-if="repost_pid" class="noForward w-full break-all">
             <MainPostRefer
               v-bind="postStore.getPost(repost_pid)"
             ></MainPostRefer>

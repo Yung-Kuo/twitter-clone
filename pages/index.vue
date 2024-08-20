@@ -177,6 +177,7 @@ async function fetchNewPost() {
           @close="
             showPopupPost = false;
             repost_pid = null;
+            newPost = null;
           "
         />
       </UIPopupTransition>

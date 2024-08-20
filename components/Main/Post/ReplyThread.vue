@@ -163,17 +163,15 @@ const date = computed(() => {
           </div>
         </div>
         <!-- middle section -->
-        <div class="w-full pl-2">
+        <div class="flex w-full flex-col gap-2 pl-2">
           <!-- content -->
-          <div
-            v-if="post.type !== 'repost && post.text !== repost'"
-            class="w-full"
-          >
+          <div v-if="post.type !== 'repost && post.text !== repost'">
+            <!-- don't show text when repost  -->
             <pre>{{ post.text }}</pre>
           </div>
 
           <!-- repost / quote -->
-          <div v-if="post.type === 'repost'" class="pt-3">
+          <div v-if="post.type === 'repost'">
             <MainPostRefer v-bind="post"></MainPostRefer>
           </div>
         </div>

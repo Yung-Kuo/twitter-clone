@@ -8,14 +8,16 @@ const emit = defineEmits(["close"]);
 const { pid, reply, publishReply } = inject("popupReply");
 
 const post = computed(() => postStore.getPost(pid.value));
+
+onMounted(() => {
+  reply.value = "";
+});
 </script>
 <template>
   <UIPopupDraft @close="emit('close')">
     <template #center>
       <!-- replying post -->
-      <!-- <div class="max-h-[40rem] min-h-full overflow-y-scroll"> -->
       <MainPostReply v-bind="post"></MainPostReply>
-      <!-- </div> -->
       <!-- reply -->
       <div class="flex">
         <div class="h-min w-min">

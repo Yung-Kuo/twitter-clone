@@ -185,10 +185,7 @@ const date = computed(() => {
           <!-- middle section -->
           <div class="flex w-full flex-col gap-3 pl-2">
             <!-- content -->
-            <div
-              v-if="post.type !== 'repost' || post.text !== post.reply_to"
-              class="w-full whitespace-pre-line break-words"
-            >
+            <div v-if="post.type !== 'repost' || post.text !== post.reply_to">
               <!-- text -->
               <pre>{{ post.text }}</pre>
             </div>
@@ -310,13 +307,13 @@ const date = computed(() => {
     <MainPostReplyThread
       :post="authorReplyPost"
       v-if="props.showAuthorReply && authorReplyId"
-      class="noForward px-2 md:px-5"
+      class="px-3 md:px-5"
     />
     <MainPostHoverClickWrapper
       v-if="props.showAuthorReply && authorReplyId"
       :post="post"
     >
-      <div class="flex px-2 md:px-5">
+      <div class="flex px-3 md:px-5">
         <div class="flex w-10 flex-col items-center gap-2 py-2">
           <span class="w-0 border border-zinc-800" />
           <span class="w-0 border border-zinc-800" />

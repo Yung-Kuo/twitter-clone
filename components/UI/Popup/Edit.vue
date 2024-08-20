@@ -43,7 +43,7 @@ const replyPost = computed(() => {
             v-bind="replyPost"
           ></MainPostReply>
           <!-- your post / reply -->
-          <div class="flex gap-2">
+          <div class="flex flex-col gap-3">
             <div v-if="editPost?.type === 'reply'" class="w-min">
               <UIAvatar :user_id="user.id" size="small" />
             </div>
@@ -53,15 +53,15 @@ const replyPost = computed(() => {
               <div class="max-h-[20em] min-h-[8em] overflow-y-scroll px-1">
                 <MainPostTextarea v-model="newText" mode="edit" />
               </div>
-              <!-- refer post -->
-              <div
-                v-if="editPost?.type === 'repost' && editPost?.reply_to"
-                class="grow overflow-y-scroll p-3"
-              >
-                <MainPostRefer
-                  v-bind="postStore.getPost(editPost?.reply_to)"
-                ></MainPostRefer>
-              </div>
+            </div>
+            <!-- refer post -->
+            <div
+              v-if="editPost?.type === 'repost' && editPost?.reply_to"
+              class="grow overflow-y-scroll"
+            >
+              <MainPostRefer
+                v-bind="postStore.getPost(editPost?.reply_to)"
+              ></MainPostRefer>
             </div>
           </div>
         </div>
