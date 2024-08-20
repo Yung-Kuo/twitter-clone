@@ -205,6 +205,7 @@ async function fetchNewPost() {
 
     <!-- layout -->
     <MainLeft @popupPost="showPopupPost = true" />
+    <MainBottom />
     <MainCenter>
       <!-- header -->
       <template #mainBanner>

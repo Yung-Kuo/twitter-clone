@@ -59,9 +59,9 @@ watch(
   () => changeColor()
 );
 function changeColor() {
-  if (props.color === "gray") {
-    if (props.noHover) color.value = "";
-    else color.value = gray;
+  if (props.noHover) color.value = null;
+  else if (props.color === "gray") {
+    color.value = gray;
   } else if (props.color === "red") {
     if (props.clicked) color.value = red_clicked;
     else color.value = red;
