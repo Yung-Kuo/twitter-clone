@@ -295,7 +295,7 @@ const postList = computed(() => {
           </div>
           <!-- activities navigation -->
           <div
-            class="grid h-16 w-full grid-cols-6 grid-rows-1 gap-0 text-gray-200"
+            class="flex h-12 w-full justify-between overflow-x-scroll text-gray-200 md:h-16"
           >
             <!-- Posts -->
             <UINavTab

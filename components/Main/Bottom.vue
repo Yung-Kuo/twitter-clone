@@ -17,12 +17,13 @@ async function signOut() {
 </script>
 <template>
   <div
-    class="absolute bottom-0 left-0 z-50 flex h-14 w-full justify-between border-t border-zinc-800 bg-transparent text-zinc-200 backdrop-blur-md transition-all md:hidden"
+    id="bottom"
+    class="absolute bottom-0 left-0 z-20 flex h-14 w-full justify-between border-t border-zinc-800 bg-zinc-800 bg-opacity-50 text-zinc-200 backdrop-blur-md transition-all duration-500 md:hidden"
   >
     <NuxtLink to="/">
       <div class="flex h-full w-min items-center px-3">
         <IconsBadge noHover>
-          <IconsHome :solid="route.path === '/'" />
+          <IconsHome :solid="route.path === '/'" class="backdrop-blur-lg" />
         </IconsBadge>
       </div>
     </NuxtLink>
