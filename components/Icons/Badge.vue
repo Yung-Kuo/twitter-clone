@@ -18,7 +18,7 @@ const props = defineProps({
   },
 });
 // size
-const xsmall = "h-6 w-6 text-lg";
+const xsmall = "h-6 w-6 text-xl";
 const small = "h-8 w-8 text-xl";
 const smallPlus = "h-10 w-10 text-2xl";
 const medium = "h-12 w-12 text-2xl";

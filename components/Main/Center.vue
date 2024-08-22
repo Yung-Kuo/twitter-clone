@@ -1,6 +1,7 @@
 <script setup>
 const router = useRouter();
 const handleWheelEvent = inject("handleWheelEvent");
+const handleTouchStart = inject("handleTouchStart");
 const getRect = inject("getRect", () => null);
 const menuGetRect = inject("menuGetRect", () => null);
 </script>
@@ -40,6 +41,7 @@ const menuGetRect = inject("menuGetRect", () => null);
         getRect();
         menuGetRect();
       "
+      @touch="handleTouchStart($event)"
     >
       <div class="h-max w-full py-14 md:w-5/6 xl:w-5/8 2xl:w-3/5">
         <slot name="main" />
