@@ -8,7 +8,7 @@ export default function () {
     // hide & show top banner
     bottom.value = document.getElementById("bottom");
     banner.value = document.getElementById("banner");
-    scroll_record.value += event.deltaY;
+    scroll_record.value += event.touches[0].clientY;
     if (scroll_record.value > 10 && isVisible(bottom.value)) {
       scroll_record.value = 0;
       bottom.value.classList.remove("backdrop-blur-md");

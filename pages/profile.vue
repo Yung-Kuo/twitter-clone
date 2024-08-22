@@ -15,6 +15,9 @@ const { alertMode, alertMessage, errorTimeout, hasError } = useAlert();
 // wheel sync
 const { handleWheelEvent } = useWheelSync();
 provide("handleWheelEvent", handleWheelEvent);
+// touch
+const { handleTouchStart } = useTouch();
+provide("handleTouchStart", handleTouchStart);
 
 // profile card
 const {
