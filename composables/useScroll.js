@@ -1,14 +1,29 @@
 export default function () {
   const center = ref(null);
+  const right = ref(null);
   const bottom = ref(null);
   const banner = ref(null);
+  const previousScrollTop = ref(null);
   const scroll_record = ref(0);
-  function handleTouchStart(event) {
+  function handleScroll(event) {
     // bottom opacity
     // hide & show top banner
     bottom.value = document.getElementById("bottom");
     banner.value = document.getElementById("banner");
-    scroll_record.value += event.touches[0].clientY;
+    if (!previousScrollTop.value) {
+      previousScrollTop.value = event.target.scrollTop;
+    }
+    // console.log(event.target.scrollTop);
+
+    // Calculate the scroll distance
+    const scrollDistance = event.target.scrollTop - previousScrollTop.value;
+
+    // Update the scroll record
+    scroll_record.value += scrollDistance;
+
+    console.log("scrollDistance: ", scrollDistance);
+    console.log("scroll_record: ", scroll_record.value);
+
     if (scroll_record.value > 10 && isVisible(bottom.value)) {
       scroll_record.value = 0;
       bottom.value.classList.remove("backdrop-blur-md");
@@ -17,8 +32,8 @@ export default function () {
     } else if (scroll_record.value < -10 && isVisible(bottom.value)) {
       scroll_record.value = 0;
       bottom.value.classList.remove("backdrop-blur-0", "opacity-50");
-      banner.value.classList.remove("-translate-y-14");
       bottom.value.classList.add("backdrop-blur-md");
+      banner.value.classList.remove("-translate-y-14");
     }
   }
 
@@ -31,6 +46,6 @@ export default function () {
   }
 
   return {
-    handleTouchStart,
+    handleScroll,
   };
 }

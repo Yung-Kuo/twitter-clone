@@ -1,7 +1,7 @@
 <script setup>
 const router = useRouter();
 const handleWheelEvent = inject("handleWheelEvent");
-const handleTouchStart = inject("handleTouchStart");
+const handleScroll = inject("handleScroll");
 const getRect = inject("getRect", () => null);
 const menuGetRect = inject("menuGetRect", () => null);
 </script>
@@ -18,8 +18,8 @@ const menuGetRect = inject("menuGetRect", () => null);
       <slot name="mainBanner" />
 
       <!-- for pages other than index page -->
-      <div v-if="$slots.banner" class="flex gap-6 pl-5">
-        <div class="flex h-full w-min items-center">
+      <div v-if="$slots.banner" class="flex items-center gap-6 pl-5">
+        <div class="flex h-min w-min items-center">
           <NuxtLink @click="router.back()">
             <IconsBadge size="small" class="text-white">
               <IconsBack></IconsBack>
@@ -41,7 +41,7 @@ const menuGetRect = inject("menuGetRect", () => null);
         getRect();
         menuGetRect();
       "
-      @touch="handleTouchStart($event)"
+      @scroll="handleScroll($event)"
     >
       <div class="h-max w-full py-14 md:w-5/6 xl:w-5/8 2xl:w-3/5">
         <slot name="main" />
