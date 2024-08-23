@@ -254,7 +254,7 @@ async function fetchNewPost() {
       <!-- main  -->
       <template #main>
         <!-- write new post -->
-        <MainPostWrite />
+        <MainPostWrite class="hidden md:flex" />
         <!-- post list -->
         <ul>
           <li v-for="post in postList" :key="post.id">
