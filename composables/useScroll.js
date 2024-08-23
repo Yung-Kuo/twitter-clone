@@ -13,18 +13,20 @@ export default function () {
     if (!previousScrollTop.value) {
       previousScrollTop.value = event.target.scrollTop;
     }
-    // console.log(event.target.scrollTop);
+    console.log("scrollTop:", event.target.scrollTop);
 
     // Calculate the scroll distance
     const scrollDistance = event.target.scrollTop - previousScrollTop.value;
-
     // Update the scroll record
     scroll_record.value += scrollDistance;
+
+    previousScrollTop.value = event.target.scrollTop;
 
     console.log("scrollDistance: ", scrollDistance);
     console.log("scroll_record: ", scroll_record.value);
 
     if (scroll_record.value > 10 && isVisible(bottom.value)) {
+      previousScrollTop.value = null;
       scroll_record.value = 0;
       bottom.value.classList.remove("backdrop-blur-md");
       bottom.value.classList.add("backdrop-blur-0", "opacity-50");
