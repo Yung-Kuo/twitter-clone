@@ -110,16 +110,20 @@ onMounted(async () => {
     }
     if (!post.value) await postStore.fetchOnePost(route.params.id);
     if (!replyList.value) await replyStore.fetchReplies(post.value.id);
-    // pid.value = post.value.id;
     // reply thread
-    if (post.value.type === "reply" && post.value.reply_to) {
-      if (await traverseThread()) scrollToTarget();
-    }
+    // if (post.value.type === "reply" && post.value.reply_to) {
+    //   if (await traverseThread()) scrollToTarget();
+    // }
     if (!postStore.getLikes(user.value.id)) {
       await postStore.fetchLikes(user.value.id);
     }
     if (!postStore.getBookmarks.length) {
       await postStore.fetchBookmarks();
+    }
+  });
+  watchEffect(async () => {
+    if (post.value?.type === "reply" && post.value?.reply_to) {
+      if (await traverseThread()) scrollToTarget();
     }
   });
   // mousedown
@@ -155,13 +159,15 @@ async function traverseThread() {
 
 const initialScroll = ref(false);
 function scrollToTarget() {
+  if (initialScroll.value) return;
   initialScroll.value = true;
   nextTick();
   const target = document.getElementById("target");
-  if (target) {
+  if (target && initialScroll.value) {
+    console.log("run");
     target.scrollIntoView({ block: "start", behavior: "instant" });
+    initialScroll.value = false;
   }
-  initialScroll.value = false;
 }
 </script>
 <template>

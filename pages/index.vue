@@ -136,7 +136,7 @@ async function fetchNewPost() {
 </script>
 
 <template>
-  <div class="flex h-screen w-screen bg-black">
+  <div class="flex h-screen w-screen touch-none bg-black">
     <!-- UI popup -->
     <div>
       <!-- Alert -->
