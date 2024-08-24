@@ -55,12 +55,6 @@ provide("useToggleMenu", {
 provide("toggleMenu", toggleMenu);
 provide("menuGetRect", menuGetRect);
 provide("toggleAccountMenu", { showMenu, type, toggleMenu, menuGetRect });
-watch(icon_id, () => {
-  nextTick();
-  if (!showMenu.value) {
-    toggleMenu(menu_pid.value, menu_uid.value, type.value);
-  }
-});
 // write post & quote
 const {
   showPopupPost,
@@ -117,10 +111,10 @@ onMounted(async () => {
   await postStore.fetchLikes(user.value.id);
   await postStore.fetchBookmarks();
   //
-  window.addEventListener("mousedown", (event) => handleClickOutside(event));
+  document.addEventListener("mousedown", (event) => handleClickOutside(event));
 });
 onBeforeUnmount(() => {
-  window.removeEventListener("mousedown", handleClickOutside);
+  document.removeEventListener("mousedown", handleClickOutside);
 });
 
 // Load different feed

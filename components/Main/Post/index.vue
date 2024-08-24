@@ -160,6 +160,7 @@ const date = computed(() => {
                 <IconsBadge
                   size="small"
                   color="blue"
+                  :clicked="menu_pid === post.id && type === 'post_action'"
                   :id="`${post.id}_menu_icon`"
                   @mousedown="toggleMenu(post.id, post.user_id, 'post_action')"
                 >
@@ -174,8 +175,8 @@ const date = computed(() => {
                       showMenu && type === 'post_action' && menu_pid === post.id
                     "
                     :id="`${post.id}_post_action_menu`"
-                    :pid="menu_pid"
-                    :uid="menu_uid"
+                    :pid="post.id"
+                    :uid="post.user_id"
                   ></UIPopupMenu>
                 </UIPopupTransition>
               </div>
@@ -232,6 +233,7 @@ const date = computed(() => {
                   <IconsBadge
                     size="small"
                     color="green"
+                    :clicked="menu_pid === post.id && type === 'repost'"
                     :id="`${post.id}_repost_menu_icon`"
                     @mousedown="toggleMenu(post.id, post.user_id, 'repost')"
                   >
@@ -247,10 +249,10 @@ const date = computed(() => {
                         showMenu && type === 'repost' && menu_pid === post.id
                       "
                       :id="`${post.id}_repost_menu`"
-                      :pid="menu_pid"
-                      @repost="publishRepost(menu_pid)"
+                      :pid="post.id"
+                      @repost="publishRepost(post.id)"
                       @quote="
-                        repost_pid = menu_pid;
+                        repost_pid = post.id;
                         showPopupPost = true;
                       "
                     ></UIPopupRepostMenu>

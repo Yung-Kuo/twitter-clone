@@ -4,9 +4,16 @@ const handleWheelEvent = inject("handleWheelEvent");
 const handleScroll = inject("handleScroll");
 const getRect = inject("getRect", () => null);
 const menuGetRect = inject("menuGetRect", () => null);
+
+const props = defineProps({
+  initialScroll: {
+    type: Boolean,
+    default: false,
+  },
+});
 </script>
 <template>
-  <div class="relative h-full w-full md:w-5/6">
+  <div class="relative h-full w-full touch-none md:w-5/6">
     <!-- top banner -->
     <div
       id="banner"
@@ -41,7 +48,7 @@ const menuGetRect = inject("menuGetRect", () => null);
         getRect();
         menuGetRect();
       "
-      @scroll="handleScroll($event)"
+      @scroll="!props.initialScroll ? handleScroll($event) : null"
     >
       <div class="h-max w-full py-14 md:w-5/6 xl:w-5/8 2xl:w-3/5">
         <slot name="main" />

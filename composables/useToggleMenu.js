@@ -17,11 +17,18 @@ export default function () {
     else if (type.value === "repost") return `${menu_pid.value}_repost_menu`;
   });
   function toggleMenu(pid, uid, menuType) {
+    if (pid !== menu_pid.value || type.value !== menuType)
+      showMenu.value = false;
     menu_pid.value = pid;
     menu_uid.value = uid;
     type.value = menuType;
     showMenu.value = !showMenu.value;
     if (showMenu.value) menuGetRect();
+    else {
+      menu_pid.value = "";
+      menu_uid.value = "";
+      type.value = "";
+    }
   }
   function handleClickOutside(event) {
     if (showMenu.value) {
@@ -30,9 +37,14 @@ export default function () {
       if (!icon || !menu) {
         return;
       } else if (icon.contains(event.target)) {
+        console.log("click icon");
         return;
-      } else if (!menu.contains(event.target)) {
-        showMenu.value = false;
+      } else if (menu.contains(event.target)) {
+        console.log("click menu");
+        return;
+      } else {
+        console.log("click outside");
+        toggleMenu(menu_pid.value, menu_uid.value, type.value);
       }
     }
   }

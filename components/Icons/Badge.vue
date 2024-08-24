@@ -28,17 +28,17 @@ const size = ref(medium);
 const color = ref(gray);
 const gray = "md:hover:bg-zinc-900 active:bg-zinc-800";
 const red =
-  "md:hover:bg-opacity-10 md:hover:bg-pink-600 md:hover:text-pink-600 md:active:bg-opacity-20 focus:bg-opacity-20 focus:bg-pink-600 focus:text-pink-600";
+  "md:hover:bg-opacity-10 md:hover:bg-pink-600 md:hover:text-pink-600 md:active:bg-opacity-20";
 const red_clicked =
-  "md:hover:bg-opacity-10 md:hover:bg-pink-600 text-pink-600 md:active:bg-opacity-20 focus:bg-opacity-20 focus:bg-pink-600";
+  "md:hover:bg-opacity-10 md:hover:bg-pink-600 text-pink-600 md:active:bg-opacity-20";
 const green =
-  "md:hover:bg-opacity-10 md:hover:bg-emerald-500 md:hover:text-emerald-500 md:active:bg-opacity-20 focus:bg-opacity-20 focus:bg-emerald-500 focus:text-emerald-500";
+  "md:hover:bg-opacity-10 md:hover:bg-emerald-500 md:hover:text-emerald-500 md:active:bg-opacity-20";
 const green_clicked =
-  "md:hover:bg-opacity-10 md:hover:bg-emerald-500 text-emerald-500 md:active:bg-opacity-20 focus:bg-opacity-20 focus:bg-emerald-500";
+  "md:hover:bg-opacity-10 md:hover:bg-emerald-500 text-emerald-500 md:active:bg-opacity-20";
 const blue =
-  "md:hover:bg-opacity-10 md:hover:bg-sky-500 md:hover:text-sky-500 md:active:bg-opacity-20 focus:bg-opacity-20 focus:bg-sky-500 focus:text-sky-500";
+  "md:hover:bg-opacity-10 md:hover:bg-sky-500 md:hover:text-sky-500 md:active:bg-opacity-20";
 const blue_clicked =
-  "md:hover:bg-opacity-10 md:hover:bg-sky-500 text-sky-500 md:active:bg-opacity-20 focus:bg-opacity-20 focus:bg-sky-500";
+  "md:hover:bg-opacity-10 md:hover:bg-sky-500 text-sky-500 md:active:bg-opacity-20";
 onMounted(() => {
   // size
   if (!props.size) size.value = medium;
