@@ -55,19 +55,19 @@ const date = computed(() => {
   <MainPostHoverClickWrapper
     :post="post"
     hasRing
-    class="flex w-full cursor-pointer flex-col gap-2 rounded-2xl border border-zinc-800 bg-black p-3 text-zinc-200 transition-colors duration-200 md:border-2"
+    class="flex flex-col gap-2 rounded-2xl border border-zinc-800 bg-black p-3 md:border-2"
   >
     <!-- upper section -->
     <div class="flex h-min w-full">
       <!-- avatar -->
-      <div class="noForward flex items-center">
+      <div class="noForward flex w-min items-center">
         <NuxtLink :to="`/${postStore.getUsername(post?.user_id)}`">
           <UIAvatar :user_id="post.user_id" size="xsmall" class=""> </UIAvatar>
         </NuxtLink>
       </div>
       <!-- user info -->
       <div
-        class="flex items-center overflow-x-scroll whitespace-nowrap px-2 leading-tight"
+        class="flex grow items-center overflow-x-scroll whitespace-nowrap px-2 leading-tight"
       >
         <!-- name -->
         <div class="noForward font-bold hover:underline">
@@ -97,13 +97,9 @@ const date = computed(() => {
       </div>
     </div>
     <!-- middle section -->
-    <div class="flex h-full w-full flex-col gap-2">
+    <div class="flex w-full flex-col gap-3">
       <!-- content -->
-      <div
-        v-if="post.type !== 'repost' || post.text !== post.reply_to"
-        class="pb-1 text-base leading-tight"
-        :class="post.type !== 'repost' ? 'pb-1' : null"
-      >
+      <div v-if="post.type !== 'repost' || post.text !== post.reply_to">
         <pre>{{ post.text }}</pre>
       </div>
       <!-- repost / quote -->

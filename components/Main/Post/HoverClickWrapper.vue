@@ -18,7 +18,7 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
 <template>
   <div
     :class="[post.id, props.hasRing ? null : '!ring-0']"
-    class="stopHere cursor-pointer text-zinc-200 transition-all"
+    class="stopHere flex w-full cursor-pointer text-zinc-200 transition-all"
     @mouseenter="
       target_post = post;
       props.noHover ? null : hoverPost($event);

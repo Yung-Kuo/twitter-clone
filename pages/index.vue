@@ -227,7 +227,7 @@ async function fetchNewPost() {
         </div>
         <!-- settings -->
         <div
-          class="hidden h-full w-6 items-center justify-center md:block md:w-14"
+          class="hidden h-full w-6 items-center justify-center md:flex md:w-14"
         >
           <NuxtLink>
             <IconsBadge
@@ -238,7 +238,7 @@ async function fetchNewPost() {
             </IconsBadge>
             <IconsBadge
               size="xsmall"
-              class="block text-xl text-zinc-200 md:hidden"
+              class="flex text-xl text-zinc-200 md:hidden"
             >
               <IconsSettings></IconsSettings>
             </IconsBadge>

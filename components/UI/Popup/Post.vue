@@ -13,15 +13,15 @@ onMounted(() => {
 <template>
   <UIPopupDraft @close="emit('close')" class="min-h-[40%]">
     <template #center>
-      <div class="flex grow gap-2">
+      <div class="flex w-full gap-2">
         <!-- left column -->
-        <div class="w-min">
+        <div class="w-10">
           <div class="w-min">
             <UIAvatar :user_id="user.id" size="small" />
           </div>
         </div>
         <!-- right column -->
-        <div class="flex w-full flex-col gap-3">
+        <div class="flex w-[calc(100%-3rem)] flex-col gap-3">
           <!-- post -->
           <div class="min-h-[5rem] w-full overflow-y-scroll">
             <MainPostTextarea

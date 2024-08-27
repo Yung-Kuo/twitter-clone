@@ -75,17 +75,9 @@ export default function () {
             centerRect.height
           ) {
             menu.classList.add("-translate-x-10", "-translate-y-32");
-            // if (
-            //   !menu.classList.contains("-translate-x-10", "-translate-y-32")
-            // ) {
-            //   menu.classList.add("-translate-x-10", "-translate-y-32");
-            // }
           } else {
             // menu normal position
             menu.classList.remove("-translate-x-10", "-translate-y-32");
-            // if (menu.classList.contains("-translate-x-10", "-translate-y-32")) {
-            //   menu.classList.remove("-translate-x-10", "-translate-y-32");
-            // }
           }
         } else if (type.value === "repost") {
           // repost menu

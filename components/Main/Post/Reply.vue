@@ -30,7 +30,7 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
 <template>
   <MainPostHoverClickWrapper :post="post" noHover class="flex gap-2">
     <!-- left column / avatar -->
-    <div class="flex w-min flex-col">
+    <div class="flex w-10 flex-col">
       <!-- avatar for show post -->
       <div class="h-min w-min">
         <NuxtLink :to="`/${postStore.getUsername(post?.user_id)}`">
@@ -43,19 +43,17 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
       </div>
     </div>
     <!-- right column -->
-    <div class="flex w-full flex-col">
+    <div class="flex w-[calc(100%-3rem)] flex-col">
       <!-- upper section -->
-      <div class="flex w-max items-center whitespace-nowrap">
+      <div class="flex h-5 w-full items-center whitespace-nowrap">
         <!-- user info -->
-        <div class="h-5 font-bold hover:underline">
-          <!-- name -->
-          <div class="noForward">
-            <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
-              <span>
-                {{ postStore.getName(post.user_id) }}
-              </span>
-            </NuxtLink>
-          </div>
+        <!-- name -->
+        <div class="noForward font-bold hover:underline">
+          <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
+            <span>
+              {{ postStore.getName(post.user_id) }}
+            </span>
+          </NuxtLink>
         </div>
         &ensp;
         <div class="flex w-max text-zinc-500">
@@ -72,12 +70,12 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
         </div>
       </div>
       <!-- middle section -->
-      <div class="flex max-h-[18rem] flex-col gap-3 overflow-y-scroll">
+      <div
+        class="flex max-h-[18rem] w-full max-w-full flex-col gap-3 overflow-y-scroll"
+      >
         <!-- content -->
-        <div>
-          <pre v-if="post.type !== 'repost && post.text !== repost'">{{
-            post.text
-          }}</pre>
+        <div v-if="post.type !== 'repost && post.text !== repost'">
+          <pre>{{ post.text }}</pre>
         </div>
         <!-- repost / quote -->
         <div v-if="post.type === 'repost'">
