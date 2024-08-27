@@ -92,7 +92,7 @@ const date = computed(() => {
       <!-- right column -->
       <div class="flex w-[calc(100%-2.5rem)] flex-col">
         <!-- upper section -->
-        <div class="flex h-6 w-full items-center pl-2">
+        <div class="flex h-5 w-full items-center pl-2">
           <!-- user info -->
           <div
             class="noForward flex items-center overflow-x-scroll whitespace-nowrap"
@@ -139,6 +139,7 @@ const date = computed(() => {
               <IconsBadge
                 size="small"
                 color="blue"
+                :clicked="menu_pid === post.id && type === 'post_action'"
                 :id="`${post.id}_menu_icon`"
                 @mousedown="toggleMenu(post.id, post.user_id, 'post_action')"
                 class="noForward"
@@ -147,19 +148,18 @@ const date = computed(() => {
               </IconsBadge>
             </div>
             <!-- menu -->
-            <div class="relative -translate-x-52 translate-y-2">
-              <UIPopupTransition>
-                <UIPopupMenu
-                  v-if="
-                    showMenu && type === 'post_action' && menu_pid === post.id
-                  "
-                  :id="`${post.id}_post_action_menu`"
-                  :pid="menu_pid"
-                  :uid="menu_uid"
-                  class="noForward"
-                ></UIPopupMenu>
-              </UIPopupTransition>
-            </div>
+            <!-- <div class="relative -translate-x-52 translate-y-2"> -->
+            <UIPopupTransition>
+              <UIPopupMenu
+                v-if="
+                  showMenu && type === 'post_action' && menu_pid === post.id
+                "
+                :pid="menu_pid"
+                :uid="menu_uid"
+                class="noForward"
+              ></UIPopupMenu>
+            </UIPopupTransition>
+            <!-- </div> -->
           </div>
         </div>
         <!-- middle section -->
@@ -201,7 +201,7 @@ const date = computed(() => {
                 <IconsBadge
                   size="small"
                   color="green"
-                  :clicked="false"
+                  :clicked="menu_pid === post.id && type === 'repost'"
                   :id="`${post.id}_repost_menu_icon`"
                   @mousedown="toggleMenu(post.id, post.user_id, 'repost')"
                 >

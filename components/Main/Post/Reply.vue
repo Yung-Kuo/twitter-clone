@@ -38,55 +38,52 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
         </NuxtLink>
       </div>
       <!-- thread -->
-      <div
-        class="noForward flex w-full flex-grow cursor-default justify-center"
-      >
+      <div class="noForward flex w-full grow cursor-default justify-center">
         <span class="h-full border border-zinc-800"></span>
       </div>
     </div>
     <!-- right column -->
-    <div class="grow">
+    <div class="flex w-full flex-col">
       <!-- upper section -->
-      <div class="flex flex-col">
+      <div class="flex w-max items-center whitespace-nowrap">
         <!-- user info -->
-        <div class="flex w-max items-center whitespace-nowrap">
-          <div class="font-bold hover:underline">
-            <!-- name -->
-            <div class="noForward">
-              <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
-                <span>
-                  {{ postStore.getName(post.user_id) }}
-                </span>
-              </NuxtLink>
-            </div>
-          </div>
-          &ensp;
-          <div class="flex w-max text-zinc-500">
-            <!-- username -->
-            <div class="noForward">
-              <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
-                <span> @{{ postStore.getUsername(post.user_id) }}</span>
-              </NuxtLink>
-            </div>
-            <!-- post time -->
-            <pre> · {{ date }}</pre>
-            <!-- edited -->
-            <pre v-if="post.edited"> · edited</pre>
+        <div class="h-5 font-bold hover:underline">
+          <!-- name -->
+          <div class="noForward">
+            <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
+              <span>
+                {{ postStore.getName(post.user_id) }}
+              </span>
+            </NuxtLink>
           </div>
         </div>
+        &ensp;
+        <div class="flex w-max text-zinc-500">
+          <!-- username -->
+          <div class="noForward">
+            <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
+              <span> @{{ postStore.getUsername(post.user_id) }}</span>
+            </NuxtLink>
+          </div>
+          <!-- post time -->
+          <pre> · {{ date }}</pre>
+          <!-- edited -->
+          <pre v-if="post.edited"> · edited</pre>
+        </div>
+      </div>
+      <!-- middle section -->
+      <div class="flex max-h-[18rem] flex-col gap-3 overflow-y-scroll">
         <!-- content -->
-        <div class="flex max-h-[18rem] flex-col gap-3 overflow-y-scroll pt-2">
-          <div>
-            <pre v-if="post.type !== 'repost && post.text !== repost'">{{
-              post.text
-            }}</pre>
-          </div>
-          <!-- repost / quote -->
-          <div v-if="post.type === 'repost'">
-            <MainPostRefer
-              v-bind="postStore.getPost(post.reply_to)"
-            ></MainPostRefer>
-          </div>
+        <div>
+          <pre v-if="post.type !== 'repost && post.text !== repost'">{{
+            post.text
+          }}</pre>
+        </div>
+        <!-- repost / quote -->
+        <div v-if="post.type === 'repost'">
+          <MainPostRefer
+            v-bind="postStore.getPost(post.reply_to)"
+          ></MainPostRefer>
         </div>
       </div>
       <!-- lower section -->

@@ -57,6 +57,7 @@ export default function () {
         const centerRect = center.getBoundingClientRect();
         // menu
         const menu = document.getElementById(menu_id.value);
+        if (!menu) return;
         const menuRect = menu.getBoundingClientRect();
         // menu icon
         const icon = document.getElementById(icon_id.value);
@@ -69,31 +70,31 @@ export default function () {
         } else if (type.value === "post_action") {
           // post action menu
           if (
-            iconRect.top + iconRect.height + 10 + menuRect.height >
+            // menu too low
+            iconRect.top + iconRect.height + 60 + menuRect.height >
             centerRect.height
           ) {
-            if (
-              !menu.classList.contains("-translate-y-32", "-translate-x-10")
-            ) {
-              menu.classList.add("-translate-x-10", "-translate-y-32");
-              // menu.classList.remove("-translate-x-0", "-translate-y-0");
-            }
+            menu.classList.add("-translate-x-10", "-translate-y-32");
+            // if (
+            //   !menu.classList.contains("-translate-x-10", "-translate-y-32")
+            // ) {
+            //   menu.classList.add("-translate-x-10", "-translate-y-32");
+            // }
           } else {
-            if (menu.classList.contains("-translate-y-32", "-translate-x-10")) {
-              // menu.classList.add("-translate-x-0", "-translate-y-0");
-              menu.classList.remove("-translate-x-10", "-translate-y-32");
-            }
+            // menu normal position
+            menu.classList.remove("-translate-x-10", "-translate-y-32");
+            // if (menu.classList.contains("-translate-x-10", "-translate-y-32")) {
+            //   menu.classList.remove("-translate-x-10", "-translate-y-32");
+            // }
           }
         } else if (type.value === "repost") {
           // repost menu
-          if (iconRect.top + menuRect.height > centerRect.height) {
+          if (iconRect.top + menuRect.height + 50 > centerRect.height) {
             if (!menu.classList.contains("-translate-y-20")) {
               menu.classList.add("-translate-y-20");
-              // menu.classList.remove("-translate-y-0");
             }
           } else {
             if (menu.classList.contains("-translate-y-20")) {
-              // menu.classList.add("-translate-y-0");
               menu.classList.remove("-translate-y-20");
             }
           }

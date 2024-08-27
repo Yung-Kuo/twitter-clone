@@ -168,18 +168,18 @@ const date = computed(() => {
                 </IconsBadge>
               </div>
               <!-- menu -->
-              <div class="relative -translate-x-52 translate-y-2">
-                <UIPopupTransition>
-                  <UIPopupMenu
-                    v-if="
-                      showMenu && type === 'post_action' && menu_pid === post.id
-                    "
-                    :id="`${post.id}_post_action_menu`"
-                    :pid="post.id"
-                    :uid="post.user_id"
-                  ></UIPopupMenu>
-                </UIPopupTransition>
-              </div>
+              <!-- <div class="relative -translate-x-40 translate-y-2"> -->
+              <UIPopupTransition>
+                <UIPopupMenu
+                  v-if="
+                    showMenu && type === 'post_action' && menu_pid === post.id
+                  "
+                  :pid="post.id"
+                  :uid="post.user_id"
+                ></UIPopupMenu>
+                <!-- :id="`${post.id}_post_action_menu`" -->
+              </UIPopupTransition>
+              <!-- </div> -->
             </div>
           </div>
 

@@ -73,17 +73,20 @@ function assignActionList() {
 }
 </script>
 <template>
-  <div
-    class="absolute z-10 flex h-max w-60 flex-col rounded-xl bg-black text-zinc-200 shadow-3xl shadow-zinc-700 transition-all duration-200"
-  >
-    <ul>
-      <li
-        v-for="action in actionList"
-        @mousedown="action.function"
-        class="flex h-10 w-full cursor-pointer items-center px-5 transition-all duration-200 first:rounded-t-xl first:pt-1 last:rounded-b-xl last:pb-1 hover:bg-zinc-700 hover:bg-opacity-30 active:bg-opacity-40"
-      >
-        <span>{{ action.name }}</span>
-      </li>
-    </ul>
+  <div class="relative -translate-x-40 translate-y-2">
+    <div
+      :id="`${props.pid}_post_action_menu`"
+      class="absolute z-10 flex h-max w-48 flex-col rounded-xl bg-black text-zinc-200 shadow-3xl shadow-zinc-700 transition-all duration-200"
+    >
+      <ul>
+        <li
+          v-for="action in actionList"
+          @mousedown="action.function"
+          class="flex h-10 w-full cursor-pointer items-center px-5 transition-all duration-200 first:rounded-t-xl first:pt-1 last:rounded-b-xl last:pb-1 hover:bg-zinc-700 hover:bg-opacity-30 active:bg-opacity-40"
+        >
+          <span>{{ action.name }}</span>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>

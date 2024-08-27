@@ -9,7 +9,8 @@ Open Sans
 */
 body {
   font-family: "Ubuntu";
-  touch-action: none;
+  /* touch-action: none; */
+  overflow: hidden;
 }
 pre {
   font-family: "Open Sans";

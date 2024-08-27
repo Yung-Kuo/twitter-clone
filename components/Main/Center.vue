@@ -13,7 +13,7 @@ const props = defineProps({
 });
 </script>
 <template>
-  <div class="relative h-full w-full touch-none md:w-5/6">
+  <div class="relative h-full w-full overflow-hidden md:w-5/6">
     <!-- top banner -->
     <div
       id="banner"
