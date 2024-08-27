@@ -43,12 +43,12 @@ const props = defineProps({
     <div
       id="center"
       class="flex h-full w-full overflow-y-scroll"
-      @wheel="
-        handleWheelEvent($event, 'center');
+      @wheel="handleWheelEvent($event, 'center')"
+      @scroll="
+        handleScroll($event, !props.initialScroll);
         getRect();
         menuGetRect();
       "
-      @scroll="!props.initialScroll ? handleScroll($event) : null"
     >
       <div class="h-max w-full py-14 md:w-5/6 xl:w-5/8 2xl:w-3/5">
         <slot name="main" />
