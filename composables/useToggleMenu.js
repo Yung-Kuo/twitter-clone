@@ -55,6 +55,9 @@ export default function () {
         // center
         const center = document.getElementById("center");
         const centerRect = center.getBoundingClientRect();
+        // bottom
+        const bottom = document.getElementById("bottom");
+        const bottomRect = bottom.getBoundingClientRect();
         // menu
         const menu = document.getElementById(menu_id.value);
         if (!menu) return;
@@ -71,8 +74,8 @@ export default function () {
           // post action menu
           if (
             // menu too low
-            iconRect.top + iconRect.height + 60 + menuRect.height >
-            centerRect.height
+            iconRect.top + iconRect.height + 10 + menuRect.height >
+            bottomRect.top
           ) {
             menu.classList.add("-translate-x-10", "-translate-y-32");
           } else {
@@ -81,7 +84,7 @@ export default function () {
           }
         } else if (type.value === "repost") {
           // repost menu
-          if (iconRect.top + menuRect.height + 50 > centerRect.height) {
+          if (iconRect.top + menuRect.height > bottomRect.top) {
             if (!menu.classList.contains("-translate-y-20")) {
               menu.classList.add("-translate-y-20");
             }
