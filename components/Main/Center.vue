@@ -54,7 +54,7 @@ const props = defineProps({
       <!-- new post gadget -->
       <IconsBadge
         size="medium"
-        class="absolute bottom-16 right-2"
+        class="absolute bottom-32 right-2"
         @mousedown="showPopupPost = true"
       >
         <div
