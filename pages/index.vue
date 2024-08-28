@@ -72,6 +72,7 @@ provide("writePost", {
   publishRepost,
   publishQuote,
 });
+provide("showPopupPost", showPopupPost);
 provide("repost_pid", repost_pid);
 // reply
 const { showPopupReply, pid, reply, clickReply, publishReply } = useReply();

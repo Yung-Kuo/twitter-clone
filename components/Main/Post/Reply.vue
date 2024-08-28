@@ -28,7 +28,7 @@ const date = computed(() => {
 const { target_post, clickPost, hoverPost } = inject("clickPost");
 </script>
 <template>
-  <MainPostHoverClickWrapper :post="post" noHover class="flex gap-2">
+  <MainPostHoverClickWrapper :post="post" noHover class="gap-2">
     <!-- left column / avatar -->
     <div class="flex w-10 flex-col">
       <!-- avatar for show post -->
@@ -70,15 +70,13 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
         </div>
       </div>
       <!-- middle section -->
-      <div
-        class="flex max-h-[18rem] w-full max-w-full flex-col gap-3 overflow-y-scroll"
-      >
+      <div class="flex max-h-[18rem] w-full flex-col gap-3 overflow-y-scroll">
         <!-- content -->
         <div v-if="post.type !== 'repost && post.text !== repost'">
           <pre>{{ post.text }}</pre>
         </div>
         <!-- repost / quote -->
-        <div v-if="post.type === 'repost'">
+        <div v-if="post.type === 'repost'" class="w-full">
           <MainPostRefer
             v-bind="postStore.getPost(post.reply_to)"
           ></MainPostRefer>
