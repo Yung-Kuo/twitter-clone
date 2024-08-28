@@ -7,9 +7,7 @@ const user = useSupabaseUser();
 const client = useSupabaseClient();
 const emit = defineEmits(["popupPost"]);
 const route = useRoute();
-// post action menu
-// const toggleMenu = inject("toggleMenu");
-const { showMenu, type, toggleMenu, menuGetRect } = inject("toggleAccountMenu");
+const showPopupPost = inject("showPopupPost");
 async function signOut() {
   const { error } = await client.auth.signOut();
   store.clearProfile();
@@ -47,6 +45,21 @@ async function signOut() {
     <div class="flex h-full w-min items-center px-3">
       <IconsBadge noHover>
         <IconsMessage />
+      </IconsBadge>
+    </div>
+
+    <div class="relative">
+      <!-- new post gadget -->
+      <IconsBadge
+        size="medium"
+        class="absolute -translate-x-16 -translate-y-16"
+        @mousedown="showPopupPost = true"
+      >
+        <div
+          class="flex h-full w-full items-center justify-center rounded-full bg-sky-500 transition-all hover:bg-sky-600"
+        >
+          <pre class="text-4xl leading-none text-zinc-200">+</pre>
+        </div>
       </IconsBadge>
     </div>
   </div>

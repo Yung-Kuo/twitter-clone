@@ -4,7 +4,6 @@ const handleWheelEvent = inject("handleWheelEvent");
 const handleScroll = inject("handleScroll");
 const getRect = inject("getRect", () => null);
 const menuGetRect = inject("menuGetRect", () => null);
-const showPopupPost = inject("showPopupPost");
 
 const props = defineProps({
   initialScroll: {
@@ -51,18 +50,6 @@ const props = defineProps({
         menuGetRect();
       "
     >
-      <!-- new post gadget -->
-      <IconsBadge
-        size="medium"
-        class="absolute bottom-32 right-2"
-        @mousedown="showPopupPost = true"
-      >
-        <div
-          class="flex h-full w-full items-center justify-center rounded-full bg-sky-500 transition-all hover:bg-sky-600"
-        >
-          <pre class="text-4xl leading-none text-zinc-200">+</pre>
-        </div>
-      </IconsBadge>
       <div class="h-max w-full py-14 md:w-5/6 xl:w-5/8 2xl:w-3/5">
         <slot name="main" />
       </div>
