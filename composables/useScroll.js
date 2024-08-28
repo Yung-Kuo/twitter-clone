@@ -8,6 +8,7 @@ export default function () {
   function handleScroll(event) {
     // bottom opacity
     // hide & show top banner
+    center.value = document.getElementById("center");
     bottom.value = document.getElementById("bottom");
     banner.value = document.getElementById("banner");
     if (!previousScrollTop.value) {
@@ -19,16 +20,13 @@ export default function () {
     const scrollDistance = event.target.scrollTop - previousScrollTop.value;
     // Update the scroll record
     scroll_record.value += scrollDistance;
-
     previousScrollTop.value = event.target.scrollTop;
-
-    // console.log("scrollDistance: ", scrollDistance);
-    // console.log("scroll_record: ", scroll_record.value);
 
     if (
       scroll_record.value > 10 &&
       isVisible(bottom.value) &&
-      event.target.scrollTop > 0
+      event.target.scrollTop > 0 &&
+      event.target.scrollTop < center.value.scrollHeight
     ) {
       previousScrollTop.value = null;
       scroll_record.value = 0;
