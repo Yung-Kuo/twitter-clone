@@ -168,7 +168,6 @@ const date = computed(() => {
                 </IconsBadge>
               </div>
               <!-- menu -->
-              <!-- <div class="relative -translate-x-40 translate-y-2"> -->
               <UIPopupTransition>
                 <UIPopupMenu
                   v-if="
@@ -177,7 +176,6 @@ const date = computed(() => {
                   :pid="post.id"
                   :uid="post.user_id"
                 ></UIPopupMenu>
-                <!-- :id="`${post.id}_post_action_menu`" -->
               </UIPopupTransition>
               <!-- </div> -->
             </div>

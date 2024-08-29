@@ -22,11 +22,13 @@ export default function () {
     scroll_record.value += scrollDistance;
     previousScrollTop.value = event.target.scrollTop;
 
+    // console.log("scrollTop + innerHeight:", event.target.scrollTop + window.innerHeight);
+    // console.log("scrollHeight:", center.value.scrollHeight);
     if (
       scroll_record.value > 10 &&
       isVisible(bottom.value) &&
       event.target.scrollTop > 0 &&
-      event.target.scrollTop < center.value.scrollHeight
+      event.target.scrollTop + window.innerHeight < center.value.scrollHeight
     ) {
       previousScrollTop.value = null;
       scroll_record.value = 0;

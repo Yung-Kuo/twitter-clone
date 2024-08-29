@@ -71,11 +71,21 @@ export default function () {
           menu.style.top = `${iconRect.top}px`;
           menu.style.left = `${iconRect.left}px`;
         } else if (type.value === "post_action") {
+          console.log(
+            bottomRect.width > 0
+              ? iconRect.top + iconRect.height + 10 + menuRect.height >
+                  bottomRect.top
+              : iconRect.top + iconRect.height + 10 + menuRect.height >
+                  centerRect.height
+          );
           // post action menu
           if (
             // menu too low
-            iconRect.top + iconRect.height + 10 + menuRect.height >
-            bottomRect.top
+            bottomRect.width > 0
+              ? iconRect.top + iconRect.height + 10 + menuRect.height >
+                bottomRect.top
+              : iconRect.top + iconRect.height + 10 + menuRect.height >
+                centerRect.height
           ) {
             menu.classList.add("-translate-x-10", "-translate-y-32");
           } else {
@@ -84,7 +94,11 @@ export default function () {
           }
         } else if (type.value === "repost") {
           // repost menu
-          if (iconRect.top + menuRect.height > bottomRect.top) {
+          if (
+            bottomRect.width > 0
+              ? iconRect.top + menuRect.height > bottomRect.top
+              : iconRect.top + menuRect.height > centerRect.height
+          ) {
             if (!menu.classList.contains("-translate-y-20")) {
               menu.classList.add("-translate-y-20");
             }

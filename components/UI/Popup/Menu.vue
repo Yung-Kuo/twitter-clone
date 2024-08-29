@@ -73,7 +73,7 @@ function assignActionList() {
 }
 </script>
 <template>
-  <div class="relative -translate-x-40 translate-y-2">
+  <div class="relative -translate-x-40 translate-y-1">
     <div
       :id="`${props.pid}_post_action_menu`"
       class="absolute z-10 flex h-max w-48 flex-col rounded-xl bg-black text-zinc-200 shadow-3xl shadow-zinc-700 transition-all duration-200"
