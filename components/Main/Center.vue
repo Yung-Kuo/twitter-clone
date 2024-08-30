@@ -1,5 +1,6 @@
 <script setup>
 const router = useRouter();
+const { swipeRight } = useSwipe();
 const handleWheelEvent = inject("handleWheelEvent");
 const handleScroll = inject("handleScroll");
 const getRect = inject("getRect", () => null);
@@ -13,11 +14,11 @@ const props = defineProps({
 });
 </script>
 <template>
-  <div class="relative h-full w-full overflow-hidden md:w-5/6">
+  <div class="relative h-screen w-screen overflow-hidden md:w-5/6">
     <!-- top banner -->
     <div
       id="banner"
-      class="absolute left-0 top-0 z-20 flex h-14 w-full bg-transparent backdrop-blur-md transition-all md:w-5/6 xl:w-5/8 2xl:w-3/5"
+      class="absolute left-0 top-0 z-20 flex max-h-[7rem] min-h-[3.5rem] w-full bg-zinc-800 bg-opacity-50 backdrop-blur-md transition-all duration-300 md:h-14 md:w-5/6 xl:w-5/8 2xl:w-3/5"
       :class="{ 'border-b border-zinc-800 md:border-b-2': $slots.mainBanner }"
     >
       <!-- test -->

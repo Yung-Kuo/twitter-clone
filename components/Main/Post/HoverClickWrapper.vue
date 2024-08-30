@@ -32,7 +32,10 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
       target_post?.id === post.id ? (target_post = null) : null;
       props.noHover ? null : hoverPost($event);
     "
-    @mousedown="target_post?.id === post.id ? clickPost($event) : null"
+    @mousedown="
+      target_post ? null : (target_post = post);
+      target_post?.id === post.id ? clickPost($event) : null;
+    "
   >
     <slot />
   </div>

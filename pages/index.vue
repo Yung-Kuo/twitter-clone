@@ -134,10 +134,20 @@ async function fetchNewPost() {
   if (activeTab.value === "Following") await postStore.fetchFollowingPosts();
   else if (activeTab.value === "For You") await postStore.fetchAllPosts();
 }
+
+function toggleSidePanel() {
+  // toggle translate-x-[75%] to the body
+  const mainPage = document.getElementById("mainPage");
+  mainPage.classList.toggle("translate-x-[75%]");
+  mainPage.classList.toggle("md:translate-x-0");
+}
 </script>
 
 <template>
-  <div class="flex h-screen w-screen overflow-hidden bg-black">
+  <div
+    id="mainPage"
+    class="flex h-screen w-screen overflow-x-visible bg-black transition-all"
+  >
     <!-- UI popup -->
     <div>
       <!-- Alert -->
@@ -203,47 +213,51 @@ async function fetchNewPost() {
 
     <!-- layout -->
     <MainLeft @popupPost="showPopupPost = true" />
+    <MainLeftSmallScreen />
     <MainBottom />
     <MainCenter>
       <!-- header -->
       <template #mainBanner>
-        <!-- feed tab -->
-        <div class="grid h-full grow grid-cols-2">
-          <!-- For you -->
-          <NuxtLink>
-            <UINavTab
-              :isActive="activeTab === 'For You'"
-              @mousedown="activeTab = 'For You'"
-              >For You</UINavTab
-            >
-          </NuxtLink>
-          <!-- Following -->
-          <NuxtLink>
-            <UINavTab
-              :isActive="activeTab === 'Following'"
-              @mousedown="activeTab = 'Following'"
-              >Following</UINavTab
-            >
-          </NuxtLink>
-        </div>
-        <!-- settings -->
-        <div
-          class="hidden h-full w-6 items-center justify-center md:flex md:w-14"
-        >
-          <NuxtLink>
-            <IconsBadge
-              size="small"
-              class="hidden text-xl text-zinc-200 md:flex"
-            >
-              <IconsSettings></IconsSettings>
-            </IconsBadge>
-            <IconsBadge
+        <div class="flex w-full flex-col">
+          <!-- account avatar / open side panel -->
+          <div class="flex h-12 items-center p-3 md:hidden">
+            <UIAvatar
+              :user_id="user.id"
               size="xsmall"
-              class="flex text-xl text-zinc-200 md:hidden"
+              @mousedown="toggleSidePanel()"
+            ></UIAvatar>
+          </div>
+          <div class="flex w-full">
+            <!-- feed tab -->
+            <div class="grid h-14 grow grid-cols-2">
+              <!-- For you -->
+              <NuxtLink>
+                <UINavTab
+                  :isActive="activeTab === 'For You'"
+                  @mousedown="activeTab = 'For You'"
+                  >For You</UINavTab
+                >
+              </NuxtLink>
+              <!-- Following -->
+              <NuxtLink>
+                <UINavTab
+                  :isActive="activeTab === 'Following'"
+                  @mousedown="activeTab = 'Following'"
+                  >Following</UINavTab
+                >
+              </NuxtLink>
+            </div>
+            <!-- settings -->
+            <div
+              class="hidden h-full w-6 items-center justify-center md:flex md:w-14"
             >
-              <IconsSettings></IconsSettings>
-            </IconsBadge>
-          </NuxtLink>
+              <NuxtLink>
+                <IconsBadge size="small" class="text-xl text-zinc-200">
+                  <IconsSettings />
+                </IconsBadge>
+              </NuxtLink>
+            </div>
+          </div>
         </div>
       </template>
       <!-- main  -->
@@ -251,13 +265,12 @@ async function fetchNewPost() {
         <!-- write new post -->
         <MainPostWrite class="hidden md:flex" />
         <!-- post list -->
-        <ul>
+        <ul class="pt-14">
           <li v-for="post in postList" :key="post.id">
             <MainPost :post="post"></MainPost>
           </li>
         </ul>
       </template>
     </MainCenter>
-    <!-- <MainRight /> -->
   </div>
 </template>

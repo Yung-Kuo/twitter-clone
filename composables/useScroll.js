@@ -1,4 +1,5 @@
 export default function () {
+  const route = useRoute();
   const center = ref(null);
   const right = ref(null);
   const bottom = ref(null);
@@ -34,12 +35,22 @@ export default function () {
       scroll_record.value = 0;
       bottom.value.classList.remove("backdrop-blur-md");
       bottom.value.classList.add("backdrop-blur-0", "opacity-50");
-      banner.value.classList.add("-translate-y-14");
+      // banner.value.classList.add("-translate-y-14");
+      if (route.path === "/") {
+        banner.value.classList.add("-translate-y-28");
+      } else {
+        banner.value.classList.add("-translate-y-14");
+      }
     } else if (scroll_record.value < -10 && isVisible(bottom.value)) {
       scroll_record.value = 0;
       bottom.value.classList.remove("backdrop-blur-0", "opacity-50");
       bottom.value.classList.add("backdrop-blur-md");
-      banner.value.classList.remove("-translate-y-14");
+      // banner.value.classList.remove("-translate-y-14");
+      if (route.path === "/") {
+        banner.value.classList.remove("-translate-y-28");
+      } else {
+        banner.value.classList.remove("-translate-y-14");
+      }
     }
   }
 
