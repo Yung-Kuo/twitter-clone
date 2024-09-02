@@ -47,10 +47,10 @@ async function signOut() {
         <!-- home -->
         <NuxtLink to="/">
           <MainMenuEntry>
-            <template #sm-menu>
+            <template #mdMenu>
               <IconsHome :solid="route.path === '/'"></IconsHome>
             </template>
-            <template #lg-menu>
+            <template #lgMenu>
               <IconsHome :solid="route.path === '/'"></IconsHome>
             </template>
             <template #title>Home</template>
@@ -59,10 +59,10 @@ async function signOut() {
         <!-- search -->
         <NuxtLink>
           <MainMenuEntry>
-            <template #sm-menu>
+            <template #mdMenu>
               <IconsSearch></IconsSearch>
             </template>
-            <template #lg-menu>
+            <template #lgMenu>
               <IconsSearch></IconsSearch>
             </template>
             <template #title>Search</template>
@@ -71,10 +71,10 @@ async function signOut() {
         <!-- notification -->
         <NuxtLink>
           <MainMenuEntry>
-            <template #sm-menu>
+            <template #mdMenu>
               <IconsNotification></IconsNotification>
             </template>
-            <template #lg-menu>
+            <template #lgMenu>
               <IconsNotification></IconsNotification>
             </template>
             <template #title>Notification</template>
@@ -83,10 +83,10 @@ async function signOut() {
         <!-- message -->
         <NuxtLink>
           <MainMenuEntry>
-            <template #sm-menu>
+            <template #mdMenu>
               <IconsMessage></IconsMessage>
             </template>
-            <template #lg-menu>
+            <template #lgMenu>
               <IconsMessage></IconsMessage>
             </template>
             <template #title>Message</template>
@@ -95,12 +95,12 @@ async function signOut() {
         <!-- bookmarks -->
         <NuxtLink to="/bookmarks">
           <MainMenuEntry>
-            <template #sm-menu>
+            <template #mdMenu>
               <IconsBookmark
                 :solid="route.path === '/bookmarks'"
               ></IconsBookmark>
             </template>
-            <template #lg-menu>
+            <template #lgMenu>
               <IconsBookmark
                 :solid="route.path === '/bookmarks'"
               ></IconsBookmark>
@@ -111,12 +111,12 @@ async function signOut() {
         <!-- profile -->
         <NuxtLink :to="`/${store.getUsername}`">
           <MainMenuEntry>
-            <template #sm-menu>
+            <template #mdMenu>
               <IconsProfile
                 :solid="route.path === `/${store.getUsername}`"
               ></IconsProfile>
             </template>
-            <template #lg-menu>
+            <template #lgMenu>
               <IconsProfile
                 :solid="route.path === `/${store.getUsername}`"
               ></IconsProfile>
@@ -169,10 +169,10 @@ async function signOut() {
           id="account_menu_icon"
           @mousedown="toggleMenu(null, user.id, 'account')"
         >
-          <template #sm-menu>
+          <template #mdMenu>
             <UIAvatar :user_id="user.id" size="small"></UIAvatar>
           </template>
-          <template #lg-menu>
+          <template #lgMenu>
             <UIAvatar :user_id="user.id" size="small"></UIAvatar>
           </template>
           <template #title>

@@ -1,6 +1,6 @@
 export default function () {
   function swipeRight(event) {
-    event.preventDefault();
+    // event.preventDefault();
   }
 
   return {

@@ -135,18 +135,29 @@ async function fetchNewPost() {
   else if (activeTab.value === "For You") await postStore.fetchAllPosts();
 }
 
+const showMask = ref(false);
 function toggleSidePanel() {
   // toggle translate-x-[75%] to the body
   const mainPage = document.getElementById("mainPage");
   mainPage.classList.toggle("translate-x-[75%]");
   mainPage.classList.toggle("md:translate-x-0");
+  // toggle centerMask
+  showMask.value = !showMask.value;
+}
+function hasOpacity() {
+  const center = document.getElementById("center");
+  if (center.classList.contains("opacity-50")) {
+    return true;
+  } else {
+    return false;
+  }
 }
 </script>
 
 <template>
   <div
     id="mainPage"
-    class="flex h-screen w-screen overflow-x-visible bg-black transition-all"
+    class="flex h-screen w-screen bg-black transition-all duration-300"
   >
     <!-- UI popup -->
     <div>
@@ -219,17 +230,33 @@ function toggleSidePanel() {
       <!-- header -->
       <template #mainBanner>
         <div class="flex w-full flex-col">
+          <!-- mask -->
+          <Transition
+            enter-active-class="transition-all duration-300"
+            enter-from-class="opacity-0"
+            enter-to-class="opacity-100"
+            leave-active-class="transition-all duration-300"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+          >
+            <div
+              v-show="showMask"
+              @mousedown="toggleSidePanel()"
+              class="absolute left-0 top-0 z-30 h-screen w-screen overflow-hidden bg-zinc-800 bg-opacity-50"
+            />
+          </Transition>
           <!-- account avatar / open side panel -->
-          <div class="flex h-12 items-center p-3 md:hidden">
+          <div class="relative flex h-12 items-center p-3 md:hidden">
             <UIAvatar
               :user_id="user.id"
               size="xsmall"
+              class="z-40 cursor-pointer"
               @mousedown="toggleSidePanel()"
             ></UIAvatar>
           </div>
           <div class="flex w-full">
             <!-- feed tab -->
-            <div class="grid h-14 grow grid-cols-2">
+            <div class="grid h-12 grow grid-cols-2">
               <!-- For you -->
               <NuxtLink>
                 <UINavTab
@@ -265,7 +292,7 @@ function toggleSidePanel() {
         <!-- write new post -->
         <MainPostWrite class="hidden md:flex" />
         <!-- post list -->
-        <ul class="pt-14">
+        <ul class="pt-12 md:pt-0">
           <li v-for="post in postList" :key="post.id">
             <MainPost :post="post"></MainPost>
           </li>

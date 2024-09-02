@@ -277,11 +277,11 @@ const postList = computed(() => {
             <!-- user info -->
             <div class="relative top-6 w-full">
               <!-- full name -->
-              <h1 class="text-xl font-bold text-gray-200">
+              <h1 class="text-xl font-bold text-zinc-200">
                 {{ userProfile?.first_name }} {{ userProfile?.last_name }}
               </h1>
               <!-- username -->
-              <h3 v-show="userProfile" class="text-sm text-gray-500">
+              <h3 v-show="userProfile" class="text-sm text-zinc-500">
                 @{{ userProfile?.username }}
               </h3>
               <!-- description -->
@@ -296,7 +296,7 @@ const postList = computed(() => {
               <span class="text-gray-500">Follower</span>
             </div>
           </div>
-          <!-- activities navigation -->
+          <!-- tab navigation -->
           <div
             class="flex h-12 w-full justify-between overflow-x-scroll text-gray-200 md:h-16"
           >

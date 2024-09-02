@@ -16,7 +16,7 @@ const props = defineProps({
 });
 const { file, size, user_id } = toRefs(props);
 
-const imgSize = ref(small);
+const imgSize = ref(null);
 const xsmall = "h-8 w-8";
 const small = "h-10 w-10";
 const medium = "h-16 w-16";

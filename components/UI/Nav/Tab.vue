@@ -8,7 +8,7 @@ const props = defineProps({
 </script>
 <template>
   <div
-    class="flex h-full w-full min-w-[6rem] justify-center pt-1 transition-all md:hover:bg-zinc-800 md:hover:bg-opacity-50"
+    class="flex h-full w-full min-w-[6rem] cursor-pointer justify-center pt-1 transition-all md:hover:bg-zinc-800 md:hover:bg-opacity-50"
   >
     <div
       class="flex items-center justify-center border-b-4 transition-all"
