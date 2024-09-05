@@ -267,22 +267,20 @@ export const usePostStore = defineStore({
     async fetchAllPosts() {
       const client = useSupabaseClient();
       // fetch all posts
-      const { error, data } = await useAsyncData("all_posts", async () => {
+      try {
         const { error, data } = await client
           .from("posts")
           .select()
           .in("type", ["post", "repost"])
           .order("created_at", { ascending: false });
-        return error, data;
-      });
 
-      if (data.value) {
-        this.allPostId = [];
-        await this.setPosts(data.value);
-      }
-
-      if (error.value) {
-        console.log("error: ", error.value);
+        if (data) {
+          this.allPostId = [];
+          await this.setPosts(data);
+        }
+        if (error) throw error;
+      } catch (error) {
+        console.log(error);
       }
     },
     async fetchFollowingPosts() {
@@ -296,65 +294,58 @@ export const usePostStore = defineStore({
       // console.log("getFollowing: ", following_id);
       if (following_id.length > 0) {
         // fetch posts from followed users
-        const { error, data } = await useAsyncData(
-          "following_posts",
-          async () => {
-            const { error, data } = await client
-              .from("posts")
-              .select()
-              .in("type", ["post", "repost"])
-              .in("user_id", following_id)
-              .order("created_at", { ascending: false });
-            return error, data;
-          }
-        );
+        try {
+          const { error, data } = await client
+            .from("posts")
+            .select()
+            .in("type", ["post", "repost"])
+            .in("user_id", following_id)
+            .order("created_at", { ascending: false });
 
-        if (data.value) {
-          this.followingPid = [];
-          for (const post of data.value) {
-            this.followingPid.push(post.id);
-            if (!this.allPosts.has(post.id)) {
-              this.allPosts.set(post.id, post);
+          if (data) {
+            this.followingPid = [];
+            for (const post of data) {
+              this.followingPid.push(post.id);
+              if (!this.allPosts.has(post.id)) {
+                this.allPosts.set(post.id, post);
+              }
+              await this.fetchUserProfile(post.user_id);
+              await this.downloadAvatar(
+                post.user_id,
+                this.userProfile[post.user_id].avatar_url
+              );
             }
-            await this.fetchUserProfile(post.user_id);
-            await this.downloadAvatar(
-              post.user_id,
-              this.userProfile[post.user_id].avatar_url
-            );
           }
-        }
-
-        if (error.value) {
-          console.log("error: ", error.value);
+          if (error) throw error;
+        } catch (error) {
+          console.log("error: ", error);
         }
       }
     },
     async fetchOnePost(pid) {
       const client = useSupabaseClient();
-      const { error, data } = await useAsyncData("one_post", async () => {
+      try {
         const { error, data } = await client
           .from("posts")
           .select()
           .eq("id", pid)
           .single();
-        return error, data;
-      });
-      if (data.value) {
-        const post = data.value;
-        if (!this.allPosts.has(post.id)) {
-          this.allPosts.set(post.id, post);
+        if (data) {
+          const post = data;
+          if (!this.allPosts.has(post.id)) {
+            this.allPosts.set(post.id, post);
+          }
+          if (!this.getProfile(post.user_id))
+            await this.fetchUserProfile(post.user_id);
+          if (!this.getAvatar(post.user_id))
+            await this.downloadAvatar(
+              post.user_id,
+              this.userProfile[post.user_id].avatar_url
+            );
         }
-        if (!this.getProfile(post.user_id))
-          await this.fetchUserProfile(post.user_id);
-        if (!this.getAvatar(post.user_id))
-          await this.downloadAvatar(
-            post.user_id,
-            this.userProfile[post.user_id].avatar_url
-          );
-      }
-
-      if (error.value) {
-        console.log("error: ", error.value);
+        if (error) throw error;
+      } catch (error) {
+        console.log("error: ", error);
       }
     },
     async downloadAvatar(uid, url) {
@@ -439,20 +430,14 @@ export const usePostStore = defineStore({
       const client = useSupabaseClient();
       const user = useSupabaseUser();
       try {
-        const { error, data } = await useAsyncData(
-          "fetchBookmarks",
-          async () => {
-            const { error, data } = await client
-              .from("bookmark")
-              .select("post_id")
-              .eq("user_id", user.value.id)
-              .order("created_at", { ascending: false });
-            return error, data;
-          }
-        );
+        const { error, data } = await client
+          .from("bookmark")
+          .select("post_id")
+          .eq("user_id", user.value.id)
+          .order("created_at", { ascending: false });
         // console.log("fetchBookmarks: ", data.value);
-        if (data.value) this.bookmarks = data.value;
-        if (error.value) throw error.value;
+        if (data) this.bookmarks = data;
+        if (error) throw error;
       } catch (error) {
         console.log(error.message);
       }
@@ -461,20 +446,14 @@ export const usePostStore = defineStore({
       const client = useSupabaseClient();
       try {
         let map = this.bookmarks.map((bookmark) => bookmark.post_id);
-        const { error, data } = await useAsyncData(
-          "fetchBookmarkPosts",
-          async () => {
-            const { error, data } = await client
-              .from("posts")
-              .select()
-              .in("id", map)
-              .order("created_at", { ascending: false });
-            return error, data;
-          }
-        );
+        const { error, data } = await client
+          .from("posts")
+          .select()
+          .in("id", map)
+          .order("created_at", { ascending: false });
         // console.log("fetchBookmarkPosts: ", data.value);
-        if (data.value) {
-          for (const post of data.value) {
+        if (data) {
+          for (const post of data) {
             if (!this.allPosts.has(post.id)) {
               this.allPosts.set(post.id, post);
             }
@@ -487,7 +466,7 @@ export const usePostStore = defineStore({
               );
           }
         }
-        if (error.value) throw error.value;
+        if (error) throw error;
       } catch (error) {
         console.log(error.message);
       }
@@ -551,16 +530,14 @@ export const usePostStore = defineStore({
     async fetchLikes(uid) {
       const client = useSupabaseClient();
       try {
-        const { error, data } = await useAsyncData("fetchLikes", async () => {
-          const { error, data } = await client
-            .from("likes")
-            .select("post_id")
-            .eq("user_id", uid)
-            .order("created_at", { ascending: false });
-          return error, data;
-        });
-        if (data.value) this.likes[uid] = data.value;
-        if (error.value) throw error.value;
+        const { error, data } = await client
+          .from("likes")
+          .select("post_id")
+          .eq("user_id", uid)
+          .order("created_at", { ascending: false });
+
+        if (data) this.likes[uid] = data;
+        if (error) throw error;
       } catch (error) {
         console.log(error.message);
       }
@@ -568,20 +545,15 @@ export const usePostStore = defineStore({
     async fetchLikePosts(uid) {
       const client = useSupabaseClient();
       try {
-        const { error, data } = await useAsyncData(
-          "fetchLikePosts",
-          async () => {
-            let map = this.likes[uid].map((like) => like.post_id);
-            const { error, data } = await client
-              .from("posts")
-              .select()
-              .in("id", map)
-              .order("created_at", { ascending: false });
-            return error, data;
-          }
-        );
-        if (data.value) {
-          for (const post of data.value) {
+        let map = this.likes[uid].map((like) => like.post_id);
+        const { error, data } = await client
+          .from("posts")
+          .select()
+          .in("id", map)
+          .order("created_at", { ascending: false });
+
+        if (data) {
+          for (const post of data) {
             if (!this.allPosts.has(post.id)) {
               this.allPosts.set(post.id, post);
             }
@@ -594,7 +566,7 @@ export const usePostStore = defineStore({
               );
           }
         }
-        if (error.value) throw error.value;
+        if (error) throw error;
       } catch (error) {
         console.log(error.message);
       }

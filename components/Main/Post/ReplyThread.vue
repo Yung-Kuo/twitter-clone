@@ -39,14 +39,13 @@ const {
   handleClickOutside,
   menuGetRect,
 } = inject("useToggleMenu");
-// click post
-const { target_post, clickPost, hoverPost } = inject("clickPost");
 // action buttons
 const clickReply = inject("clickReply");
 const { clickLike, clickBookmark } = useLikeBookmark();
 
 onMounted(async () => {
   watchEffect(async () => {
+    console.log(post.value.id);
     await replyStore.fetchReplies(post.value?.id);
     await replyStore.fetchReplyCount(post.value?.id);
     await postStore.fetchLikeCount(post.value?.id);

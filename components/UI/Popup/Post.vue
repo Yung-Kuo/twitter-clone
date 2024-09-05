@@ -24,10 +24,7 @@ onMounted(() => {
         <div class="flex w-[calc(100%-3rem)] flex-col gap-3">
           <!-- post -->
           <div class="min-h-[5rem] w-full overflow-y-scroll">
-            <MainPostTextarea
-              v-model="newPost"
-              placeholder="What is happening?!"
-            />
+            <UITextarea v-model="newPost" placeholder="What is happening?!" />
           </div>
           <!-- repost -->
           <!-- refer post -->

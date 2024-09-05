@@ -51,7 +51,7 @@ const replyPost = computed(() => {
               class="grow overflow-y-scroll rounded-2xl border border-zinc-800 md:border-2"
             >
               <div class="max-h-[20em] min-h-[8em] overflow-y-scroll px-1">
-                <MainPostTextarea v-model="newText" mode="edit" />
+                <UITextarea v-model="newText" mode="edit" />
               </div>
             </div>
             <!-- refer post -->

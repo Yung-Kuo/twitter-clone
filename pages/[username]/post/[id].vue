@@ -78,6 +78,7 @@ provide("writePost", {
   publishRepost,
   publishQuote,
 });
+provide("showPopupPost", showPopupPost);
 provide("repost_pid", repost_pid);
 // reply
 const { showPopupReply, pid, reply, clickReply, publishReply } = useReply();
@@ -238,7 +239,7 @@ function scrollToTarget() {
     <MainBottom />
     <MainCenter :initialScroll="initialScroll">
       <template #banner>
-        <h1 class="h-1/2 text-xl font-bold text-gray-200">Post</h1>
+        <h1 class="h-1/2 text-lg font-bold text-gray-200 md:text-xl">Post</h1>
       </template>
       <template #main>
         <!-- upper section -->

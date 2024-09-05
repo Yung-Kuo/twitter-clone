@@ -19,19 +19,17 @@ const post = defineProps({
 
 onMounted(async () => {
   watchEffect(async () => {
-    // pid.value = post.id;
     await replyStore.fetchReplies(post.id);
     await replyStore.fetchReplyCount(post.id);
-    // await postStore.fetchLikes(user.value.id);
     await postStore.fetchLikeCount(post.id);
-    // await postStore.fetchBookmarks();
     await postStore.fetchBookmarkCount(post.id);
+    await replyStore.fetchUserReplyStatus(post.id);
+  });
+  watchEffect(async () => {
     if (post.reply_to && post.type === "repost") {
       await postStore.fetchOnePost(post.reply_to);
     }
-    await replyStore.fetchUserReplyStatus(post.id);
   });
-  // pid.value = post.id;
 });
 
 // profile card

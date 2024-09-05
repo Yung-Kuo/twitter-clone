@@ -24,7 +24,7 @@ onMounted(() => {
           <UIAvatar :user_id="user.id" size="small"></UIAvatar>
         </div>
         <div class="grow">
-          <MainPostTextarea v-model="reply" placeholder="Post your reply" />
+          <UITextarea v-model="reply" placeholder="Post your reply" />
         </div>
       </div>
     </template>

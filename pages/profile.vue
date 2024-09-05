@@ -279,10 +279,7 @@ const buttonActiveFlag = computed(() => {
             <div
               class="no-wheel-sync flex max-h-[20em] min-h-[8em] grow flex-col overflow-y-scroll rounded-md border-2 border-zinc-600 transition-all focus-within:border-sky-500 focus-within:ring-1 focus-within:ring-sky-500"
             >
-              <MainPostTextarea
-                v-model="userProfile.description"
-                mode="description"
-              />
+              <UITextarea v-model="userProfile.description" forProfile />
             </div>
             <!-- Update Profile -->
             <UIButton

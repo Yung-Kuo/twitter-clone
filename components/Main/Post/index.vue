@@ -24,19 +24,24 @@ const authorReplyId = computed(() =>
 const authorReplyPost = computed(() => postStore.getPost(authorReplyId.value));
 onMounted(async () => {
   watchEffect(async () => {
-    await replyStore.fetchReplies(post.value?.id);
+    // await replyStore.fetchReplies(post.value?.id);
     await replyStore.fetchReplyCount(post.value?.id);
     await postStore.fetchLikeCount(post.value?.id);
     await postStore.fetchBookmarkCount(post.value?.id);
     await replyStore.fetchUserReplyStatus(post.value?.id);
+  });
+  // if author has replied
+  watchEffect(async () => {
     if (props.showAuthorReply) {
       await replyStore.fetchAuthorReplyStatus(post.value?.id);
     }
-    // for quote tweet
+  });
+  // if this is a quote tweet
+  watchEffect(async () => {
     if (
       post.value?.reply_to &&
       post.value?.type === "repost" &&
-      !postStore.getPost(post.value.reply_to)
+      !postStore.getPost(post.value?.reply_to)
     ) {
       await postStore.fetchOnePost(post.value?.reply_to);
     }
@@ -65,8 +70,6 @@ const {
   handleClickOutside,
   menuGetRect,
 } = inject("useToggleMenu");
-// click post
-const { target_post, clickPost, hoverPost } = inject("clickPost");
 // action buttons
 const clickReply = inject("clickReply");
 const { pid, reply, publishReply } = inject("popupReply");

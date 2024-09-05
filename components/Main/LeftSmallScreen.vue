@@ -8,15 +8,13 @@ const followingStore = useFollowingStore();
     class="absolute -left-3/4 top-0 flex h-screen w-3/4 flex-col p-5 md:hidden"
   >
     <div class="flex h-min w-full flex-col gap-2 p-4">
-      <NuxtLink :to="`/${profileStore.getUsername}`">
+      <NuxtLink :to="`/${profileStore.getUsername}`" class="w-min rounded-full">
         <UIAvatar :user_id="user.id" size="small" />
       </NuxtLink>
       <!-- user info -->
-      <NuxtLink :to="`/${profileStore.getUsername}`">
-        <div class="w-max">
-          <pre class="text-lg text-zinc-200">{{ profileStore.getName }}</pre>
-          <pre class="text-zinc-500">@{{ profileStore.getUsername }}</pre>
-        </div>
+      <NuxtLink :to="`/${profileStore.getUsername}`" class="w-max">
+        <pre class="text-lg text-zinc-200">{{ profileStore.getName }}</pre>
+        <pre class="text-zinc-500">@{{ profileStore.getUsername }}</pre>
       </NuxtLink>
       <!-- following status -->
       <div>

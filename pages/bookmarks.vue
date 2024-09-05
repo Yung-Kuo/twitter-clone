@@ -76,6 +76,7 @@ provide("writePost", {
   publishRepost,
   publishQuote,
 });
+provide("showPopupPost", showPopupPost);
 provide("repost_pid", repost_pid);
 // reply
 const { showPopupReply, pid, reply, clickReply, publishReply } = useReply();
@@ -186,12 +187,12 @@ const bookmarkList = computed(() => postStore.getBookmarkPosts);
     <MainBottom />
     <MainCenter>
       <template #banner>
-        <div class="flex flex-col">
-          <h1 class="h-1/2 text-xl font-bold text-gray-200">Bookmarks</h1>
-          <span class="text-zinc-500"
-            >@{{ postStore.getUsername(user.id) }}</span
-          >
-        </div>
+        <h1 class="h-1/2 text-lg font-bold text-gray-200 md:h-min md:text-xl">
+          Bookmarks
+        </h1>
+        <span class="h-1/2 text-sm text-zinc-500 md:h-min"
+          >@{{ postStore.getUsername(user.id) }}</span
+        >
       </template>
       <template #main>
         <ul>

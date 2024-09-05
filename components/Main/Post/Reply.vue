@@ -56,7 +56,7 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
           </NuxtLink>
         </div>
         &ensp;
-        <div class="flex w-max text-zinc-500">
+        <div class="flex w-max text-sm text-zinc-500">
           <!-- username -->
           <div class="noForward">
             <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">

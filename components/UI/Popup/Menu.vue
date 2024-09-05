@@ -56,7 +56,9 @@ const currentUser = [edit, deletePost, muteThread];
 const followedUser = [unfollow, muteUser, block];
 const stranger = [follow, muteUser, block];
 onMounted(() => {
-  followingStore.checkIsFollowing(props.uid);
+  if (followingStore.getFollowingStatus(props.uid) === null) {
+    followingStore.checkIsFollowing(props.uid);
+  }
   assignActionList();
 });
 watch(

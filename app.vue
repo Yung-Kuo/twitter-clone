@@ -20,6 +20,6 @@ html {
 pre {
   /* white-space: break-spaces; */
   white-space: pre-wrap;
-  word-break: break-all;
+  word-break: break-word;
 }
 </style>

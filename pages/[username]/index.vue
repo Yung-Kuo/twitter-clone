@@ -84,6 +84,7 @@ provide("writePost", {
   publishRepost,
   publishQuote,
 });
+provide("showPopupPost", showPopupPost);
 provide("repost_pid", repost_pid);
 // reply
 const { showPopupReply, pid, reply, clickReply, publishReply } = useReply();
@@ -241,27 +242,23 @@ const postList = computed(() => {
     <!-- layout -->
     <MainLeft @popupPost="showPopupPost = !showPopupPost" />
     <MainBottom />
-    <MainCenter>
+    <MainCenter userPage>
       <template #banner>
-        <div class="h-full pt-1">
-          <h1 class="h-1/2 text-xl font-bold text-gray-200">
-            {{ userProfile?.first_name }} {{ userProfile?.last_name }}
-          </h1>
-          <h3 class="h-1/2 text-sm text-gray-500">
-            {{ postStore.getUserPosts(userProfile.id).length }}
-            {{
-              postStore.getUserPosts(userProfile.id).length > 1
-                ? "posts"
-                : "post"
-            }}
-          </h3>
-        </div>
+        <h1 class="h-1/2 text-lg font-bold text-gray-200 md:h-min md:text-xl">
+          {{ userProfile?.first_name }} {{ userProfile?.last_name }}
+        </h1>
+        <span class="h-1/2 text-sm text-gray-500 md:h-min">
+          {{ postStore.getUserPosts(userProfile.id).length }}
+          {{
+            postStore.getUserPosts(userProfile.id).length > 1 ? "posts" : "post"
+          }}
+        </span>
       </template>
       <template #main>
         <!-- user profile -->
         <MainSection>
           <!-- profile background image -->
-          <div class="h-52 w-full bg-zinc-800"></div>
+          <div class="h-60 w-full bg-zinc-800"></div>
           <!-- avatar -->
           <div
             class="relative -top-16 left-5 z-10 h-min w-min rounded-full ring-4 ring-black"
