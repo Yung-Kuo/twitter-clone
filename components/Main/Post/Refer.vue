@@ -17,8 +17,6 @@ const post = defineProps({
   type: String,
   edited: Boolean,
 });
-// click post
-const { target_post, clickPost, hoverPost } = inject("clickPost");
 
 onMounted(async () => {
   watchEffect(async () => {

@@ -23,18 +23,15 @@ const date = computed(() => {
   });
   return `${date}`;
 });
-
-// click post
-const { target_post, clickPost, hoverPost } = inject("clickPost");
 </script>
 <template>
-  <MainPostHoverClickWrapper :post="post" noHover class="gap-2">
+  <MainPostHoverClickWrapper :post="post" noHover>
     <!-- left column / avatar -->
     <div class="flex w-10 flex-col">
       <!-- avatar for show post -->
-      <div class="h-min w-min">
+      <div class="noForward h-min w-min">
         <NuxtLink :to="`/${postStore.getUsername(post?.user_id)}`">
-          <UIAvatar :user_id="post?.user_id" size="small"> </UIAvatar>
+          <UIAvatar :user_id="post?.user_id" size="small" />
         </NuxtLink>
       </div>
       <!-- thread -->
@@ -43,9 +40,9 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
       </div>
     </div>
     <!-- right column -->
-    <div class="flex w-[calc(100%-3rem)] flex-col">
+    <div class="flex w-[calc(100%-2.5rem)] flex-col">
       <!-- upper section -->
-      <div class="flex h-5 w-full items-center whitespace-nowrap">
+      <div class="flex h-5 w-full items-center whitespace-nowrap pl-2">
         <!-- user info -->
         <!-- name -->
         <div class="noForward font-bold hover:underline">
@@ -70,20 +67,22 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
         </div>
       </div>
       <!-- middle section -->
-      <div class="flex max-h-[18rem] w-full flex-col gap-3 overflow-y-scroll">
+      <div
+        class="flex max-h-[18rem] w-full flex-col gap-3 overflow-y-scroll pl-2"
+      >
         <!-- content -->
         <div v-if="post.type !== 'repost && post.text !== repost'">
           <pre>{{ post.text }}</pre>
         </div>
         <!-- repost / quote -->
-        <div v-if="post.type === 'repost'" class="w-full">
+        <div v-if="post.type === 'repost'" class="z-20 w-full">
           <MainPostRefer
             v-bind="postStore.getPost(post.reply_to)"
           ></MainPostRefer>
         </div>
       </div>
       <!-- lower section -->
-      <div class="noForward cursor-default pb-4 pt-2">
+      <div class="noForward cursor-default pb-4 pl-2 pt-2">
         <!-- replying to -->
         <span class="text-zinc-500">Replying to </span>
         <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">

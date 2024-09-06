@@ -56,8 +56,6 @@ const {
 } = inject("useToggleMenu");
 // reply
 const { pid, reply, publishReply } = inject("popupReply");
-// click post
-const { target_post, clickPost, hoverPost } = inject("clickPost");
 // action button
 const clickReply = inject("clickReply");
 const showPopupReply = inject("showPopupReply");

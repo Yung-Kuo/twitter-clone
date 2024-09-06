@@ -88,7 +88,6 @@ provide("useEdit", {
   selectEditPost,
   publishEdit,
 });
-
 // click post
 const { target_post, clickPost, hoverPost } = useClickPost();
 provide("clickPost", { target_post, clickPost, hoverPost });

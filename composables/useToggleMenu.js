@@ -99,13 +99,9 @@ export default function () {
               ? iconRect.top + menuRect.height > bottomRect.top
               : iconRect.top + menuRect.height > centerRect.height
           ) {
-            if (!menu.classList.contains("-translate-y-20")) {
-              menu.classList.add("-translate-y-20");
-            }
+            menu.classList.add("-translate-y-32", "-translate-x-10");
           } else {
-            if (menu.classList.contains("-translate-y-20")) {
-              menu.classList.remove("-translate-y-20");
-            }
+            menu.classList.remove("-translate-y-32", "-translate-x-10");
           }
         }
       });
