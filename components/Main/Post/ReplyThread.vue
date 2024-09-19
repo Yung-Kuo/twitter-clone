@@ -45,7 +45,7 @@ const { clickLike, clickBookmark } = useLikeBookmark();
 
 onMounted(async () => {
   watchEffect(async () => {
-    await replyStore.fetchReplies(post.value?.id);
+    // await replyStore.fetchReplies(post.value?.id);
     await replyStore.fetchReplyCount(post.value?.id);
     await postStore.fetchLikeCount(post.value?.id);
     await postStore.fetchBookmarkCount(post.value?.id);

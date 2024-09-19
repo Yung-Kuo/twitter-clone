@@ -19,8 +19,8 @@ const post = defineProps({
 
 onMounted(async () => {
   watchEffect(async () => {
-    await replyStore.fetchReplies(post.id);
-    await replyStore.fetchReplyCount(post.id);
+    // await replyStore.fetchReplies(post.id);
+    // await replyStore.fetchReplyCount(post.id);
     await postStore.fetchLikeCount(post.id);
     await postStore.fetchBookmarkCount(post.id);
     await replyStore.fetchUserReplyStatus(post.id);
@@ -204,8 +204,9 @@ const date = computed(() => {
           <span
             class="w-2"
             :class="{ 'text-sky-500': replyStore.checkReplied(post.id) }"
-            >{{ replyStore.getReplyCount(post.id) }}</span
+            >{{ replyStore.getReplies(post.id)?.length }}</span
           >
+          <!-- replyStore.getReplyCount(post.id) -->
         </div>
         <!-- Repost -->
         <div class="flex">

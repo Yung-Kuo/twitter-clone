@@ -106,7 +106,6 @@ const replyList = computed(() => replyStore.getReplies(post.value?.id));
 
 const thread = ref([]);
 async function traverseThread() {
-  if (thread.value.length > 0) return;
   let current = null;
   let reply_to = post.value?.reply_to;
   while (reply_to) {
@@ -122,19 +121,18 @@ async function traverseThread() {
     if (current.type === "reply") reply_to = current.reply_to;
     else break;
   }
-  console.log(thread.value.length);
-  if (thread.value.length > 0) scrollToTarget();
+  return true;
 }
 
 const initialScroll = ref(false);
-const target = ref(null);
+// const target = ref(null);
 function scrollToTarget() {
-  nextTick(() => {
-    if (initialScroll.value) return;
-    initialScroll.value = true;
-    target.value.scrollIntoView({ block: "start", behavior: "instant" });
-    initialScroll.value = false;
-  });
+  if (initialScroll.value) return;
+  nextTick();
+  const target = document.getElementById("target");
+  initialScroll.value = true;
+  target.scrollIntoView({ block: "start", behavior: "instant" });
+  initialScroll.value = false;
 }
 
 onMounted(async () => {
@@ -160,7 +158,7 @@ onMounted(async () => {
   watchEffect(async () => {
     if (post.value?.type === "reply") {
       await traverseThread();
-      // scrollToTarget();
+      scrollToTarget();
     }
   });
 });
@@ -251,7 +249,7 @@ onMounted(async () => {
               />
             </li>
           </ul>
-          <div ref="target" class="scroll-mt-12 md:scroll-mt-14"></div>
+          <div id="target" class="scroll-mt-12 md:scroll-mt-14"></div>
           <!-- main post -->
           <div class="px-3 md:px-5">
             <MainPostSingle
