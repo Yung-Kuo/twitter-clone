@@ -26,7 +26,7 @@ export default function () {
     // console.log("scrollTop + innerHeight:", event.target.scrollTop + window.innerHeight);
     // console.log("scrollHeight:", center.value.scrollHeight);
     if (
-      scroll_record.value > 10 &&
+      scroll_record.value > 50 &&
       isVisible(bottom.value) &&
       event.target.scrollTop > 0 &&
       event.target.scrollTop + window.innerHeight < center.value.scrollHeight

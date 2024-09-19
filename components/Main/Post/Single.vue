@@ -86,100 +86,105 @@ const date = computed(() => {
 <template>
   <div class="w-full text-zinc-200" v-if="postStore.getProfile(post?.user_id)">
     <MainSection>
-      <!-- upper section -->
-      <div class="flex h-min w-full items-start">
-        <!-- avatar -->
-        <div
-          :id="`${post.id}_avatar`"
-          @mouseenter="showProfileCard($event.target.id, post.user_id)"
-          @mouseleave="hideProfileCard()"
-          class="flex items-center"
-        >
-          <NuxtLink :to="`/${postStore.getUsername(post?.user_id)}`">
-            <UIAvatar :user_id="post.user_id" size="small" class=""> </UIAvatar>
-          </NuxtLink>
-        </div>
-        <!-- user info -->
-        <div class="flex flex-col px-2 leading-tight">
-          <!-- name -->
+      <article>
+        <!-- upper section -->
+        <div class="flex h-min w-full items-start">
+          <!-- avatar -->
           <div
-            :id="`${post.id}_name`"
+            :id="`${post.id}_avatar`"
             @mouseenter="showProfileCard($event.target.id, post.user_id)"
             @mouseleave="hideProfileCard()"
-            class="font-bold hover:underline"
+            class="flex items-center"
           >
-            <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
-              <span>
-                {{ postStore.getName(post.user_id) }}
-              </span>
+            <NuxtLink :to="`/${postStore.getUsername(post?.user_id)}`">
+              <UIAvatar :user_id="post.user_id" size="small" class="">
+              </UIAvatar>
             </NuxtLink>
           </div>
-          <!-- username -->
-          <div
-            :id="`${post.id}_username`"
-            @mouseenter="showProfileCard($event.target.id, post.user_id)"
-            @mouseleave="hideProfileCard()"
-            class="text-sm text-zinc-500"
-          >
-            <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
-              <span>@{{ postStore.getUsername(post.user_id) }}</span>
-            </NuxtLink>
-          </div>
-        </div>
-        <!-- spacing -->
-        <div class="grow"></div>
-        <!-- post action -->
-        <div class="flex flex-col">
-          <!-- icon -->
-          <div class="flex h-full items-center text-zinc-500">
-            <IconsBadge
-              size="small"
-              color="blue"
-              :clicked="menu_pid === post.id && type === 'post_action'"
-              :id="`${post.id}_menu_icon`"
-              @mousedown="toggleMenu(post.id, post.user_id, 'post_action')"
+          <!-- user info -->
+          <div class="flex flex-col px-2 leading-tight">
+            <!-- name -->
+            <div
+              :id="`${post.id}_name`"
+              @mouseenter="showProfileCard($event.target.id, post.user_id)"
+              @mouseleave="hideProfileCard()"
+              class="font-bold hover:underline"
             >
-              <IconsMore />
-            </IconsBadge>
+              <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
+                <span>
+                  {{ postStore.getName(post.user_id) }}
+                </span>
+              </NuxtLink>
+            </div>
+            <!-- username -->
+            <div
+              :id="`${post.id}_username`"
+              @mouseenter="showProfileCard($event.target.id, post.user_id)"
+              @mouseleave="hideProfileCard()"
+              class="text-sm text-zinc-500"
+            >
+              <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
+                <span>@{{ postStore.getUsername(post.user_id) }}</span>
+              </NuxtLink>
+            </div>
           </div>
-          <!-- menu -->
-          <!-- <div class="relative z-10 -translate-x-52 translate-y-2"> -->
-          <UIPopupTransition>
-            <UIPopupMenu
-              v-if="showMenu && type === 'post_action' && menu_pid === post.id"
-              :pid="menu_pid"
-              :uid="menu_uid"
-            ></UIPopupMenu>
-          </UIPopupTransition>
-          <!-- </div> -->
-        </div>
-      </div>
-      <!-- middle section -->
-      <div class="flex h-full w-full flex-col gap-3 py-3">
-        <!-- content -->
-        <div
-          v-if="post.type !== 'repost' || post.text !== post.reply_to"
-          class="w-full break-all text-lg"
-        >
-          <pre>{{ post.text }}</pre>
-        </div>
-        <!-- repost / quote -->
-        <div v-if="post.type === 'repost'">
-          <MainPostRefer
-            v-bind="postStore.getPost(post.reply_to)"
-          ></MainPostRefer>
-        </div>
-        <div class="flex text-zinc-500">
-          <!-- timestamp -->
-          <div class="hover:underline">
-            <pre>{{ time }} · {{ date }}</pre>
-          </div>
-          <!-- edited -->
-          <div>
-            <pre v-if="post.edited"> · edited</pre>
+          <!-- spacing -->
+          <div class="grow"></div>
+          <!-- post action -->
+          <div class="flex flex-col">
+            <!-- icon -->
+            <div class="flex h-full items-center text-zinc-500">
+              <IconsBadge
+                size="small"
+                color="blue"
+                :clicked="menu_pid === post.id && type === 'post_action'"
+                :id="`${post.id}_menu_icon`"
+                @mousedown="toggleMenu(post.id, post.user_id, 'post_action')"
+              >
+                <IconsMore />
+              </IconsBadge>
+            </div>
+            <!-- menu -->
+            <!-- <div class="relative z-10 -translate-x-52 translate-y-2"> -->
+            <UIPopupTransition>
+              <UIPopupMenu
+                v-if="
+                  showMenu && type === 'post_action' && menu_pid === post.id
+                "
+                :pid="menu_pid"
+                :uid="menu_uid"
+              ></UIPopupMenu>
+            </UIPopupTransition>
+            <!-- </div> -->
           </div>
         </div>
-      </div>
+        <!-- middle section -->
+        <div class="flex h-full w-full flex-col gap-3 py-3">
+          <!-- content -->
+          <div
+            v-if="post.type !== 'repost' || post.text !== post.reply_to"
+            class="w-full break-all text-lg"
+          >
+            <pre>{{ post.text }}</pre>
+          </div>
+          <!-- repost / quote -->
+          <div v-if="post.type === 'repost'">
+            <MainPostRefer
+              v-bind="postStore.getPost(post.reply_to)"
+            ></MainPostRefer>
+          </div>
+          <div class="flex text-zinc-500">
+            <!-- timestamp -->
+            <div class="hover:underline">
+              <pre>{{ time }} · {{ date }}</pre>
+            </div>
+            <!-- edited -->
+            <div>
+              <pre v-if="post.edited"> · edited</pre>
+            </div>
+          </div>
+        </div>
+      </article>
     </MainSection>
     <!-- lower section -->
     <!-- action buttons -->

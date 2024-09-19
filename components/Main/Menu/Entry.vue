@@ -21,14 +21,17 @@
     <!-- for large screen -->
     <div
       v-if="$slots.lgMenu"
-      class="hidden w-full items-center justify-start rounded-full pr-10 transition-all hover:bg-zinc-900 active:bg-zinc-800 xl:flex"
+      class="hidden h-min items-center rounded-full transition-all hover:bg-zinc-900 active:bg-zinc-800 xl:flex"
     >
       <IconsBadge size="large">
         <slot name="lgMenu" />
       </IconsBadge>
-      <span>
+      <div
+        class="flex h-10 max-w-[calc(100%-6rem)] grow flex-col justify-center whitespace-nowrap leading-none"
+      >
         <slot name="title" />
-      </span>
+      </div>
+      <div class="w-10" />
     </div>
   </div>
 </template>

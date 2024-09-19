@@ -24,15 +24,22 @@ const authorReplyId = computed(() =>
 const authorReplyPost = computed(() => postStore.getPost(authorReplyId.value));
 onMounted(async () => {
   watchEffect(async () => {
-    // await replyStore.fetchReplies(post.value?.id);
-    await replyStore.fetchReplyCount(post.value?.id);
-    await postStore.fetchLikeCount(post.value?.id);
-    await postStore.fetchBookmarkCount(post.value?.id);
-    await replyStore.fetchUserReplyStatus(post.value?.id);
+    if (!replyStore.getReplyCount(post.value?.id)) {
+      await replyStore.fetchReplyCount(post.value?.id);
+    }
+    if (!postStore.getLikeCount(post.value?.id)) {
+      await postStore.fetchLikeCount(post.value?.id);
+    }
+    if (!postStore.getBookmarkCount(post.value?.id)) {
+      await postStore.fetchBookmarkCount(post.value?.id);
+    }
+    if (replyStore.checkReplied(post.value?.id) === null) {
+      await replyStore.fetchUserReplyStatus(post.value?.id);
+    }
   });
   // if author has replied
   watchEffect(async () => {
-    if (props.showAuthorReply) {
+    if (props.showAuthorReply && replyStore.checkAuthorReplied(post.value?.id) === null) {
       await replyStore.fetchAuthorReplyStatus(post.value?.id);
     }
   });
@@ -212,7 +219,7 @@ const date = computed(() => {
                 <IconsBadge
                   size="small"
                   color="blue"
-                  :clicked="replyStore.checkReplied(post.id)"
+                  :clicked="!!replyStore.checkReplied(post.id)"
                   @mousedown="
                     pid = post.id;
                     clickReply(post.id);
@@ -308,8 +315,8 @@ const date = computed(() => {
     </MainPostHoverClickWrapper>
     <!-- if the author has replied -->
     <MainPostReplyThread
-      :post="authorReplyPost"
       v-if="props.showAuthorReply && authorReplyId"
+      :post="authorReplyPost"
       class="px-3 md:px-5"
     />
     <MainPostHoverClickWrapper

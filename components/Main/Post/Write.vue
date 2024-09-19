@@ -23,9 +23,9 @@ const { newPost, publishPost } = useWritePost();
         <div class="pl-1">
           <!-- write new post -->
           <MainSection>
-            <MainPostTextarea v-model="newPost" />
+            <UITextarea v-model="newPost" />
           </MainSection>
-          <div class="flex h-max w-full justify-end py-5">
+          <div class="flex h-max w-full justify-end py-3">
             <UIButton color="blue" :solid="true" @click="publishPost()"
               >Post</UIButton
             >

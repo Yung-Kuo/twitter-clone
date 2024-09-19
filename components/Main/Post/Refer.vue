@@ -60,15 +60,15 @@ const date = computed(() => {
       <!-- avatar -->
       <div class="noForward flex w-min items-center">
         <NuxtLink :to="`/${postStore.getUsername(post?.user_id)}`">
-          <UIAvatar :user_id="post.user_id" size="xsmall" class=""> </UIAvatar>
+          <UIAvatar :user_id="post.user_id" size="xsmall"> </UIAvatar>
         </NuxtLink>
       </div>
       <!-- user info -->
       <div
-        class="flex grow items-center overflow-x-scroll whitespace-nowrap px-2 leading-tight"
+        class="flex h-8 grow items-center overflow-x-scroll whitespace-nowrap px-2 leading-none"
       >
         <!-- name -->
-        <div class="noForward font-bold hover:underline">
+        <div class="noForward flex h-5 items-center font-bold hover:underline">
           <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
             <span class="noForward">
               {{ postStore.getName(post.user_id) }}
@@ -76,7 +76,7 @@ const date = computed(() => {
           </NuxtLink>
         </div>
         &ensp;
-        <div class="flex text-sm text-zinc-500">
+        <div class="flex items-center text-sm text-zinc-500">
           <!-- username -->
           <div class="noForward">
             <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">

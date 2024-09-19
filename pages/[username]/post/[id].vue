@@ -99,6 +99,44 @@ provide("useEdit", {
 const { target_post, clickPost, hoverPost } = useClickPost();
 provide("clickPost", { target_post, clickPost, hoverPost });
 
+//
+const post = computed(() => postStore.getPost(route.params.id));
+// reply list
+const replyList = computed(() => replyStore.getReplies(post.value?.id));
+
+const thread = ref([]);
+async function traverseThread() {
+  if (thread.value.length > 0) return;
+  let current = null;
+  let reply_to = post.value?.reply_to;
+  while (reply_to) {
+    if (!postStore.getPost(reply_to)) {
+      await postStore.fetchOnePost(reply_to);
+    }
+    current = postStore.getPost(reply_to);
+    if (!current) break;
+    else if (!thread.value.find((post) => post.id === current.id)) {
+      thread.value.unshift(current);
+    }
+    // stop the traverse if the root post is a repost.
+    if (current.type === "reply") reply_to = current.reply_to;
+    else break;
+  }
+  console.log(thread.value.length);
+  if (thread.value.length > 0) scrollToTarget();
+}
+
+const initialScroll = ref(false);
+const target = ref(null);
+function scrollToTarget() {
+  nextTick(() => {
+    if (initialScroll.value) return;
+    initialScroll.value = true;
+    target.value.scrollIntoView({ block: "start", behavior: "instant" });
+    initialScroll.value = false;
+  });
+}
+
 onMounted(async () => {
   watchEffect(async () => {
     if (!user.value) {
@@ -108,12 +146,10 @@ onMounted(async () => {
       await profileStore.fetchProfile();
       await postStore.fetchUserProfile(user.value.id);
     }
+  });
+  watchEffect(async () => {
     if (!post.value) await postStore.fetchOnePost(route.params.id);
     if (!replyList.value) await replyStore.fetchReplies(post.value.id);
-    // reply thread
-    // if (post.value.type === "reply" && post.value.reply_to) {
-    //   if (await traverseThread()) scrollToTarget();
-    // }
     if (!postStore.getLikes(user.value.id)) {
       await postStore.fetchLikes(user.value.id);
     }
@@ -122,56 +158,18 @@ onMounted(async () => {
     }
   });
   watchEffect(async () => {
-    if (post.value?.type === "reply" && post.value?.reply_to) {
-      if (await traverseThread()) scrollToTarget();
+    if (post.value?.type === "reply") {
+      await traverseThread();
+      // scrollToTarget();
     }
   });
-  // mousedown
-  window.addEventListener("mousedown", (event) => handleClickOutside(event));
 });
-onBeforeUnmount(() => {
-  window.removeEventListener("mousedown", handleClickOutside);
-});
-
-//
-const post = computed(() => postStore.getPost(route.params.id));
-// reply list
-const replyList = computed(() => replyStore.getReplies(post.value?.id));
-
-const thread = ref([]);
-async function traverseThread() {
-  let current = null;
-  let reply_to = post.value?.reply_to;
-  while (reply_to) {
-    // if (!postStore.getPost(reply_to)) {
-    await postStore.fetchOnePost(reply_to);
-    // }
-    current = postStore.getPost(reply_to);
-    if (current && !thread.value.find((post) => post.id === current.id)) {
-      thread.value.unshift(current);
-      // stop the traverse if the root post is a repost.
-      if (current.type === "repost") break;
-      reply_to = current.reply_to;
-    } else break;
-  }
-  return true;
-}
-
-const initialScroll = ref(false);
-function scrollToTarget() {
-  if (initialScroll.value) return;
-  initialScroll.value = true;
-  nextTick();
-  const target = document.getElementById("target");
-  if (target && initialScroll.value) {
-    console.log("run");
-    target.scrollIntoView({ block: "start", behavior: "instant" });
-    initialScroll.value = false;
-  }
-}
 </script>
 <template>
-  <div class="flex h-screen w-screen bg-black">
+  <div
+    class="flex h-screen w-screen bg-black"
+    @mousedown="handleClickOutside($event)"
+  >
     <!-- UI popup -->
     <div>
       <!-- Alert -->
@@ -253,10 +251,13 @@ function scrollToTarget() {
               />
             </li>
           </ul>
-          <div id="target" class="scroll-mt-14"></div>
+          <div ref="target" class="scroll-mt-12 md:scroll-mt-14"></div>
           <!-- main post -->
           <div class="px-3 md:px-5">
-            <MainPostSingle v-bind="post"></MainPostSingle>
+            <MainPostSingle
+              v-bind="post"
+              @mousedown="scrollToTarget()"
+            ></MainPostSingle>
           </div>
         </MainSection>
         <!-- lower section -->

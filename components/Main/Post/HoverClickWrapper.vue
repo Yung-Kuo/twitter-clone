@@ -16,7 +16,7 @@ const { post } = toRefs(props);
 const { target_post, clickPost, hoverPost } = inject("clickPost");
 </script>
 <template>
-  <div
+  <article
     :class="[post.id, props.hasRing ? null : '!ring-0']"
     class="stopHere flex w-full cursor-pointer text-zinc-200 transition-all"
     @mouseenter="
@@ -38,5 +38,5 @@ const { target_post, clickPost, hoverPost } = inject("clickPost");
     "
   >
     <slot />
-  </div>
+  </article>
 </template>

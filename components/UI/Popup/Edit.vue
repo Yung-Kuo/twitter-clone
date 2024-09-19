@@ -48,11 +48,9 @@ const replyPost = computed(() => {
               <UIAvatar :user_id="user.id" size="small" />
             </div>
             <div
-              class="grow overflow-y-scroll rounded-2xl border border-zinc-800 md:border-2"
+              class="max-h-[20em] min-h-[8em] grow overflow-y-scroll rounded-2xl border border-zinc-800 p-1 md:border-2"
             >
-              <div class="max-h-[20em] min-h-[8em] overflow-y-scroll px-1">
-                <UITextarea v-model="newText" mode="edit" />
-              </div>
+              <UITextarea v-model="newText" mode="edit" class="h-full w-full" />
             </div>
             <!-- refer post -->
             <div

@@ -50,8 +50,8 @@ const avatar_src = computed(() => {
 <template>
   <div class="rounded-full bg-gray-400" :class="imgSize">
     <img
-      v-if="file || user_id"
-      :src="file ? file : avatar_src"
+      v-if="file || avatar_src"
+      :src="file || avatar_src"
       class="h-full w-full rounded-full object-cover object-top"
     />
   </div>

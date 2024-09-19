@@ -176,13 +176,17 @@ async function signOut() {
             <UIAvatar :user_id="user.id" size="small"></UIAvatar>
           </template>
           <template #title>
-            <div class="flex h-min flex-col text-base leading-tight">
-              <span v-show="store.getName" class="font-bold">{{
-                store.getName
-              }}</span>
-              <span v-show="store.getUsername" class="text-zinc-500"
-                >@{{ store.getUsername }}</span
-              >
+            <div
+              v-show="store.getName"
+              class="h-1/2 w-full overflow-y-hidden overflow-x-scroll text-base font-bold leading-none"
+            >
+              <span>{{ store.getName }}</span>
+            </div>
+            <div
+              v-show="store.getUsername"
+              class="h-1/2 w-full overflow-y-hidden overflow-x-scroll text-base text-zinc-500"
+            >
+              <span>@{{ store.getUsername }}</span>
             </div>
           </template>
         </MainMenuEntry>

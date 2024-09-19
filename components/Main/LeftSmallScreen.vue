@@ -2,6 +2,13 @@
 const user = useSupabaseUser();
 const profileStore = useProfileStore();
 const followingStore = useFollowingStore();
+
+onMounted(async () => {
+  if (!followingStore.getFollowing(user.value.id)) {
+    await followingStore.fetchFollowing(user.value.id);
+    await followingStore.fetchFollowers(user.value.id);
+  }
+});
 </script>
 <template>
   <div
@@ -12,20 +19,24 @@ const followingStore = useFollowingStore();
         <UIAvatar :user_id="user.id" size="small" />
       </NuxtLink>
       <!-- user info -->
-      <NuxtLink :to="`/${profileStore.getUsername}`" class="w-max">
-        <pre class="text-lg text-zinc-200">{{ profileStore.getName }}</pre>
-        <pre class="text-zinc-500">@{{ profileStore.getUsername }}</pre>
+      <NuxtLink :to="`/${profileStore.getUsername}`" class="w-max max-w-full">
+        <span class="text-lg text-zinc-200">{{ profileStore.getName }}</span>
+        <div
+          class="h-5 w-full overflow-y-hidden overflow-x-scroll whitespace-nowrap text-zinc-500"
+        >
+          <span>@{{ profileStore.getUsername }}</span>
+        </div>
       </NuxtLink>
       <!-- following status -->
       <div>
         <!-- following -->
         <span class="text-zinc-200"
-          >{{ followingStore.getUserFollowing.length }}&nbsp</span
+          >{{ followingStore.getFollowing(user.id)?.length }}&nbsp</span
         >
         <span class="pr-5 text-gray-500">Following</span>
         <!-- follower -->
         <span class="text-zinc-200"
-          >{{ followingStore.getUserFollowers.length }}&nbsp</span
+          >{{ followingStore.getFollowers(user.id)?.length }}&nbsp</span
         >
         <span class="text-gray-500">Follower</span>
       </div>

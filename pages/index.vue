@@ -98,7 +98,7 @@ onMounted(async () => {
       navigateTo("/login");
     }
   });
-  activeTab.value = "Following";
+  activeTab.value = "For You";
   // load profile
   if (store.noProfile) {
     await store.fetchProfile();
@@ -110,11 +110,6 @@ onMounted(async () => {
   }
   await postStore.fetchLikes(user.value.id);
   await postStore.fetchBookmarks();
-  //
-  document.addEventListener("mousedown", (event) => handleClickOutside(event));
-});
-onBeforeUnmount(() => {
-  document.removeEventListener("mousedown", handleClickOutside);
 });
 
 // Load different feed
@@ -139,6 +134,7 @@ async function fetchNewPost() {
   <div
     id="mainPage"
     class="flex h-screen w-screen bg-black transition-all duration-300"
+    @mousedown="handleClickOutside($event)"
   >
     <!-- UI popup -->
     <div>

@@ -46,7 +46,7 @@ export const usePostStore = defineStore({
       return (uid) => {
         // get all posts of a user
         const filteredPosts = [];
-        if (!state.userPosts[uid]) return [];
+        if (!state.userPosts[uid]) return null;
         for (const pid of state.userPosts[uid]) {
           if (filteredPosts.find((post) => post.id === pid)) continue;
           if (state.allPosts.has(pid)) {
@@ -108,6 +108,7 @@ export const usePostStore = defineStore({
     },
     getLikePosts(state) {
       return (uid) => {
+        if (!state.likes[uid]) return null;
         const filteredPosts = [];
         for (const like of state.likes[uid]) {
           if (state.allPosts.has(like.post_id)) {
@@ -240,6 +241,7 @@ export const usePostStore = defineStore({
     },
     async fetchUserPosts(uid) {
       const client = useSupabaseClient();
+      if (!uid) return;
       try {
         // fetch list of posts of a user
         const { error, data } = await client
@@ -289,7 +291,7 @@ export const usePostStore = defineStore({
       // check following list
       const followingStore = useFollowingStore();
       await followingStore.fetchFollowing();
-      let following_id = followingStore.getFollowing;
+      let following_id = followingStore.getFollowing(user.value.id);
       following_id.push(user.value.id);
       // console.log("getFollowing: ", following_id);
       if (following_id.length > 0) {
@@ -351,6 +353,7 @@ export const usePostStore = defineStore({
     async downloadAvatar(uid, url) {
       // download avatar from url store in supabase
       const client = useSupabaseClient();
+      if (!url) return;
       if (!this.userAvatars[uid]) {
         try {
           const { data, error } = await client.storage
@@ -365,8 +368,19 @@ export const usePostStore = defineStore({
         }
       }
     },
-    setProfile(data) {
-      this.userProfile[data.id] = data;
+    async fetchProfiles() {
+      const client = useSupabaseClient();
+      try {
+        const { error, data } = await client.from("profiles").select();
+        if (data) {
+          for (const profile of data) {
+            this.userProfile[profile.id] = profile;
+          }
+        }
+        if (error) throw error;
+      } catch (error) {
+        console.log(error.message);
+      }
     },
     async fetchUserProfile(uid) {
       const client = useSupabaseClient();

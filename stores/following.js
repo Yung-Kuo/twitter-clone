@@ -1,27 +1,17 @@
 export const useFollowingStore = defineStore({
   id: "following",
   state: () => ({
-    // current user
-    following: "",
-    followers: "",
+    following: [],
+    followers: [],
     isFollowing: {},
-    // other user
-    userFollowing: "",
-    userFollowers: "",
     error: "",
   }),
   getters: {
     getFollowing: (state) => {
-      return state.following;
+      return (uid) => state.following[uid];
     },
     getFollowers: (state) => {
-      return state.followers;
-    },
-    getUserFollowing: (state) => {
-      return state.userFollowing;
-    },
-    getUserFollowers: (state) => {
-      return state.userFollowers;
+      return (uid) => state.followers[uid];
     },
     getFollowingStatus: (state) => {
       return (uid) => state.isFollowing[uid];
@@ -31,88 +21,62 @@ export const useFollowingStore = defineStore({
     },
   },
   actions: {
-    // fetch current user's following list
-    async fetchFollowing() {
-      const user = useSupabaseUser();
+    // fetch following list
+    async fetchFollowing(uid) {
+      if (!uid) return;
       const client = useSupabaseClient();
-      const { error, data } = await useAsyncData("my_following", async () => {
-        const { error, data } = await client
-          .from("following")
-          .select("following_id")
-          .eq("follower_id", user.value.id)
-          .order("created_at", { ascending: false });
-        return error, data;
-      });
-      if (!data.value) {
-        await refreshNuxtData("my_following");
-      }
-      if (data.value) {
-        this.following = data.value.map((obj) => obj.following_id);
-      }
-      if (error.value) this.error = error.value;
-    },
-    // fetch other user's following list
-    async fetchUserFollowing(uid) {
-      const client = useSupabaseClient();
-      const { error, data } = await useAsyncData("user_following", async () => {
+      try {
         const { error, data } = await client
           .from("following")
           .select("following_id")
           .eq("follower_id", uid)
           .order("created_at", { ascending: false });
-        return error, data;
-      });
-      if (!data.value) await refreshNuxtData("user_following");
-      if (data.value)
-        this.userFollowing = data.value.map((obj) => obj.following_id);
-      if (error.value) this.error = error.value;
+        if (data) {
+          const user = useSupabaseUser();
+          this.following[uid] = data.map((obj) => obj.following_id);
+          if (uid === user.value.id) {
+            for (const id of this.following[uid]) {
+              this.isFollowing[id] = true;
+            }
+          }
+        }
+        if (error) throw error;
+      } catch (error) {
+        this.error = error.message;
+      }
     },
-    // fetch current user's follower list
-    async fetchFollowers() {
-      const user = useSupabaseUser();
+    // fetch follower list
+    async fetchFollowers(uid) {
+      if (!uid) return;
       const client = useSupabaseClient();
-      const { error, data } = await useAsyncData("my_followers", async () => {
+      try {
         const { error, data } = await client
           .from("following")
           .select()
-          .eq("following_id", user.value.id)
+          .eq("following_id", uid)
           .order("created_at", { ascending: false });
-        return error, data;
-      });
-      if (!data.value) await refreshNuxtData("my_followers");
-      if (data.value) this.followers = data.value;
-      if (error.value) console.log("fetch followers error: ", error.value);
-    },
-    // fetch other user's follower list
-    async fetchUserFollowers(uid) {
-      const client = useSupabaseClient();
-      if (uid)
-        try {
-          const { error, data } = await client
-            .from("following")
-            .select()
-            .eq("following_id", uid)
-            .order("created_at", { ascending: false });
-          if (data) this.userFollowers = data;
-          if (error) throw error;
-        } catch (error) {
-          console.log("fetch followers error: ", error);
-        }
+        if (data) this.followers[uid] = data.map((obj) => obj.following_id);
+        if (error) throw error;
+      } catch (error) {
+        this.error = error.message;
+      }
     },
     // check if an user is being follow by you
     async checkIsFollowing(uid) {
       const user = useSupabaseUser();
       const client = useSupabaseClient();
-      const { error, data } = await useAsyncData("is_following", async () => {
+      try {
         const { error, data } = await client
           .from("following")
           .select()
           .eq("follower_id", user.value.id)
           .eq("following_id", uid);
-        return error, data.length > 0;
-      });
-      if (error.value) console.log("error: ", error.value);
-      this.isFollowing[uid] = data.value;
+
+        this.isFollowing[uid] = data.length > 0;
+        if (error) throw error;
+      } catch (error) {
+        this.error = error.message;
+      }
     },
     // do I need to explain?
     async followUser(uid) {
@@ -128,7 +92,8 @@ export const useFollowingStore = defineStore({
       } catch (error) {
         this.error = error.message;
       } finally {
-        this.fetchUserFollowers(uid);
+        // this.fetchFollowers(uid);
+        this.followers[uid].push(user.value.id);
       }
     },
     // cancelled
@@ -145,9 +110,11 @@ export const useFollowingStore = defineStore({
       } catch (error) {
         this.error = error.message;
       } finally {
-        this.fetchUserFollowers(uid);
+        // this.fetchFollowers(uid);
+        this.followers[uid] = this.followers[uid].filter(
+          (id) => id !== user.value.id
+        );
       }
     },
   },
-  // persist: true,
 });

@@ -42,10 +42,12 @@ const date = computed(() => {
     <!-- right column -->
     <div class="flex w-[calc(100%-2.5rem)] flex-col">
       <!-- upper section -->
-      <div class="flex h-5 w-full items-center whitespace-nowrap pl-2">
+      <div
+        class="flex h-5 w-full items-center overflow-y-hidden overflow-x-scroll whitespace-nowrap pl-2 leading-none"
+      >
         <!-- user info -->
         <!-- name -->
-        <div class="noForward font-bold hover:underline">
+        <div class="noForward flex h-5 items-center font-bold hover:underline">
           <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
             <span>
               {{ postStore.getName(post.user_id) }}
@@ -53,17 +55,19 @@ const date = computed(() => {
           </NuxtLink>
         </div>
         &ensp;
-        <div class="flex w-max text-sm text-zinc-500">
+        <div class="flex h-5 text-sm text-zinc-500">
           <!-- username -->
           <div class="noForward">
             <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
               <span> @{{ postStore.getUsername(post.user_id) }}</span>
             </NuxtLink>
           </div>
-          <!-- post time -->
-          <pre> · {{ date }}</pre>
-          <!-- edited -->
-          <pre v-if="post.edited"> · edited</pre>
+          <div class="flex w-max">
+            <!-- timestamp -->
+            <pre> · {{ date }}</pre>
+            <!-- edited -->
+            <pre v-if="post.edited"> · edited</pre>
+          </div>
         </div>
       </div>
       <!-- middle section -->

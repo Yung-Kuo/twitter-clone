@@ -14,17 +14,21 @@ const props = defineProps({
   },
 });
 const text = defineModel();
+const textarea = ref(null);
 </script>
 <template>
   <div
-    class="grid h-full w-full grow grid-cols-1 grid-rows-1 px-2 text-xl"
-    :class="props.forProfile ? 'py-1' : 'py-2'"
+    tabindex="0"
+    @focusin="textarea.focus()"
+    class="grid h-full w-full grow grid-cols-1 grid-rows-1 px-2"
+    :class="props.forProfile ? 'py-1 text-3xl' : 'py-2 text-xl'"
   >
     <textarea
+      ref="textarea"
       v-model="text"
       :placeholder="props.placeholder"
       rows="1"
-      class="col-start-1 row-start-1 resize-none rounded-xl bg-black text-zinc-200 placeholder:text-zinc-500 focus:outline focus:outline-transparent"
+      class="col-start-1 row-start-1 resize-none bg-black text-zinc-200 placeholder:text-zinc-500 focus:outline focus:outline-transparent"
     ></textarea>
     <pre class="invisible col-start-1 row-start-1 whitespace-pre-wrap"
       >{{ props.freeze ? "" : text }} </pre

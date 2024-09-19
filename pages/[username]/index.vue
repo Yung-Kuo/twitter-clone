@@ -112,26 +112,49 @@ onMounted(async () => {
       navigateTo("/login");
     }
   });
-  if (store.noProfile) await store.fetchProfile();
-  if (route.params.username === store.getUsername) {
-    // check if is current user
-    userProfile.value = store.getProfile;
-    await followingStore.fetchFollowing();
-    await followingStore.fetchFollowers();
-  } else {
-    // other user
-    userProfile.value = await store.fetchOtherProfile(route.params.username);
-    if (!userProfile.value) navigateTo("/");
-    await postStore.fetchUserProfile(userProfile.value.id);
-    await followingStore.checkIsFollowing(userProfile.value.id);
-  }
-  activeTab.value = "Posts";
+  // fetch profile
+  watchEffect(async () => {
+    if (store.noProfile) await store.fetchProfile();
+    if (route.params.username === store.getUsername) {
+      // check if is current user
+      userProfile.value = store.getProfile;
+    } else {
+      // other user
+      userProfile.value = await store.fetchOtherProfile(route.params.username);
+      if (!userProfile.value) navigateTo("/");
+      await postStore.fetchUserProfile(userProfile.value?.id);
+      if (!followingStore.getFollowing(userProfile.value?.id)) {
+        await followingStore.checkIsFollowing(userProfile.value?.id);
+      }
+    }
+  });
+
+  // load feed
+  watchEffect(async () => {
+    if (activeTab.value === "Posts") {
+      if (!postStore.getUserPosts(userProfile.value.id)) {
+        await postStore.fetchUserPosts(userProfile.value?.id);
+      }
+    } else if (activeTab.value === "Likes") {
+      if (!postStore.getLikePosts(userProfile.value.id)) {
+        await postStore.fetchLikes(userProfile.value?.id);
+        await postStore.fetchLikePosts(userProfile.value?.id);
+      }
+    } else if (activeTab.value === "Replies") {
+      if (!replyStore.getUserReplies(userProfile.value.id)) {
+        await replyStore.fetchUserReplies(userProfile.value?.id);
+      }
+    }
+  });
+
   await postStore.fetchLikes(user.value.id);
   await postStore.fetchBookmarks();
-  await postStore.fetchBookmarkPosts();
+  // await postStore.fetchBookmarkPosts();
   // following
-  await followingStore.fetchUserFollowing(userProfile.value.id);
-  await followingStore.fetchUserFollowers(userProfile.value.id);
+  if (!followingStore.getFollowing(user.value?.id)) {
+    await followingStore.fetchFollowing(userProfile.value?.id);
+    await followingStore.fetchFollowers(userProfile.value?.id);
+  }
 
   //
   window.addEventListener("mousedown", (event) => handleClickOutside(event));
@@ -140,39 +163,20 @@ onBeforeUnmount(() => {
   window.removeEventListener("mousedown", handleClickOutside);
 });
 
-watch(
-  () => userProfile.value.id,
-  async () => {
-    if (route.params.username != store.getUsername) {
-      await followingStore.checkIsFollowing(userProfile.value.id);
-    }
-  }
-);
-
 // Load different feed
-const activeTab = ref("");
-watch(activeTab, async () => {
-  await fetchNewPost();
-});
-async function fetchNewPost() {
-  console.log("activeTab: ", activeTab.value);
-  if (activeTab.value === "Posts") {
-    await postStore.fetchUserPosts(userProfile.value.id);
-  } else if (activeTab.value === "Likes") {
-    await postStore.fetchLikes(userProfile.value.id);
-    await postStore.fetchLikePosts(userProfile.value.id);
-  } else if (activeTab.value === "Replies") {
-    await replyStore.fetchUserReplies(userProfile.value.id);
-  }
-}
+const activeTab = ref("Posts");
 const postList = computed(() => {
+  if (!userProfile.value) return null;
   if (activeTab.value === "Posts") {
+    console.log("load posts");
     return postStore.getUserPosts(userProfile.value.id);
   } else if (activeTab.value === "Likes") {
+    console.log("load likes");
     return postStore.getLikePosts(userProfile.value.id);
   } else if (activeTab.value === "Replies") {
+    console.log("load replies");
     return replyStore.getUserReplies(userProfile.value.id);
-  }
+  } else return null;
 });
 </script>
 <template>
@@ -247,9 +251,11 @@ const postList = computed(() => {
           {{ userProfile?.first_name }} {{ userProfile?.last_name }}
         </h1>
         <span class="h-1/2 text-sm text-gray-500 md:h-min">
-          {{ postStore.getUserPosts(userProfile.id).length }}
+          {{ postStore.getUserPosts(userProfile.id)?.length || 0 }}
           {{
-            postStore.getUserPosts(userProfile.id).length > 1 ? "posts" : "post"
+            postStore.getUserPosts(userProfile.id)?.length > 1
+              ? "posts"
+              : "post"
           }}
         </span>
       </template>
@@ -285,10 +291,18 @@ const postList = computed(() => {
                 <pre class="text-gray-200">{{ userProfile?.description }}</pre>
               </div>
               <!-- following -->
-              <span>{{ followingStore.getUserFollowing.length }}&nbsp</span>
+              <span
+                >{{
+                  followingStore.getFollowing(userProfile.id)?.length
+                }}&nbsp</span
+              >
               <span class="pr-5 text-gray-500">Following</span>
               <!-- follower -->
-              <span>{{ followingStore.getUserFollowers.length }}&nbsp</span>
+              <span
+                >{{
+                  followingStore.getFollowers(userProfile.id)?.length
+                }}&nbsp</span
+              >
               <span class="text-gray-500">Follower</span>
             </div>
           </div>

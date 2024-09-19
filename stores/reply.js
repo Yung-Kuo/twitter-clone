@@ -24,8 +24,8 @@ export const useReplyStore = defineStore({
     },
     getUserReplies(state) {
       return (pid) => {
-        const filteredReplies = [];
         if (!state.userReplies[pid]) return null;
+        const filteredReplies = [];
         for (const replyId of state.userReplies[pid]) {
           if (state.allReply.has(replyId)) {
             filteredReplies.push(state.allReply.get(replyId));
@@ -39,10 +39,10 @@ export const useReplyStore = defineStore({
         state.replyCount[pid] > 0 ? state.replyCount[pid] : null;
     },
     checkReplied(state) {
-      return (pid) => state.userHasReplied[pid] || false;
+      return (pid) => state.userHasReplied[pid] || null;
     },
     checkAuthorReplied(state) {
-      return (pid) => state.authorHasReplied[pid] || false;
+      return (pid) => state.authorHasReplied[pid] || null;
     },
   },
   actions: {
@@ -128,23 +128,22 @@ export const useReplyStore = defineStore({
       }
     },
     async fetchUserReplies(uid) {
-      if (uid) {
-        const client = useSupabaseClient();
-        try {
-          const { error, data } = await client
-            .from("posts")
-            .select()
-            .eq("type", "reply")
-            .eq("user_id", uid)
-            .order("created_at", { ascending: false });
-          if (data) {
-            this.setReplies(data);
-            this.userReplies[uid] = data.map((reply) => reply.id);
-          }
-          if (error) throw error;
-        } catch (error) {
-          console.log(error.message);
+      if (!uid) return;
+      const client = useSupabaseClient();
+      try {
+        const { error, data } = await client
+          .from("posts")
+          .select()
+          .eq("type", "reply")
+          .eq("user_id", uid)
+          .order("created_at", { ascending: false });
+        if (data) {
+          this.setReplies(data);
+          this.userReplies[uid] = data.map((reply) => reply.id);
         }
+        if (error) throw error;
+      } catch (error) {
+        console.log(error.message);
       }
     },
     setReplies(data) {

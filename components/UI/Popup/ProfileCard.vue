@@ -9,9 +9,9 @@ const followingStore = useFollowingStore();
 const userProfile = computed(() => postStore.getProfile(userId?.value));
 onMounted(async () => {
   watchEffect(async () => {
-    if (userId?.value) {
-      await followingStore.fetchUserFollowing(userId?.value);
-      await followingStore.fetchUserFollowers(userId?.value);
+    if (!followingStore.getFollowing(userId.value)) {
+      await followingStore.fetchFollowing(userId?.value);
+      await followingStore.fetchFollowers(userId?.value);
     }
   });
 });
@@ -54,10 +54,10 @@ onMounted(async () => {
     <!-- following / followers -->
     <div class="pt-2 text-sm">
       <!-- following -->
-      <span>{{ followingStore.getUserFollowing.length }}&nbsp</span>
+      <span>{{ followingStore.getFollowing(userId)?.length }}&nbsp</span>
       <span class="pr-5 text-gray-500">Following</span>
       <!-- follower -->
-      <span>{{ followingStore.getUserFollowers.length }}&nbsp</span>
+      <span>{{ followingStore.getFollowers(userId)?.length }}&nbsp</span>
       <span class="text-gray-500">Follower</span>
     </div>
   </div>

@@ -12,12 +12,19 @@ async function signOut() {
   const { error } = await client.auth.signOut();
   store.clearProfile();
 }
+
+const { showSearch, toggleSearch } = useSearch();
+provide("useSearch", { showSearch, toggleSearch });
 </script>
 <template>
   <div
     id="bottom"
     class="absolute bottom-0 left-0 z-20 flex h-14 w-full justify-between border-t border-zinc-800 bg-black bg-opacity-20 text-zinc-200 backdrop-blur-md transition-all duration-500 md:hidden"
   >
+    <!-- Search -->
+    <Teleport to="body">
+      <UIPopupSearch />
+    </Teleport>
     <NuxtLink to="/">
       <div class="flex h-full w-min items-center px-3">
         <IconsBadge noHover>
@@ -26,7 +33,7 @@ async function signOut() {
       </div>
     </NuxtLink>
     <div class="flex h-full w-min items-center px-3">
-      <IconsBadge noHover>
+      <IconsBadge noHover @mousedown="toggleSearch()">
         <IconsSearch />
       </IconsBadge>
     </div>

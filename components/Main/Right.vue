@@ -12,6 +12,10 @@ const props = defineProps({
     default: null,
   },
 });
+onMounted(async () => {
+  await postStore.fetchProfiles();
+});
+
 const userProfileList = computed(() => {
   if (props?.user_id) return null;
   else return postStore.getProfileList;

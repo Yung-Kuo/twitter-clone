@@ -34,33 +34,35 @@ const white_hollow_red =
   "px-4 py-1 rounded-full border border-zinc-600 font-medium text-zinc-200 hover:bg-opacity-10 hover:bg-red-600 hover:border-red-800 hover:text-red-600 active:bg-opacity-20";
 
 onMounted(() => {
-  if (props.color === "blue") {
-    if (props.solid) {
-      button_style.value = blue_solid;
-    } else {
-      button_style.value = blue_hollow;
+  watchEffect(() => {
+    if (props.color === "blue") {
+      if (props.solid) {
+        button_style.value = blue_solid;
+      } else {
+        button_style.value = blue_hollow;
+      }
+    } else if (props.color === "orange") {
+      if (props.solid) {
+        button_style.value = orange_solid;
+      } else {
+        button_style.value = orange_hollow;
+      }
+    } else if (props.color === "white") {
+      if (props.solid) {
+        button_style.value = white_solid;
+      } else if (props.turnRed) {
+        button_style.value = white_hollow_red;
+      } else {
+        button_style.value = white_hollow;
+      }
     }
-  } else if (props.color === "orange") {
-    if (props.solid) {
-      button_style.value = orange_solid;
-    } else {
-      button_style.value = orange_hollow;
-    }
-  } else if (props.color === "white") {
-    if (props.solid) {
-      button_style.value = white_solid;
-    } else if (props.turnRed) {
-      button_style.value = white_hollow_red;
-    } else {
-      button_style.value = white_hollow;
-    }
-  }
+  });
 });
 </script>
 
 <template>
   <button
-    class="flex items-center justify-center transition-all"
+    class="flex items-center justify-center whitespace-nowrap transition-all"
     :class="{ [button_style]: true, grayscale: !props.active }"
   >
     <span>
