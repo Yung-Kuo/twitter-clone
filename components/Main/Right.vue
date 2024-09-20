@@ -41,9 +41,7 @@ function focusoutSearchBar() {
       menuGetRect();
     "
   >
-    <div
-      class="invisible flex w-0 flex-col gap-5 xl:visible xl:w-full 2xl:w-4/5"
-    >
+    <div class="hidden w-0 flex-col gap-5 xl:flex xl:w-full 2xl:w-4/5">
       <!-- search bar -->
       <div
         tabindex="0"

@@ -1,17 +1,17 @@
 export const useFollowingStore = defineStore({
   id: "following",
   state: () => ({
-    following: [],
-    followers: [],
+    following: {},
+    followers: {},
     isFollowing: {},
     error: "",
   }),
   getters: {
     getFollowing: (state) => {
-      return (uid) => state.following[uid] || 0;
+      return (uid) => state.following[uid];
     },
     getFollowers: (state) => {
-      return (uid) => state.followers[uid] || 0;
+      return (uid) => state.followers[uid];
     },
     getFollowingStatus: (state) => {
       return (uid) => state.isFollowing[uid];

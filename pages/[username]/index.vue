@@ -136,10 +136,10 @@ onMounted(async () => {
         await postStore.fetchUserPosts(userProfile.value?.id);
       }
     } else if (activeTab.value === "Likes") {
-      if (!postStore.getLikePosts(userProfile.value.id)) {
-        await postStore.fetchLikes(userProfile.value?.id);
-        await postStore.fetchLikePosts(userProfile.value?.id);
-      }
+      // if (!postStore.getLikes(userProfile.value.id)) {
+      // await postStore.fetchLikes(userProfile.value?.id);
+      await postStore.fetchLikePosts(userProfile.value?.id);
+      // }
     } else if (activeTab.value === "Replies") {
       if (!replyStore.getUserReplies(userProfile.value.id)) {
         await replyStore.fetchUserReplies(userProfile.value?.id);
@@ -147,20 +147,21 @@ onMounted(async () => {
     }
   });
 
-  await postStore.fetchLikes(user.value.id);
-  await postStore.fetchBookmarks();
-  // await postStore.fetchBookmarkPosts();
+  watchEffect(async () => {
+    if (!postStore.getLikes(userProfile.value?.id)) {
+      await postStore.fetchLikes(userProfile.value?.id);
+    }
+    if (!postStore.getBookmarks) {
+      await postStore.fetchBookmarks();
+    }
+  });
   // following
-  if (!followingStore.getFollowing(user.value?.id)) {
-    await followingStore.fetchFollowing(userProfile.value?.id);
-    await followingStore.fetchFollowers(userProfile.value?.id);
-  }
-
-  //
-  window.addEventListener("mousedown", (event) => handleClickOutside(event));
-});
-onBeforeUnmount(() => {
-  window.removeEventListener("mousedown", handleClickOutside);
+  watchEffect(async () => {
+    if (!followingStore.getFollowing(user.value?.id)) {
+      await followingStore.fetchFollowing(userProfile.value?.id);
+      await followingStore.fetchFollowers(userProfile.value?.id);
+    }
+  });
 });
 
 // Load different feed
@@ -180,7 +181,10 @@ const postList = computed(() => {
 });
 </script>
 <template>
-  <div class="flex h-screen w-screen bg-black">
+  <div
+    class="flex h-screen w-screen bg-black"
+    @mousedown="handleClickOutside()"
+  >
     <!-- UI popup -->
     <div>
       <!-- Alert -->
