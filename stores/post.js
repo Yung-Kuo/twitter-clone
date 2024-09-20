@@ -399,6 +399,9 @@ export const usePostStore = defineStore({
         }
       }
     },
+    setProfile(profile) {
+      this.userProfile[profile.id] = profile;
+    },
     async bookmarkPost(pid) {
       const client = useSupabaseClient();
       const user = useSupabaseUser();

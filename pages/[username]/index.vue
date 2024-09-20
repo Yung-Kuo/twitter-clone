@@ -105,7 +105,15 @@ const { target_post, clickPost, hoverPost } = useClickPost();
 provide("clickPost", { target_post, clickPost, hoverPost });
 
 // storing non-self user profile
-const userProfile = ref("");
+const userProfile = computed(() => {
+  if (route.params.username === store.getUsername) {
+    // check if is current user
+    return store.getProfile;
+  } else {
+    return otherUser.value;
+  }
+});
+const otherUser = ref("");
 onMounted(async () => {
   watchEffect(() => {
     if (!user.value) {
@@ -120,9 +128,8 @@ onMounted(async () => {
       userProfile.value = store.getProfile;
     } else {
       // other user
-      userProfile.value = await store.fetchOtherProfile(route.params.username);
-      if (!userProfile.value) navigateTo("/");
-      await postStore.fetchUserProfile(userProfile.value?.id);
+      otherUser.value = await store.fetchOtherProfile(route.params.username);
+      if (!otherUser.value) navigateTo("/");
       if (!followingStore.getFollowing(userProfile.value?.id)) {
         await followingStore.checkIsFollowing(userProfile.value?.id);
       }
@@ -296,6 +303,9 @@ const postList = computed(() => {
               </div>
               <!-- following -->
               <span
+                @mousedown="
+                  console.log(followingStore.getFollowing(userProfile.id))
+                "
                 >{{
                   followingStore.getFollowing(userProfile.id)?.length
                 }}&nbsp</span

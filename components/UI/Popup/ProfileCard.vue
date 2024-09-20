@@ -11,6 +11,8 @@ onMounted(async () => {
   watchEffect(async () => {
     if (!followingStore.getFollowing(userId.value)) {
       await followingStore.fetchFollowing(userId?.value);
+    }
+    if (!followingStore.getFollowers(userId.value)) {
       await followingStore.fetchFollowers(userId?.value);
     }
   });

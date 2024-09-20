@@ -48,10 +48,14 @@ export const useProfileStore = defineStore({
           .from("profiles")
           .select()
           .eq("username", username)
-          // .or(`username.eq.${username}, id.eq.${id}`)
           .single();
+
         if (error) throw error;
-        else return data;
+        if (data) {
+          const postStore = usePostStore();
+          postStore.setProfile(data);
+          return data;
+        }
       } catch (error) {
         this.error = error.message;
       } finally {
