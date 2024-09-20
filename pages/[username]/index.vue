@@ -183,7 +183,7 @@ const postList = computed(() => {
 <template>
   <div
     class="flex h-screen w-screen bg-black"
-    @mousedown="handleClickOutside()"
+    @mousedown="handleClickOutside($event)"
   >
     <!-- UI popup -->
     <div>

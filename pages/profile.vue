@@ -178,7 +178,10 @@ const buttonActiveFlag = computed(() => {
 </script>
 
 <template>
-  <div class="flex h-screen w-screen bg-black">
+  <div
+    class="flex h-screen w-screen bg-black"
+    @mousedown="handleClickOutside($event)"
+  >
     <!-- UI Popup -->
     <div>
       <!-- Alert -->

@@ -108,17 +108,15 @@ onMounted(async () => {
     await postStore.fetchBookmarks();
     await postStore.fetchBookmarkPosts();
   });
-
-  window.addEventListener("mousedown", (event) => handleClickOutside(event));
-});
-onBeforeUnmount(() => {
-  window.removeEventListener("mousedown", handleClickOutside);
 });
 
 const bookmarkList = computed(() => postStore.getBookmarkPosts);
 </script>
 <template>
-  <div class="flex h-screen w-screen bg-black">
+  <div
+    class="flex h-screen w-screen bg-black"
+    @mousedown="handleClickOutside($event)"
+  >
     <!-- UI popup -->
     <div>
       <!-- Alert -->
