@@ -260,10 +260,7 @@ function scrollToTarget() {
           <div ref="target" class="scroll-mt-12 md:scroll-mt-14"></div>
           <!-- main post -->
           <div class="px-3 md:px-5">
-            <MainPostSingle
-              v-bind="post"
-              @mousedown="scrollToTarget()"
-            ></MainPostSingle>
+            <MainPostSingle v-bind="post"></MainPostSingle>
           </div>
         </MainSection>
         <!-- lower section -->
