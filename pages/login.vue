@@ -116,7 +116,7 @@ function validateEmail() {
     <div
       class="flex h-full w-full items-center justify-center bg-black md:h-min md:w-3/5 md:rounded-xl lg:h-min lg:w-2/5"
     >
-      <div class="flex w-4/5 flex-col gap-10 px-10 py-20">
+      <div class="flex w-5/6 flex-col gap-10 px-10 py-20">
         <!-- email -->
         <UIInput
           type="email"

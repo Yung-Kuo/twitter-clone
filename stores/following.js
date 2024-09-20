@@ -8,10 +8,10 @@ export const useFollowingStore = defineStore({
   }),
   getters: {
     getFollowing: (state) => {
-      return (uid) => state.following[uid];
+      return (uid) => state.following[uid] || 0;
     },
     getFollowers: (state) => {
-      return (uid) => state.followers[uid];
+      return (uid) => state.followers[uid] || 0;
     },
     getFollowingStatus: (state) => {
       return (uid) => state.isFollowing[uid];

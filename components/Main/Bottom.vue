@@ -28,7 +28,7 @@ provide("useSearch", { showSearch, toggleSearch });
     <NuxtLink to="/">
       <div class="flex h-full w-min items-center px-3">
         <IconsBadge noHover>
-          <IconsHome :solid="route.path === '/'" class="backdrop-blur-lg" />
+          <IconsHome :solid="route.path === '/'" />
         </IconsBadge>
       </div>
     </NuxtLink>
