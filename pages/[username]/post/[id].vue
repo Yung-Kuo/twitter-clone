@@ -2,6 +2,7 @@
 import { useProfileStore } from "~/stores/profile";
 import { usePostStore } from "~/stores/post";
 import { useReplyStore } from "~/stores/reply";
+import { useFollowingStore } from "~/stores/following";
 definePageMeta({
   middleware: ["auth"],
 });
@@ -9,6 +10,7 @@ const user = useSupabaseUser();
 const profileStore = useProfileStore();
 const postStore = usePostStore();
 const replyStore = useReplyStore();
+const followingStore = useFollowingStore();
 const route = useRoute();
 //
 // composables
@@ -99,42 +101,6 @@ provide("useEdit", {
 const { target_post, clickPost, hoverPost } = useClickPost();
 provide("clickPost", { target_post, clickPost, hoverPost });
 
-//
-const post = computed(() => postStore.getPost(route.params.id));
-// reply list
-const replyList = computed(() => replyStore.getReplies(post.value?.id));
-
-const thread = ref([]);
-async function traverseThread() {
-  let current = null;
-  let reply_to = post.value?.reply_to;
-  while (reply_to) {
-    if (!postStore.getPost(reply_to)) {
-      await postStore.fetchOnePost(reply_to);
-    }
-    current = postStore.getPost(reply_to);
-    if (!current) break;
-    else if (!thread.value.find((post) => post.id === current.id)) {
-      thread.value.unshift(current);
-    }
-    // stop the traverse if the root post is a repost.
-    if (current.type === "reply") reply_to = current.reply_to;
-    else break;
-  }
-  return true;
-}
-
-const initialScroll = ref(false);
-// const target = ref(null);
-function scrollToTarget() {
-  if (initialScroll.value) return;
-  nextTick();
-  const target = document.getElementById("target");
-  initialScroll.value = true;
-  target.scrollIntoView({ block: "start", behavior: "instant" });
-  initialScroll.value = false;
-}
-
 onMounted(async () => {
   watchEffect(async () => {
     if (!user.value) {
@@ -148,20 +114,62 @@ onMounted(async () => {
   watchEffect(async () => {
     if (!post.value) await postStore.fetchOnePost(route.params.id);
     if (!replyList.value) await replyStore.fetchReplies(post.value.id);
+    if (!followingStore.getFollowing(user.value.id)) {
+      await followingStore.fetchFollowing(user.value.id);
+    }
     if (!postStore.getLikes(user.value.id)) {
       await postStore.fetchLikes(user.value.id);
     }
-    if (!postStore.getBookmarks.length) {
+    if (!postStore.getBookmarks) {
       await postStore.fetchBookmarks();
     }
   });
   watchEffect(async () => {
     if (post.value?.type === "reply") {
-      await traverseThread();
-      scrollToTarget();
+      await buildThread(post.value);
+      if (thread.value.length > 0) {
+        await nextTick();
+        scrollToTarget();
+        setTimeout(() => {
+          scrollToTarget();
+        }, 500);
+      }
     }
   });
 });
+
+//
+const post = computed(() => postStore.getPost(route.params.id));
+// reply list
+const replyList = computed(() => replyStore.getReplies(post.value?.id));
+// thread
+const thread = ref([]);
+async function buildThread(currentPost) {
+  let current = currentPost;
+  while (current?.reply_to) {
+    if (!postStore.getPost(current.reply_to)) {
+      await postStore.fetchOnePost(current.reply_to);
+    }
+
+    current = postStore.getPost(current.reply_to);
+    if (!current) break;
+
+    if (thread.value.find((post) => post.id === current.id)) continue;
+    thread.value.unshift(current);
+
+    if (current.type !== "reply") break;
+  }
+}
+
+const target = ref(null);
+const initialScroll = ref(false);
+function scrollToTarget() {
+  if (initialScroll.value) return;
+  initialScroll.value = true;
+  console.log("scroll");
+  target.value.scrollIntoView({ block: "start", behavior: "instant" });
+  initialScroll.value = false;
+}
 </script>
 <template>
   <div
@@ -240,7 +248,7 @@ onMounted(async () => {
         <!-- upper section -->
         <MainSection class="noForward pt-2">
           <!-- reply thread -->
-          <ul v-if="thread.length">
+          <ul v-if="thread.length > 0">
             <li v-for="threadPost in thread" :key="threadPost.id">
               <MainPostReplyThread
                 :post="threadPost"
@@ -249,7 +257,7 @@ onMounted(async () => {
               />
             </li>
           </ul>
-          <div id="target" class="scroll-mt-12 md:scroll-mt-14"></div>
+          <div ref="target" class="scroll-mt-12 md:scroll-mt-14"></div>
           <!-- main post -->
           <div class="px-3 md:px-5">
             <MainPostSingle

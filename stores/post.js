@@ -22,7 +22,7 @@ export const usePostStore = defineStore({
   getters: {
     getPost(state) {
       // get single post
-      return (pid) => state.allPosts.get(pid);
+      return (pid) => state.allPosts.get(pid) || null;
     },
     getAllPosts(state) {
       const filteredPosts = [];

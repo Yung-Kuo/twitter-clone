@@ -115,7 +115,6 @@ export const useReplyStore = defineStore({
             .eq("type", "reply")
             .eq("reply_to", pid)
             .order("created_at", { ascending: true });
-          console.log(data);
           if (data?.length) {
             this.setReplies(data);
             this.postReplyId[pid] = data.map((reply) => reply.id);
