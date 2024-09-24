@@ -37,32 +37,15 @@ provide("getRect", getRect);
 const {
   showMenu,
   menu_pid,
-  menu_uid,
   type,
-  icon_id,
   toggleMenu,
   handleClickOutside,
   menuGetRect,
 } = useToggleMenu();
-provide("useToggleMenu", {
-  showMenu,
-  menu_pid,
-  menu_uid,
-  type,
-  icon_id,
-  toggleMenu,
-  handleClickOutside,
-  menuGetRect,
-});
 provide("toggleMenu", toggleMenu);
 provide("menuGetRect", menuGetRect);
+provide("togglePostMenu", { showMenu, menu_pid, type, toggleMenu });
 provide("toggleAccountMenu", { showMenu, type, toggleMenu, menuGetRect });
-watch(icon_id, () => {
-  nextTick();
-  if (!showMenu.value) {
-    toggleMenu(menu_pid.value, menu_uid.value, type.value);
-  }
-});
 // write post & quote
 const {
   showPopupPost,
@@ -83,10 +66,9 @@ provide("writePost", {
 provide("showPopupPost", showPopupPost);
 provide("repost_pid", repost_pid);
 // reply
-const { showPopupReply, pid, reply, clickReply, publishReply } = useReply();
+const { showPopupReply, pid, clickReply, publishReply } = useReply();
 provide("clickReply", clickReply);
-provide("showPopupReply", showPopupReply);
-provide("popupReply", { pid, reply, publishReply });
+provide("popupReply", { pid, publishReply });
 // edit
 const { showPopupEdit, editPost, newText, selectEditPost, publishEdit } =
   useEdit();
@@ -113,7 +95,9 @@ onMounted(async () => {
   });
   watchEffect(async () => {
     if (!post.value) await postStore.fetchOnePost(route.params.id);
-    if (!replyList.value) await replyStore.fetchReplies(post.value.id);
+    if (!post.value) navigateTo("/");
+    // if (!replyList.value) await replyStore.fetchReplies(post.value.id);
+    await replyStore.fetchReplies(post.value?.id);
     if (!followingStore.getFollowing(user.value.id)) {
       await followingStore.fetchFollowing(user.value.id);
     }
@@ -127,13 +111,13 @@ onMounted(async () => {
   watchEffect(async () => {
     if (post.value?.type === "reply") {
       await buildThread(post.value);
-      if (thread.value.length > 0) {
-        await nextTick();
+      // if (thread.value.length > 0) {
+      // await nextTick();
+      // scrollToTarget();
+      setTimeout(() => {
         scrollToTarget();
-        setTimeout(() => {
-          scrollToTarget();
-        }, 500);
-      }
+      }, 500);
+      // }
     }
   });
 });
@@ -238,7 +222,7 @@ function scrollToTarget() {
       </UIPopupTransition>
     </div>
     <!-- layout -->
-    <MainLeft @popupPost="showPopupPost = !showPopupPost" />
+    <MainLeft @popupPost="showPopupPost = true" />
     <MainBottom />
     <MainCenter :initialScroll="initialScroll">
       <template #banner>
@@ -274,6 +258,5 @@ function scrollToTarget() {
         </div>
       </template>
     </MainCenter>
-    <!-- <MainRight :user_id="post.user_id" /> -->
   </div>
 </template>

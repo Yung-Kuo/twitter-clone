@@ -19,7 +19,7 @@ export const useReplyStore = defineStore({
             filteredReplies.push(state.allReply.get(replyId));
           }
         }
-        return filteredReplies;
+        return filteredReplies || null;
       };
     },
     getUserReplies(state) {

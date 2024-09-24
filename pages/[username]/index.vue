@@ -41,32 +41,15 @@ provide("getRect", getRect);
 const {
   showMenu,
   menu_pid,
-  menu_uid,
   type,
-  icon_id,
   toggleMenu,
   handleClickOutside,
   menuGetRect,
 } = useToggleMenu();
-provide("useToggleMenu", {
-  showMenu,
-  menu_pid,
-  menu_uid,
-  type,
-  icon_id,
-  toggleMenu,
-  handleClickOutside,
-  menuGetRect,
-});
 provide("toggleMenu", toggleMenu);
 provide("menuGetRect", menuGetRect);
+provide("togglePostMenu", { showMenu, menu_pid, type, toggleMenu });
 provide("toggleAccountMenu", { showMenu, type, toggleMenu, menuGetRect });
-watch(icon_id, () => {
-  nextTick();
-  if (!showMenu.value) {
-    toggleMenu(menu_pid.value, menu_uid.value, type.value);
-  }
-});
 // write post & quote
 const {
   showPopupPost,
@@ -87,9 +70,9 @@ provide("writePost", {
 provide("showPopupPost", showPopupPost);
 provide("repost_pid", repost_pid);
 // reply
-const { showPopupReply, pid, reply, clickReply, publishReply } = useReply();
+const { showPopupReply, pid, clickReply, publishReply } = useReply();
 provide("clickReply", clickReply);
-provide("popupReply", { pid, reply, publishReply });
+provide("popupReply", { pid, publishReply });
 // edit
 const { showPopupEdit, editPost, newText, selectEditPost, publishEdit } =
   useEdit();
@@ -123,10 +106,7 @@ onMounted(async () => {
   // fetch profile
   watchEffect(async () => {
     if (store.noProfile) await store.fetchProfile();
-    if (route.params.username === store.getUsername) {
-      // check if is current user
-      userProfile.value = store.getProfile;
-    } else {
+    if (route.params.username !== store.getUsername) {
       // other user
       otherUser.value = await store.fetchOtherProfile(route.params.username);
       if (!otherUser.value) navigateTo("/");
@@ -143,10 +123,10 @@ onMounted(async () => {
         await postStore.fetchUserPosts(userProfile.value?.id);
       }
     } else if (activeTab.value === "Likes") {
-      // if (!postStore.getLikes(userProfile.value.id)) {
-      // await postStore.fetchLikes(userProfile.value?.id);
-      await postStore.fetchLikePosts(userProfile.value?.id);
-      // }
+      if (!postStore.getLikes(userProfile.value?.id)) {
+        await postStore.fetchLikes(userProfile.value?.id);
+        await postStore.fetchLikePosts(userProfile.value?.id);
+      }
     } else if (activeTab.value === "Replies") {
       if (!replyStore.getUserReplies(userProfile.value.id)) {
         await replyStore.fetchUserReplies(userProfile.value?.id);
@@ -155,9 +135,6 @@ onMounted(async () => {
   });
 
   watchEffect(async () => {
-    if (!postStore.getLikes(userProfile.value?.id)) {
-      await postStore.fetchLikes(userProfile.value?.id);
-    }
     if (!postStore.getBookmarks) {
       await postStore.fetchBookmarks();
     }
@@ -217,7 +194,6 @@ const postList = computed(() => {
             showPopupEdit = false;
             newPost = null;
             repost_pid = null;
-            reply = null;
             editPost = null;
           "
         />
@@ -234,13 +210,7 @@ const postList = computed(() => {
       </UIPopupTransition>
       <!-- Reply -->
       <UIPopupTransition>
-        <UIPopupReply
-          v-if="showPopupReply"
-          @close="
-            showPopupReply = false;
-            reply = null;
-          "
-        />
+        <UIPopupReply v-if="showPopupReply" @close="showPopupReply = false" />
       </UIPopupTransition>
       <!-- Edit -->
       <UIPopupTransition>
@@ -277,7 +247,7 @@ const postList = computed(() => {
           <div class="h-60 w-full bg-zinc-800"></div>
           <!-- avatar -->
           <div
-            class="relative -top-16 left-5 z-10 h-min w-min rounded-full ring-4 ring-black"
+            class="relative -top-20 left-5 z-10 mt-2 h-min w-min rounded-full ring-4 ring-black"
           >
             <UIAvatar :user_id="userProfile.id" size="large"></UIAvatar>
           </div>

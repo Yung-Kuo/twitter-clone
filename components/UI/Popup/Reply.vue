@@ -5,13 +5,10 @@ const postStore = usePostStore();
 const emit = defineEmits(["close"]);
 
 // reply
-const { pid, reply, publishReply } = inject("popupReply");
+const { pid, publishReply } = inject("popupReply");
+const reply = ref("");
 
 const post = computed(() => postStore.getPost(pid.value));
-
-onMounted(() => {
-  reply.value = "";
-});
 </script>
 <template>
   <UIPopupDraft @close="emit('close')">
@@ -36,7 +33,7 @@ onMounted(() => {
         <UIButton
           color="blue"
           :solid="true"
-          @mousedown="emit('close', publishReply(pid.value))"
+          @mousedown="emit('close', publishReply(pid, reply))"
           >Reply</UIButton
         >
       </div>

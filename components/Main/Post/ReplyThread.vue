@@ -29,16 +29,7 @@ const {
   publishQuote,
 } = inject("writePost");
 // toggle menu
-const {
-  showMenu,
-  menu_pid,
-  menu_uid,
-  type,
-  icon_id,
-  toggleMenu,
-  handleClickOutside,
-  menuGetRect,
-} = inject("useToggleMenu");
+const { showMenu, menu_pid, type, toggleMenu } = inject("togglePostMenu");
 // action buttons
 const clickReply = inject("clickReply");
 const { clickLike, clickBookmark } = useLikeBookmark();
@@ -139,7 +130,7 @@ const date = computed(() => {
                 color="blue"
                 :clicked="menu_pid === post.id && type === 'post_action'"
                 :id="`${post.id}_menu_icon`"
-                @mousedown="toggleMenu(post.id, post.user_id, 'post_action')"
+                @mousedown="toggleMenu(post.id, 'post_action')"
                 class="noForward"
               >
                 <IconsMore />
@@ -152,8 +143,8 @@ const date = computed(() => {
                 v-if="
                   showMenu && type === 'post_action' && menu_pid === post.id
                 "
-                :pid="menu_pid"
-                :uid="menu_uid"
+                :pid="post.id"
+                :uid="post.user_id"
                 class="noForward"
               ></UIPopupMenu>
             </UIPopupTransition>
@@ -178,7 +169,7 @@ const date = computed(() => {
           <!-- action buttons -->
           <div class="flex grow justify-between">
             <!-- Reply -->
-            <div class="noForward flex w-10 items-center">
+            <div class="noForward flex items-center">
               <IconsBadge
                 size="small"
                 color="blue"
@@ -195,13 +186,13 @@ const date = computed(() => {
             </div>
             <!-- Repost -->
             <div class="noForward flex">
-              <div class="flex w-10 items-center">
+              <div class="flex items-center">
                 <IconsBadge
                   size="small"
                   color="green"
                   :clicked="menu_pid === post.id && type === 'repost'"
                   :id="`${post.id}_repost_menu_icon`"
-                  @mousedown="toggleMenu(post.id, post.user_id, 'repost')"
+                  @mousedown="toggleMenu(post.id, 'repost')"
                 >
                   <IconsRepost />
                 </IconsBadge>
@@ -224,7 +215,7 @@ const date = computed(() => {
               </div>
             </div>
             <!-- Like -->
-            <div class="noForward flex w-10 items-center">
+            <div class="noForward flex items-center">
               <IconsBadge
                 size="small"
                 color="red"
@@ -240,7 +231,7 @@ const date = computed(() => {
               >
             </div>
             <!-- Bookmark -->
-            <div class="noForward flex w-10 items-center">
+            <div class="noForward flex items-center">
               <IconsBadge
                 size="small"
                 color="blue"

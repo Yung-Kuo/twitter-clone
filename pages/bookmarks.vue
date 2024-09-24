@@ -33,32 +33,15 @@ provide("getRect", getRect);
 const {
   showMenu,
   menu_pid,
-  menu_uid,
   type,
-  icon_id,
   toggleMenu,
   handleClickOutside,
   menuGetRect,
 } = useToggleMenu();
-provide("useToggleMenu", {
-  showMenu,
-  menu_pid,
-  menu_uid,
-  type,
-  icon_id,
-  toggleMenu,
-  handleClickOutside,
-  menuGetRect,
-});
 provide("toggleMenu", toggleMenu);
 provide("menuGetRect", menuGetRect);
+provide("togglePostMenu", { showMenu, menu_pid, type, toggleMenu });
 provide("toggleAccountMenu", { showMenu, type, toggleMenu, menuGetRect });
-watch(icon_id, () => {
-  nextTick();
-  if (!showMenu.value) {
-    toggleMenu(menu_pid.value, menu_uid.value, type.value);
-  }
-});
 // write post & quote
 const {
   showPopupPost,

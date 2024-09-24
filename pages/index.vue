@@ -35,25 +35,14 @@ provide("getRect", getRect);
 const {
   showMenu,
   menu_pid,
-  menu_uid,
   type,
-  icon_id,
   toggleMenu,
   handleClickOutside,
   menuGetRect,
 } = useToggleMenu();
-provide("useToggleMenu", {
-  showMenu,
-  menu_pid,
-  menu_uid,
-  type,
-  icon_id,
-  toggleMenu,
-  handleClickOutside,
-  menuGetRect,
-});
 provide("toggleMenu", toggleMenu);
 provide("menuGetRect", menuGetRect);
+provide("togglePostMenu", { showMenu, menu_pid, type, toggleMenu });
 provide("toggleAccountMenu", { showMenu, type, toggleMenu, menuGetRect });
 // write post & quote
 const {
@@ -75,9 +64,9 @@ provide("writePost", {
 provide("showPopupPost", showPopupPost);
 provide("repost_pid", repost_pid);
 // reply
-const { showPopupReply, pid, reply, clickReply, publishReply } = useReply();
+const { showPopupReply, pid, clickReply, publishReply } = useReply();
 provide("clickReply", clickReply);
-provide("popupReply", { pid, reply, publishReply });
+provide("popupReply", { pid, publishReply });
 // edit
 const { showPopupEdit, editPost, newText, selectEditPost, publishEdit } =
   useEdit();
@@ -179,13 +168,7 @@ async function fetchNewPost() {
       </UIPopupTransition>
       <!-- Reply -->
       <UIPopupTransition>
-        <UIPopupReply
-          v-if="showPopupReply"
-          @close="
-            showPopupReply = false;
-            reply = null;
-          "
-        />
+        <UIPopupReply v-if="showPopupReply" @close="showPopupReply = false" />
       </UIPopupTransition>
       <!-- Edit -->
       <UIPopupTransition>

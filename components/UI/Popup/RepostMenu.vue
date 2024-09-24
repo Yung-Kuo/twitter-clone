@@ -12,22 +12,25 @@ const repost_pid = inject("repost_pid");
 
 const repost = {
   name: "Repost",
+  icons: resolveComponent("IconsRepost"),
   function: () => {
     emit("repost");
-    toggleMenu(props.pid, null, "repost");
+    toggleMenu(props.pid, "repost");
   },
 };
 const quote = {
   name: "Quote",
+  icons: resolveComponent("IconsQuote"),
   function: () => {
     emit("quote");
-    toggleMenu(props.pid, null, "repost");
+    toggleMenu(props.pid, "repost");
   },
 };
 const viewQuotes = {
   name: "View Quotes",
+  icons: resolveComponent("IconsViewQuotes"),
   function: () => {
-    toggleMenu(props.pid, null, "repost");
+    toggleMenu(props.pid, "repost");
   },
 };
 const actionList = ref("");
@@ -38,14 +41,15 @@ onMounted(() => {
 </script>
 <template>
   <div
-    class="absolute z-10 flex h-max w-40 flex-col rounded-xl bg-black text-zinc-200 shadow-3xl shadow-zinc-700 transition-all duration-200"
+    class="absolute z-10 flex h-min w-max flex-col rounded-xl bg-black text-zinc-200 shadow-3xl shadow-zinc-700 transition-all duration-200"
   >
     <ul>
       <li
         v-for="action in actionList"
         @mousedown="action.function"
-        class="flex h-10 w-full cursor-pointer items-center px-5 first:rounded-t-xl first:pt-1 last:rounded-b-xl last:pb-1 hover:bg-zinc-800 hover:bg-opacity-30 active:bg-opacity-40"
+        class="flex h-12 w-full cursor-pointer items-center gap-4 pl-4 pr-6 first:rounded-t-xl first:pt-1 last:rounded-b-xl last:pb-1 hover:bg-zinc-800 hover:bg-opacity-30 active:bg-opacity-40"
       >
+        <component :is="action.icons" class="text-xl" />
         <span>{{ action.name }}</span>
       </li>
     </ul>

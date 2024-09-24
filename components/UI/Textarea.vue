@@ -13,8 +13,9 @@ const props = defineProps({
     default: false,
   },
 });
-const text = defineModel();
 const textarea = ref(null);
+const text = defineModel();
+const blank = ref("");
 </script>
 <template>
   <div

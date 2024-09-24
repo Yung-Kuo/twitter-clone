@@ -96,8 +96,7 @@ export const usePostStore = defineStore({
       return filteredPosts;
     },
     getBookmarkCount(state) {
-      return (pid) =>
-        state.bookmarkCount[pid] ? state.bookmarkCount[pid] : "";
+      return (pid) => state.bookmarkCount[pid] || null;
     },
     checkBookmark(state) {
       return (pid) =>
@@ -119,7 +118,7 @@ export const usePostStore = defineStore({
       };
     },
     getLikeCount(state) {
-      return (pid) => (state.likeCount[pid] ? state.likeCount[pid] : "");
+      return (pid) => state.likeCount[pid] || null;
       // return (pid) => state.likeCount[pid];
     },
     checkLike(state) {
@@ -151,6 +150,7 @@ export const usePostStore = defineStore({
         if (error) throw error;
         else if (data) {
           this.allPosts.set(data.id, data);
+          this.allPostId.unshift(data.id);
           if (!this.userPosts[user.value.id]) {
             this.userPosts[user.value.id] = [];
           }
@@ -207,7 +207,7 @@ export const usePostStore = defineStore({
         if (error) throw error;
         else {
           this.allPosts.delete(pid);
-          if (deleteThis.reply_to)
+          if (deleteThis.type === "reply")
             await replyStore.deleteReply(pid, deleteThis.reply_to);
           return true;
         }
@@ -293,7 +293,6 @@ export const usePostStore = defineStore({
       await followingStore.fetchFollowing();
       let following_id = followingStore.getFollowing(user.value.id);
       following_id.push(user.value.id);
-      // console.log("getFollowing: ", following_id);
       if (following_id.length > 0) {
         // fetch posts from followed users
         try {
@@ -462,7 +461,14 @@ export const usePostStore = defineStore({
     async fetchBookmarkPosts() {
       const client = useSupabaseClient();
       try {
-        let map = this.bookmarks.map((bookmark) => bookmark.post_id);
+        // let map = this.bookmarks.map((bookmark) => bookmark.post_id);
+        let map = [];
+        for (const bookmark of this.bookmarks) {
+          if (!this.getPost(bookmark.post_id)) {
+            map.push(bookmark.post_id);
+          }
+        }
+        if (map.length === 0) return;
         const { error, data } = await client
           .from("posts")
           .select()
@@ -562,7 +568,14 @@ export const usePostStore = defineStore({
     async fetchLikePosts(uid) {
       const client = useSupabaseClient();
       try {
-        let map = this.likes[uid].map((like) => like.post_id);
+        // let map = this.likes[uid].map((like) => like.post_id);
+        let map = [];
+        for (const like of this.likes[uid]) {
+          if (!this.getPost(like.post_id)) {
+            map.push(like.post_id);
+          }
+        }
+        if (map.length === 0) return;
         const { error, data } = await client
           .from("posts")
           .select()

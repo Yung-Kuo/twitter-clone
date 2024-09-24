@@ -20,9 +20,15 @@ const post = defineProps({
 onMounted(async () => {
   watchEffect(async () => {
     // await replyStore.fetchReplies(post.id);
-    // await replyStore.fetchReplyCount(post.id);
-    await postStore.fetchLikeCount(post.id);
-    await postStore.fetchBookmarkCount(post.id);
+    if (!replyStore.getReplyCount(post.id)) {
+      await replyStore.fetchReplyCount(post.id);
+    }
+    if (!postStore.getLikeCount(post.id)) {
+      await postStore.fetchLikeCount(post.id);
+    }
+    if (!postStore.getBookmarkCount(post.id)) {
+      await postStore.fetchBookmarkCount(post.id);
+    }
     await replyStore.fetchUserReplyStatus(post.id);
   });
   watchEffect(async () => {
@@ -44,21 +50,12 @@ const {
   publishQuote,
 } = inject("writePost");
 // toggle menu
-const {
-  showMenu,
-  menu_pid,
-  menu_uid,
-  type,
-  icon_id,
-  toggleMenu,
-  handleClickOutside,
-  menuGetRect,
-} = inject("useToggleMenu");
+const { showMenu, menu_pid, type, toggleMenu } = inject("togglePostMenu");
 // reply
-const { pid, reply, publishReply } = inject("popupReply");
-// action button
 const clickReply = inject("clickReply");
-const showPopupReply = inject("showPopupReply");
+const { pid, publishReply } = inject("popupReply");
+const reply = ref("");
+// action button
 const { clickLike, clickBookmark } = useLikeBookmark();
 
 // timestamp
@@ -139,23 +136,21 @@ const date = computed(() => {
                 color="blue"
                 :clicked="menu_pid === post.id && type === 'post_action'"
                 :id="`${post.id}_menu_icon`"
-                @mousedown="toggleMenu(post.id, post.user_id, 'post_action')"
+                @mousedown="toggleMenu(post.id, 'post_action')"
               >
                 <IconsMore />
               </IconsBadge>
             </div>
             <!-- menu -->
-            <!-- <div class="relative z-10 -translate-x-52 translate-y-2"> -->
             <UIPopupTransition>
               <UIPopupMenu
                 v-if="
                   showMenu && type === 'post_action' && menu_pid === post.id
                 "
-                :pid="menu_pid"
-                :uid="menu_uid"
+                :pid="post.id"
+                :uid="post.user_id"
               ></UIPopupMenu>
             </UIPopupTransition>
-            <!-- </div> -->
           </div>
         </div>
         <!-- middle section -->
@@ -191,7 +186,7 @@ const date = computed(() => {
     <MainSection>
       <div class="flex h-full items-center justify-between py-2 text-zinc-500">
         <!-- Reply -->
-        <div class="flex -translate-x-0 items-center">
+        <div class="flex items-center">
           <IconsBadge
             size="smallPlus"
             color="blue"
@@ -200,11 +195,10 @@ const date = computed(() => {
           >
             <IconsReply />
           </IconsBadge>
-
           <span
             class="w-2"
             :class="{ 'text-sky-500': replyStore.checkReplied(post.id) }"
-            >{{ replyStore.getReplies(post.id)?.length }}</span
+            >{{ replyStore.getReplyCount(post.id) }}</span
           >
           <!-- replyStore.getReplyCount(post.id) -->
         </div>
@@ -216,7 +210,7 @@ const date = computed(() => {
               color="green"
               :clicked="menu_pid === post.id && type === 'repost'"
               :id="`${post.id}_repost_menu_icon`"
-              @mousedown="toggleMenu(post.id, post.user_id, 'repost')"
+              @mousedown="toggleMenu(post.id, 'repost')"
             >
               <IconsRepost />
             </IconsBadge>
@@ -228,10 +222,10 @@ const date = computed(() => {
               <UIPopupRepostMenu
                 v-if="showMenu && type === 'repost' && menu_pid === post.id"
                 :id="`${post.id}_repost_menu`"
-                :pid="menu_pid"
-                @repost="publishRepost()"
+                :pid="post.id"
+                @repost="publishRepost(post.id)"
                 @quote="
-                  repost_pid = menu_pid;
+                  repost_pid = post.id;
                   showPopupPost = true;
                 "
                 class="noForward"
@@ -272,7 +266,7 @@ const date = computed(() => {
           >
         </div>
         <!-- Share -->
-        <div class="relative z-0 flex translate-x-1 items-center">
+        <div class="flex translate-x-1 items-center">
           <IconsBadge size="smallPlus" color="blue">
             <IconsShare />
           </IconsBadge>
@@ -284,15 +278,14 @@ const date = computed(() => {
       <div class="h-min">
         <UIAvatar :user_id="user.id" size="small" />
       </div>
-      <div class="grow" @mousedown="pid = post.id">
-        <MainPostTextarea
-          v-model="reply"
-          placeholder="Post your reply"
-          :freeze="pid !== post.id || showPopupReply"
-        />
+      <div class="grow">
+        <UITextarea v-model="reply" placeholder="Post your reply" />
       </div>
       <div>
-        <UIButton color="blue" :solid="true" @mousedown="publishReply(post.id)"
+        <UIButton
+          color="blue"
+          :solid="true"
+          @mousedown="publishReply(post.id, reply) ? (reply = '') : null"
           >Reply</UIButton
         >
       </div>

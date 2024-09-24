@@ -55,7 +55,7 @@ provide("useSearch", { showSearch, toggleSearch });
       </IconsBadge>
     </div>
 
-    <div class="relative">
+    <div class="relative z-10">
       <!-- new post gadget -->
       <IconsBadge
         size="medium"

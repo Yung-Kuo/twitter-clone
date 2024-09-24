@@ -18,6 +18,23 @@ const props = defineProps({
 });
 const { post } = toRefs(props);
 
+// profile card
+const { showProfileCard, hideProfileCard } = inject("profileCard");
+// write post
+const {
+  showPopupPost,
+  newPost,
+  repost_pid,
+  publishPost,
+  publishRepost,
+  publishQuote,
+} = inject("writePost");
+// toggle menu
+const { showMenu, menu_pid, type, toggleMenu } = inject("togglePostMenu");
+// action buttons
+const clickReply = inject("clickReply");
+const { clickLike, clickBookmark } = useLikeBookmark();
+
 const authorReplyId = computed(() =>
   replyStore.checkAuthorReplied(post.value?.id)
 );
@@ -39,7 +56,10 @@ onMounted(async () => {
   });
   // if author has replied
   watchEffect(async () => {
-    if (props.showAuthorReply && replyStore.checkAuthorReplied(post.value?.id) === null) {
+    if (
+      props.showAuthorReply &&
+      replyStore.checkAuthorReplied(post.value?.id) === null
+    ) {
       await replyStore.fetchAuthorReplyStatus(post.value?.id);
     }
   });
@@ -54,33 +74,6 @@ onMounted(async () => {
     }
   });
 });
-
-// profile card
-const { showProfileCard, hideProfileCard } = inject("profileCard");
-// write post
-const {
-  showPopupPost,
-  newPost,
-  repost_pid,
-  publishPost,
-  publishRepost,
-  publishQuote,
-} = inject("writePost");
-// toggle menu
-const {
-  showMenu,
-  menu_pid,
-  menu_uid,
-  type,
-  icon_id,
-  toggleMenu,
-  handleClickOutside,
-  menuGetRect,
-} = inject("useToggleMenu");
-// action buttons
-const clickReply = inject("clickReply");
-const { pid, reply, publishReply } = inject("popupReply");
-const { clickLike, clickBookmark } = useLikeBookmark();
 
 // timestamp
 const date = computed(() => {
@@ -97,7 +90,7 @@ const date = computed(() => {
   <MainSection class="w-full">
     <!-- post -->
     <MainPostHoverClickWrapper :post="post">
-      <div class="flex w-full p-3 pb-0 text-zinc-200 md:p-5 md:pb-0">
+      <div class="flex w-full p-3 pb-0 text-zinc-200 md:p-3 md:pb-0">
         <!-- left column / avatar -->
         <div class="flex w-min flex-col">
           <!-- avatar for show post -->
@@ -172,7 +165,7 @@ const date = computed(() => {
                   color="blue"
                   :clicked="menu_pid === post.id && type === 'post_action'"
                   :id="`${post.id}_menu_icon`"
-                  @mousedown="toggleMenu(post.id, post.user_id, 'post_action')"
+                  @mousedown="toggleMenu(post.id, 'post_action')"
                 >
                   <IconsMore />
                 </IconsBadge>
@@ -192,7 +185,7 @@ const date = computed(() => {
           </div>
 
           <!-- middle section -->
-          <div class="flex w-full flex-col gap-3 pl-2">
+          <div class="flex w-full flex-col pl-2">
             <!-- content -->
             <div v-if="post.type !== 'repost' || post.text !== post.reply_to">
               <!-- text -->
@@ -200,7 +193,7 @@ const date = computed(() => {
             </div>
 
             <!-- repost / quote -->
-            <div v-if="post.type === 'repost'" class="noForward">
+            <div v-if="post.type === 'repost'" class="noForward mt-3">
               <MainPostRefer
                 v-bind="postStore.getPost(post.reply_to)"
               ></MainPostRefer>
@@ -215,15 +208,12 @@ const date = computed(() => {
             <!-- action buttons -->
             <div class="flex grow justify-between">
               <!-- Reply -->
-              <div class="noForward flex w-10 items-center">
+              <div class="noForward flex items-center">
                 <IconsBadge
                   size="small"
                   color="blue"
                   :clicked="!!replyStore.checkReplied(post.id)"
-                  @mousedown="
-                    pid = post.id;
-                    clickReply(post.id);
-                  "
+                  @mousedown="clickReply(post.id)"
                 >
                   <IconsReply />
                 </IconsBadge>
@@ -237,13 +227,13 @@ const date = computed(() => {
               </div>
               <!-- Repost -->
               <div class="noForward flex">
-                <div class="flex w-10 items-center">
+                <div class="flex items-center">
                   <IconsBadge
                     size="small"
                     color="green"
                     :clicked="menu_pid === post.id && type === 'repost'"
                     :id="`${post.id}_repost_menu_icon`"
-                    @mousedown="toggleMenu(post.id, post.user_id, 'repost')"
+                    @mousedown="toggleMenu(post.id, 'repost')"
                   >
                     <IconsRepost />
                   </IconsBadge>
@@ -268,7 +258,7 @@ const date = computed(() => {
                 </div>
               </div>
               <!-- Like -->
-              <div class="noForward flex w-10 items-center">
+              <div class="noForward flex items-center">
                 <IconsBadge
                   size="small"
                   color="red"
@@ -285,7 +275,7 @@ const date = computed(() => {
               </div>
 
               <!-- Bookmark -->
-              <div class="noForward flex w-10 items-center">
+              <div class="noForward flex items-center">
                 <IconsBadge
                   size="small"
                   color="blue"
@@ -317,7 +307,7 @@ const date = computed(() => {
     <MainPostReplyThread
       v-if="props.showAuthorReply && authorReplyId"
       :post="authorReplyPost"
-      class="px-3 md:px-5"
+      class="px-3"
     />
     <MainPostHoverClickWrapper
       v-if="props.showAuthorReply && authorReplyId"

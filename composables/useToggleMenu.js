@@ -1,7 +1,6 @@
 export default function () {
   const showMenu = ref(false);
   const menu_pid = ref("");
-  const menu_uid = ref("");
   const type = ref("");
   const icon_id = computed(() => {
     if (type.value === "account") return "account_menu_icon";
@@ -16,17 +15,16 @@ export default function () {
       return `${menu_pid.value}_post_action_menu`;
     else if (type.value === "repost") return `${menu_pid.value}_repost_menu`;
   });
-  function toggleMenu(pid, uid, menuType) {
+  function toggleMenu(pid, menuType) {
+    console.log(pid, menuType);
     if (pid !== menu_pid.value || type.value !== menuType)
       showMenu.value = false;
     menu_pid.value = pid;
-    menu_uid.value = uid;
     type.value = menuType;
     showMenu.value = !showMenu.value;
     if (showMenu.value) menuGetRect();
     else {
       menu_pid.value = "";
-      menu_uid.value = "";
       type.value = "";
     }
   }
@@ -37,19 +35,15 @@ export default function () {
       if (!icon || !menu) {
         return;
       } else if (icon.contains(event.target)) {
-        console.log("click icon");
         return;
       } else if (menu.contains(event.target)) {
-        console.log("click menu");
         return;
       } else {
-        console.log("click outside");
-        toggleMenu(menu_pid.value, menu_uid.value, type.value);
+        toggleMenu(menu_pid.value, null, type.value);
       }
     }
   }
   function menuGetRect() {
-    // console.log("menuGetRect!!!");
     if (showMenu.value) {
       nextTick(() => {
         // center
@@ -65,19 +59,13 @@ export default function () {
         // menu icon
         const icon = document.getElementById(icon_id.value);
         const iconRect = icon.getBoundingClientRect();
+
         // calculate position
         if (type.value === "account") {
           // account
           menu.style.top = `${iconRect.top}px`;
           menu.style.left = `${iconRect.left}px`;
         } else if (type.value === "post_action") {
-          console.log(
-            bottomRect.width > 0
-              ? iconRect.top + iconRect.height + 10 + menuRect.height >
-                  bottomRect.top
-              : iconRect.top + iconRect.height + 10 + menuRect.height >
-                  centerRect.height
-          );
           // post action menu
           if (
             // menu too low
@@ -99,9 +87,9 @@ export default function () {
               ? iconRect.top + menuRect.height > bottomRect.top
               : iconRect.top + menuRect.height > centerRect.height
           ) {
-            menu.classList.add("-translate-y-32", "-translate-x-10");
+            menu.classList.add("-translate-y-36", "-translate-x-10", "mb-2");
           } else {
-            menu.classList.remove("-translate-y-32", "-translate-x-10");
+            menu.classList.remove("-translate-y-36", "-translate-x-10", "mb-2");
           }
         }
       });
@@ -111,9 +99,7 @@ export default function () {
   return {
     showMenu,
     menu_pid,
-    menu_uid,
     type,
-    icon_id,
     toggleMenu,
     handleClickOutside,
     menuGetRect,

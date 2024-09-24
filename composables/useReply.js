@@ -3,32 +3,25 @@ export default function () {
   const replyStore = useReplyStore();
   const showPopupReply = ref(false);
   const pid = ref("");
-  const reply = ref("");
-
-  watch(pid, () => {
-    reply.value = "";
-  });
 
   function clickReply(post_id) {
     pid.value = post_id;
     showPopupReply.value = true;
   }
-  async function publishReply() {
-    const temp = reply.value;
-    reply.value = reply.value.trim();
-    if (reply.value) reply.value = temp;
-    if (!reply.value || !pid.value) {
+  async function publishReply(post_id, text) {
+    // check if text is empty
+    let temp = text.trim();
+    if (!temp) {
       console.log("empty!");
       return;
     }
     const success = replyStore.uploadReply({
-      text: reply.value,
+      text: text,
       pictures: [],
-      reply_to: pid.value,
+      reply_to: post_id,
       type: "reply",
     });
     if (success) {
-      reply.value = "";
       console.log("success!!!");
       return true;
     } else {
@@ -37,5 +30,5 @@ export default function () {
     }
   }
 
-  return { showPopupReply, pid, reply, clickReply, publishReply };
+  return { showPopupReply, pid, clickReply, publishReply };
 }

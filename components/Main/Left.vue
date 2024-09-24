@@ -8,20 +8,17 @@ const client = useSupabaseClient();
 const emit = defineEmits(["popupPost"]);
 const route = useRoute();
 // post action menu
-// const toggleMenu = inject("toggleMenu");
 const { showMenu, type, toggleMenu, menuGetRect } = inject("toggleAccountMenu");
 function stickyMenu() {
-  if (showMenu.value && type.value === "account") menuGetRect();
+  if (showMenu.value && type.value === "account") {
+    menuGetRect();
+  }
 }
 onMounted(() => {
   window.addEventListener("resize", stickyMenu);
 });
 onBeforeUnmount(() => {
   window.removeEventListener("resize", stickyMenu);
-});
-const account_menu = ref("");
-watch(account_menu, () => {
-  if (account_menu.value) stickyMenu();
 });
 
 async function signOut() {
@@ -143,8 +140,7 @@ async function signOut() {
           <div
             v-if="showMenu && type === 'account'"
             id="account_menu"
-            ref="account_menu"
-            class="absolute z-30 h-28 w-60 -translate-y-32 rounded-xl bg-black py-2 text-xl text-zinc-200 shadow-3xl shadow-zinc-700 transition-all"
+            class="absolute z-10 h-28 w-60 -translate-y-32 rounded-xl bg-black py-2 text-xl text-zinc-200 shadow-3xl shadow-zinc-700 transition-all"
           >
             <!-- edit profile -->
             <NuxtLink to="/profile">
@@ -167,7 +163,7 @@ async function signOut() {
         <!-- account icon -->
         <MainMenuEntry
           id="account_menu_icon"
-          @mousedown="toggleMenu(null, user.id, 'account')"
+          @mousedown="toggleMenu(null, 'account')"
         >
           <template #mdMenu>
             <UIAvatar :user_id="user.id" size="small"></UIAvatar>
