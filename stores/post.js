@@ -291,7 +291,7 @@ export const usePostStore = defineStore({
       // check following list
       const followingStore = useFollowingStore();
       await followingStore.fetchFollowing();
-      let following_id = followingStore.getFollowing(user.value.id);
+      let following_id = [...followingStore.getFollowing(user.value.id)];
       following_id.push(user.value.id);
       if (following_id.length > 0) {
         // fetch posts from followed users

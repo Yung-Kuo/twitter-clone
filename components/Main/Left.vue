@@ -11,6 +11,7 @@ const route = useRoute();
 const { showMenu, type, toggleMenu, menuGetRect } = inject("toggleAccountMenu");
 function stickyMenu() {
   if (showMenu.value && type.value === "account") {
+    console.log("stickyMenu");
     menuGetRect();
   }
 }
@@ -174,13 +175,13 @@ async function signOut() {
           <template #title>
             <div
               v-show="store.getName"
-              class="h-1/2 w-full overflow-y-hidden overflow-x-scroll text-base font-bold leading-none"
+              class="flex h-1/2 w-full items-center overflow-y-hidden overflow-x-scroll text-base font-bold leading-none"
             >
               <span>{{ store.getName }}</span>
             </div>
             <div
               v-show="store.getUsername"
-              class="h-1/2 w-full overflow-y-hidden overflow-x-scroll text-base text-zinc-500"
+              class="flex h-1/2 w-full items-center overflow-y-hidden overflow-x-scroll text-base leading-none text-zinc-500"
             >
               <span>@{{ store.getUsername }}</span>
             </div>

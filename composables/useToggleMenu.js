@@ -87,9 +87,9 @@ export default function () {
               ? iconRect.top + menuRect.height > bottomRect.top
               : iconRect.top + menuRect.height > centerRect.height
           ) {
-            menu.classList.add("-translate-y-36", "-translate-x-10", "mb-2");
+            menu.classList.add("-translate-y-40", "-translate-x-10");
           } else {
-            menu.classList.remove("-translate-y-36", "-translate-x-10", "mb-2");
+            menu.classList.remove("-translate-y-40", "-translate-x-10");
           }
         }
       });

@@ -92,7 +92,7 @@ export const useFollowingStore = defineStore({
       } catch (error) {
         this.error = error.message;
       } finally {
-        // this.fetchFollowers(uid);
+        this.following[user.value.id].push(uid);
         this.followers[uid].push(user.value.id);
       }
     },
@@ -110,7 +110,9 @@ export const useFollowingStore = defineStore({
       } catch (error) {
         this.error = error.message;
       } finally {
-        // this.fetchFollowers(uid);
+        this.following[user.value.id] = this.following[user.value.id].filter(
+          (id) => id !== uid
+        );
         this.followers[uid] = this.followers[uid].filter(
           (id) => id !== user.value.id
         );
