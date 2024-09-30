@@ -16,6 +16,11 @@ function stickyMenu() {
   }
 }
 onMounted(() => {
+  watchEffect(() => {
+    if (!store.getProfile) {
+      store.fetchProfile();
+    }
+  });
   window.addEventListener("resize", stickyMenu);
 });
 onBeforeUnmount(() => {

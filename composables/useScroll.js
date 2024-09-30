@@ -37,9 +37,9 @@ export default function () {
       bottom.value.classList.add("backdrop-blur-0", "opacity-50");
       // banner.value.classList.add("-translate-y-14");
       if (route.path === "/") {
-        banner.value.classList.add("-translate-y-28");
+        banner.value.classList.add("-translate-y-24");
       } else {
-        banner.value.classList.add("-translate-y-14");
+        banner.value.classList.add("-translate-y-12");
       }
     } else if (scroll_record.value < -10 && isVisible(bottom.value)) {
       scroll_record.value = 0;
@@ -47,9 +47,21 @@ export default function () {
       bottom.value.classList.add("backdrop-blur-md");
       // banner.value.classList.remove("-translate-y-14");
       if (route.path === "/") {
-        banner.value.classList.remove("-translate-y-28");
+        banner.value.classList.remove("-translate-y-24");
       } else {
-        banner.value.classList.remove("-translate-y-14");
+        banner.value.classList.remove("-translate-y-12");
+      }
+    } else if (!isVisible(bottom.value)) {
+      if (
+        route.path === "/" &&
+        banner.value.classList.contains("-translate-y-24")
+      ) {
+        banner.value.classList.remove("-translate-y-24");
+      } else if (
+        route.path !== "/" &&
+        banner.value.classList.contains("-translate-y-12")
+      ) {
+        banner.value.classList.remove("-translate-y-12");
       }
     }
   }

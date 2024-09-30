@@ -205,6 +205,7 @@ const date = computed(() => {
                     v-if="showMenu && type === 'repost' && menu_pid === post.id"
                     :id="`${post.id}_repost_menu`"
                     :pid="menu_pid"
+                    :username="postStore.getUsername(post.user_id)"
                     @repost="publishRepost(menu_pid)"
                     @quote="
                       repost_pid = menu_pid;

@@ -18,74 +18,9 @@ const store = useProfileStore();
 const postStore = usePostStore();
 const replyStore = useReplyStore();
 const followingStore = useFollowingStore();
-// composables
-const { alertMode, alertMessage, errorTimeout, hasError } = useAlert();
-// wheel sync
-const { handleWheelEvent } = useWheelSync();
-provide("handleWheelEvent", handleWheelEvent);
-// scroll
-const { handleScroll } = useScroll();
-provide("handleScroll", handleScroll);
-// profile card
-const {
-  profileCardVis,
-  hoveredElement,
-  hoveredUserId,
-  getRect,
-  showProfileCard,
-  hideProfileCard,
-} = useProfileCard();
-provide("profileCard", { showProfileCard, hideProfileCard });
-provide("getRect", getRect);
-// post action menu
-const {
-  showMenu,
-  menu_pid,
-  type,
-  toggleMenu,
-  handleClickOutside,
-  menuGetRect,
-} = useToggleMenu();
-provide("toggleMenu", toggleMenu);
-provide("menuGetRect", menuGetRect);
-provide("togglePostMenu", { showMenu, menu_pid, type, toggleMenu });
-provide("toggleAccountMenu", { showMenu, type, toggleMenu, menuGetRect });
-// write post & quote
-const {
-  showPopupPost,
-  newPost,
-  repost_pid,
-  publishPost,
-  publishRepost,
-  publishQuote,
-} = useWritePost();
-provide("writePost", {
-  showPopupPost,
-  newPost,
-  repost_pid,
-  publishPost,
-  publishRepost,
-  publishQuote,
-});
-provide("showPopupPost", showPopupPost);
-provide("repost_pid", repost_pid);
-// reply
-const { showPopupReply, pid, clickReply, publishReply } = useReply();
-provide("clickReply", clickReply);
-provide("popupReply", { pid, publishReply });
-// edit
-const { showPopupEdit, editPost, newText, selectEditPost, publishEdit } =
-  useEdit();
-provide("useEdit", {
-  showPopupEdit,
-  editPost,
-  newText,
-  selectEditPost,
-  publishEdit,
-});
-// click post
-const { target_post, clickPost, hoverPost } = useClickPost();
-provide("clickPost", { target_post, clickPost, hoverPost });
+
+const handleClickOutside = inject("handleClickOutside");
+const showPopupPost = inject("showPopupPost");
 
 // storing non-self user profile
 const userProfile = computed(() => {
@@ -165,80 +100,22 @@ const postList = computed(() => {
 });
 </script>
 <template>
-  <div
-    class="flex h-screen w-screen bg-black"
-    @mousedown="handleClickOutside($event)"
-  >
+  <div class="flex h-screen w-screen" @mousedown="handleClickOutside($event)">
     <!-- UI popup -->
-    <div>
-      <!-- Alert -->
-      <UIAlert :mode="alertMode" :message="alertMessage" />
-      <!-- Profile Card -->
-      <UIPopupTransition leave-active-class="delay-200">
-        <UIPopupProfileCard
-          v-show="profileCardVis"
-          id="profileCard"
-          :userId="hoveredUserId"
-          @mouseenter="showProfileCard(null, null)"
-          @mouseleave="hideProfileCard()"
-        >
-        </UIPopupProfileCard>
-      </UIPopupTransition>
-      <!-- Backdrop -->
-      <UIPopupTransition>
-        <UIPopupBackdrop
-          v-show="showPopupPost || showPopupReply || showPopupEdit"
-          @mousedown="
-            showPopupPost = false;
-            showPopupReply = false;
-            showPopupEdit = false;
-            newPost = null;
-            repost_pid = null;
-            editPost = null;
-          "
-        />
-      </UIPopupTransition>
-      <!-- Post -->
-      <UIPopupTransition>
-        <UIPopupPost
-          v-if="showPopupPost"
-          @close="
-            showPopupPost = false;
-            repost_pid = null;
-          "
-        />
-      </UIPopupTransition>
-      <!-- Reply -->
-      <UIPopupTransition>
-        <UIPopupReply v-if="showPopupReply" @close="showPopupReply = false" />
-      </UIPopupTransition>
-      <!-- Edit -->
-      <UIPopupTransition>
-        <UIPopupEdit
-          v-if="showPopupEdit"
-          @close="
-            showPopupEdit = false;
-            editPost = null;
-          "
-        />
-      </UIPopupTransition>
-    </div>
+    <UIPopupCollection />
+
     <!-- layout -->
     <MainLeft @popupPost="showPopupPost = !showPopupPost" />
     <MainBottom />
     <MainCenter userPage>
-      <template #banner>
-        <h1 class="h-1/2 text-lg font-bold text-gray-200 md:h-min md:text-xl">
-          {{ userProfile?.first_name }} {{ userProfile?.last_name }}
-        </h1>
-        <span class="h-1/2 text-sm text-gray-500 md:h-min">
-          {{ postStore.getUserPosts(userProfile.id)?.length || 0 }}
-          {{
-            postStore.getUserPosts(userProfile.id)?.length > 1
-              ? "posts"
-              : "post"
-          }}
-        </span>
+      <template #title>
+        {{ userProfile?.first_name }} {{ userProfile?.last_name }}
+      </template>
+      <template #subtitle>
+        {{ postStore.getUserPosts(userProfile.id)?.length || 0 }}
+        {{
+          postStore.getUserPosts(userProfile.id)?.length > 1 ? "posts" : "post"
+        }}
       </template>
       <template #main>
         <!-- user profile -->

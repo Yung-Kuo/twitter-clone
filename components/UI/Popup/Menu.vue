@@ -9,7 +9,7 @@ const route = useRoute();
 
 const toggleMenu = inject("toggleMenu");
 // edit
-const { editMode, editPost, selectEditPost } = inject("useEdit");
+const selectEditPost = inject("selectEditPost");
 
 const actionList = ref("");
 const edit = {

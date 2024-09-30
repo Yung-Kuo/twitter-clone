@@ -248,6 +248,7 @@ const date = computed(() => {
                       "
                       :id="`${post.id}_repost_menu`"
                       :pid="post.id"
+                      :username="postStore.getUsername(post.user_id)"
                       @repost="publishRepost(post.id)"
                       @quote="
                         repost_pid = post.id;

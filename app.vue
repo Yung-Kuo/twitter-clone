@@ -1,5 +1,7 @@
+<script setup>
+useMainComposables();
+</script>
 <template>
-  <!-- <NuxtLoadingIndicator /> -->
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>

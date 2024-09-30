@@ -41,58 +41,80 @@ function hasOpacity() {
 <template>
   <div class="relative h-screen w-screen overflow-hidden md:w-5/6">
     <!-- top banner -->
-    <div
-      id="banner"
-      class="absolute left-0 top-0 z-20 flex max-h-[7rem] min-h-[3rem] w-full flex-col bg-black bg-opacity-20 backdrop-blur-md transition-all duration-300 md:h-14 md:w-5/6 xl:w-5/8 2xl:w-3/5"
-      :class="{ 'border-b border-zinc-800 md:border-b-2': $slots.mainBanner }"
-    >
-      <div v-if="route.path === '/'">
-        <!-- mask -->
-        <Transition
-          enter-active-class="transition-all duration-300"
-          enter-from-class="opacity-0"
-          enter-to-class="opacity-100"
-          leave-active-class="transition-all duration-300"
-          leave-from-class="opacity-100"
-          leave-to-class="opacity-0"
-        >
-          <div
-            v-show="showMask"
-            @mousedown="toggleSidePanel()"
-            class="absolute left-0 top-0 z-30 h-screen w-screen overflow-hidden bg-zinc-800 bg-opacity-50"
-          />
-        </Transition>
-        <!-- account avatar / open side panel -->
-        <div class="relative flex h-12 items-center p-3 md:hidden">
-          <UIAvatar
-            :user_id="user.id"
-            size="xsmall"
-            class="z-40 cursor-pointer"
-            @mousedown="toggleSidePanel()"
-          ></UIAvatar>
-        </div>
-      </div>
-      <!-- for index page -->
-      <slot name="mainBanner" />
-
-      <!-- for pages other than index page -->
+    <div class="relative md:w-5/6 xl:w-5/8 2xl:w-3/5">
       <div
-        v-if="$slots.banner"
-        class="flex h-12 items-center gap-6 pl-5 md:h-full"
+        id="banner"
+        class="absolute left-0 top-0 z-20 flex w-full flex-col bg-black bg-opacity-20 backdrop-blur-md transition-all duration-300"
+        :class="{ 'border-b border-zinc-800 md:border-b-2': $slots.nav }"
       >
-        <div class="flex h-full w-min items-center">
-          <NuxtLink @click="router.back()">
-            <IconsBadge size="small" class="text-white">
-              <IconsBack></IconsBack>
-            </IconsBadge>
-          </NuxtLink>
+        <!-- mask -->
+        <div v-if="!$slots.title" class="flex md:hidden">
+          <Transition
+            enter-active-class="transition-all"
+            enter-from-class="opacity-0"
+            enter-to-class="opacity-100"
+            leave-active-class="transition-all"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+          >
+            <div
+              v-show="showMask"
+              @mousedown="toggleSidePanel()"
+              class="absolute left-0 top-0 z-30 h-screen w-screen overflow-hidden bg-zinc-800 bg-opacity-50"
+            />
+          </Transition>
+          <!-- avatar -->
+          <div v-if="!$slots.title" class="flex md:hidden">
+            <!-- account avatar / open side panel -->
+            <div class="relative flex h-12 items-center p-3 md:hidden">
+              <UIAvatar
+                :user_id="user.id"
+                size="xsmall"
+                class="z-40 cursor-pointer"
+                @mousedown="toggleSidePanel()"
+              ></UIAvatar>
+            </div>
+          </div>
         </div>
-        <!-- header -->
-        <div class="flex h-full flex-col justify-center px-1">
-          <slot name="banner" />
+        <!-- top row / title, subtitle -->
+        <div
+          v-if="$slots.title"
+          class="flex h-12 items-center gap-6 pl-3 text-zinc-200 md:h-14"
+        >
+          <!-- go back -->
+          <div v-if="$slots.title" class="flex h-full w-min items-center">
+            <NuxtLink @click="router.back()">
+              <IconsBadge size="small">
+                <IconsBack></IconsBack>
+              </IconsBadge>
+            </NuxtLink>
+          </div>
+          <!-- header -->
+          <div
+            v-if="$slots.title"
+            class="flex h-full flex-col justify-center px-1"
+          >
+            <h1
+              class="flex h-3/5 items-center text-lg font-bold leading-none md:text-xl"
+            >
+              <slot name="title" />
+            </h1>
+
+            <span
+              v-if="$slots.subtitle"
+              class="flex h-2/5 items-start text-sm leading-none text-gray-500"
+            >
+              <slot name="subtitle" />
+            </span>
+          </div>
+        </div>
+        <!-- bottom row / navigation -->
+        <div v-if="$slots.nav" class="grid h-12 grid-cols-2 md:h-14">
+          <slot name="nav" />
         </div>
       </div>
     </div>
+
     <!-- main section -->
     <div
       id="center"
@@ -105,10 +127,17 @@ function hasOpacity() {
       "
       @touchmove="swipeRight($event, $slots.mainBanner)"
     >
-      <div
-        class="h-max w-full pb-32 md:w-5/6 md:pb-14 xl:w-5/8 2xl:w-3/5"
-        :class="{ 'pt-12 md:pt-14': !props.userPage }"
-      >
+      <div class="h-max w-full pb-32 md:w-5/6 md:pb-14 xl:w-5/8 2xl:w-3/5">
+        <div
+          class="box-content w-full border-t-2 border-transparent"
+          :class="
+            props.userPage
+              ? ''
+              : $slots.title && $slots.nav
+              ? 'h-24 md:h-28'
+              : 'h-12 md:h-14'
+          "
+        />
         <slot name="main" />
       </div>
       <MainRight />

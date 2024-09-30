@@ -18,6 +18,8 @@ export const usePostStore = defineStore({
     likes: {},
     likeCount: {},
     reply: {},
+    quotes: {},
+    reposts: {},
   }),
   getters: {
     getPost(state) {
@@ -51,6 +53,30 @@ export const usePostStore = defineStore({
           if (filteredPosts.find((post) => post.id === pid)) continue;
           if (state.allPosts.has(pid)) {
             filteredPosts.push(state.allPosts.get(pid));
+          }
+        }
+        return filteredPosts;
+      };
+    },
+    getQuotes(state) {
+      return (pid) => {
+        const filteredPosts = [];
+        if (!state.quotes[pid]) return [];
+        for (const quote of state.quotes[pid]) {
+          if (state.allPosts.has(quote)) {
+            filteredPosts.push(state.allPosts.get(quote));
+          }
+        }
+        return filteredPosts;
+      };
+    },
+    getReposts(state) {
+      return (pid) => {
+        const filteredPosts = [];
+        if (!state.reposts[pid]) return [];
+        for (const repost of state.reposts[pid]) {
+          if (state.allPosts.has(repost)) {
+            filteredPosts.push(state.allPosts.get(repost));
           }
         }
         return filteredPosts;
@@ -347,6 +373,68 @@ export const usePostStore = defineStore({
         if (error) throw error;
       } catch (error) {
         console.log("error: ", error);
+      }
+    },
+    async fetchQuotes(pid) {
+      const client = useSupabaseClient();
+      try {
+        const { error, data } = await client
+          .from("posts")
+          .select()
+          .eq("type", "repost")
+          .eq("reply_to", pid)
+          .neq("text", pid)
+          .order("created_at", { ascending: false });
+
+        if (data.length) {
+          this.quotes[pid] = data.map((post) => post.id);
+          for (const post of data) {
+            if (!this.allPosts.has(post.id)) {
+              this.allPosts.set(post.id, post);
+            }
+            if (!this.getProfile(post.user_id))
+              await this.fetchUserProfile(post.user_id);
+            if (!this.getAvatar(post.user_id))
+              await this.downloadAvatar(
+                post.user_id,
+                this.userProfile[post.user_id].avatar_url
+              );
+          }
+        }
+        if (error) throw error;
+      } catch (error) {
+        console.log(error.message);
+      }
+    },
+    async fetchReposts(pid) {
+      const client = useSupabaseClient();
+      try {
+        const { error, data } = await client
+          .from("posts")
+          .select()
+          .eq("type", "repost")
+          .eq("reply_to", pid)
+          .eq("text", pid)
+          .order("created_at", { ascending: false });
+
+        if (data.length) {
+          this.reposts[pid] = data.map((post) => post.id);
+          for (const post of data) {
+            if (!this.allPosts.has(post.id)) {
+              this.allPosts.set(post.id, post);
+            }
+            if (!this.getProfile(post.user_id))
+              await this.fetchUserProfile(post.user_id);
+            if (!this.getAvatar(post.user_id))
+              await this.downloadAvatar(
+                post.user_id,
+                this.userProfile[post.user_id].avatar_url
+              );
+          }
+        }
+        if (error) throw error;
+      } catch (error) {
+        console.log(error.message);
       }
     },
     async downloadAvatar(uid, url) {

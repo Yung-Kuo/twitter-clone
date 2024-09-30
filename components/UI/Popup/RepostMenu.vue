@@ -1,9 +1,18 @@
 <script setup>
 import { usePostStore } from "~/stores/post";
 const postStore = usePostStore();
-const user = useSupabaseUser();
-const props = defineProps(["pid"]);
+const props = defineProps({
+  pid: {
+    type: String,
+    default: "",
+  },
+  username: {
+    type: String,
+    default: "",
+  },
+});
 const emit = defineEmits(["quote"]);
+const route = useRoute();
 
 const toggleMenu = inject("toggleMenu");
 
@@ -31,6 +40,7 @@ const viewQuotes = {
   icons: resolveComponent("IconsViewQuotes"),
   function: () => {
     toggleMenu(props.pid, "repost");
+    navigateTo(`/${props.username}/post/${props.pid}/engagement`);
   },
 };
 const actionList = ref("");

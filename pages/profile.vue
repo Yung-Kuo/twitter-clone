@@ -201,9 +201,7 @@ const buttonActiveFlag = computed(() => {
     <!-- navigation -->
     <MainLeft></MainLeft>
     <MainCenter>
-      <template #banner>
-        <h1 class="h-1/2 text-xl font-bold text-gray-200">Edit Profile</h1>
-      </template>
+      <template #title>Edit Profile</template>
       <template #main>
         <div class="flex w-full items-center justify-center">
           <div class="flex w-3/4 flex-col gap-10 pb-40">
