@@ -1,6 +1,7 @@
 <script setup>
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
+const store = useProfileStore();
 const loading = ref(false);
 // alert module
 const { alertMode, alertMessage, errorTimeout, hasError } = useAlert();
@@ -76,8 +77,9 @@ async function login() {
       });
       if (error) throw error;
       else {
-        loginInterval.value = setInterval(() => {
+        loginInterval.value = setInterval(async () => {
           if (user.value) {
+            await store.fetchProfile();
             navigateTo("/");
             clearInterval(loginInterval.value);
           }

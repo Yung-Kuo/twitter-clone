@@ -28,6 +28,7 @@ onBeforeUnmount(() => {
 });
 
 async function signOut() {
+  toggleMenu(null, "account");
   const { error } = await client.auth.signOut();
   store.clearProfile();
 }
