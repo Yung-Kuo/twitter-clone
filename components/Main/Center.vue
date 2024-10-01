@@ -127,17 +127,15 @@ function hasOpacity() {
       "
       @touchmove="swipeRight($event, $slots.mainBanner)"
     >
-      <div class="h-max w-full pb-32 md:w-5/6 md:pb-14 xl:w-5/8 2xl:w-3/5">
-        <div
-          class="box-content w-full border-t-2 border-transparent"
-          :class="
-            props.userPage
-              ? ''
-              : $slots.title && $slots.nav
-              ? 'h-24 md:h-28'
-              : 'h-12 md:h-14'
-          "
-        />
+      <div
+        class="h-max w-full pb-32 md:w-5/6 md:pb-14 xl:w-5/8 2xl:w-3/5"
+        :class="props.userPage
+          ? ''
+          : $slots.title && $slots.nav
+          ? 'pt-24 md:pt-28'
+          : 'pt-12 md:pt-14',
+        $slots.nav ? 'border-t-2 border-transparent': ''
+      ">
         <slot name="main" />
       </div>
       <MainRight />

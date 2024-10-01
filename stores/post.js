@@ -20,6 +20,7 @@ export const usePostStore = defineStore({
     reply: {},
     quotes: {},
     reposts: {},
+    repostCount: {},
   }),
   getters: {
     getPost(state) {
@@ -80,6 +81,12 @@ export const usePostStore = defineStore({
           }
         }
         return filteredPosts;
+      };
+    },
+    getRepostCount(state) {
+      return (pid) => {
+        if (state.repostCount[pid] > 0) return state.repostCount[pid];
+        else return null;
       };
     },
     getAvatarUrl(state) {
@@ -437,6 +444,20 @@ export const usePostStore = defineStore({
         console.log(error.message);
       }
     },
+    async fetchRepostCount(pid) {
+      const client = useSupabaseClient();
+      try {
+        const { count, error } = await client
+          .from("posts")
+          .select("*", { count: "exact", head: true })
+          .eq("reply_to", pid)
+          .eq("type", "repost");
+        this.repostCount[pid] = count;
+        if (error) throw error;
+      } catch (error) {
+        console.log(error.message);
+      }
+    },
     async downloadAvatar(uid, url) {
       // download avatar from url store in supabase
       const client = useSupabaseClient();
@@ -588,7 +609,7 @@ export const usePostStore = defineStore({
         try {
           const { error, count } = await client
             .from("bookmark")
-            .select("*", { count: "exact" })
+            .select("*", { count: "exact", head: true })
             .eq("post_id", pid);
           this.bookmarkCount[pid] = count;
           if (error) throw error;
@@ -695,7 +716,7 @@ export const usePostStore = defineStore({
         try {
           const { error, count } = await client
             .from("likes")
-            .select("*", { count: "exact" })
+            .select("*", { count: "exact", head: true })
             .eq("post_id", pid);
           this.likeCount[pid] = count;
           if (error) throw error;

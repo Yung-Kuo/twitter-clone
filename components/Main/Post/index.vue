@@ -53,6 +53,9 @@ onMounted(async () => {
     if (replyStore.checkReplied(post.value?.id) === null) {
       await replyStore.fetchUserReplyStatus(post.value?.id);
     }
+    if (!postStore.getRepostCount(post.value?.id)) {
+      await postStore.fetchRepostCount(post.value?.id);
+    }
   });
   // if author has replied
   watchEffect(async () => {
@@ -237,7 +240,7 @@ const date = computed(() => {
                   >
                     <IconsRepost />
                   </IconsBadge>
-                  <span class="w-2"></span>
+                  <span class="w-2">{{ postStore.getRepostCount(post.id) }}</span>
                 </div>
                 <!-- repost option menu -->
                 <div class="relative">
