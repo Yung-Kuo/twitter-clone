@@ -5,8 +5,7 @@ export const usePostStore = defineStore({
   // pinia store to upload and download personal post
   state: () => ({
     // posts: [], // all posts or following
-    userPosts: {}, // one user's posts
-    post: {}, // the post you have just wrote
+    userPosts: {}, // user's posts
     allPosts: new Map(),
     // only store posts that are not replies
     allPostId: [],
@@ -744,6 +743,9 @@ export const usePostStore = defineStore({
       } catch (error) {
         console.log(error.message);
       }
+    },
+    clearBookmarks() {
+      this.bookmarks = [];
     },
   },
 });

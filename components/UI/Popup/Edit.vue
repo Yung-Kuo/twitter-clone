@@ -19,7 +19,7 @@ const replyPost = computed(() => {
 <template>
   <UIPopupDraft @close="emit('close')">
     <template #center>
-      <div class="flex grow">
+      <div class="flex w-full">
         <!-- post/repost avatar -->
         <div
           v-if="editPost?.type === 'repost' || editPost?.type === 'post'"
@@ -30,7 +30,7 @@ const replyPost = computed(() => {
 
         <!-- main content -->
         <div
-          class="flex grow flex-col"
+          class="flex w-[calc(100%-3rem)] flex-col"
           :class="
             editPost?.type === 'repost' || editPost?.type === 'post'
               ? 'pl-2'

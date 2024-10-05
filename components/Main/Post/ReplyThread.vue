@@ -36,11 +36,21 @@ const { clickLike, clickBookmark } = useLikeBookmark();
 
 onMounted(async () => {
   watchEffect(async () => {
-    // await replyStore.fetchReplies(post.value?.id);
-    await replyStore.fetchReplyCount(post.value?.id);
-    await postStore.fetchLikeCount(post.value?.id);
-    await postStore.fetchBookmarkCount(post.value?.id);
-    await replyStore.fetchUserReplyStatus(post.value?.id);
+    if (!replyStore.getReplyCount(post.value?.id)) {
+      await replyStore.fetchReplyCount(post.value?.id);
+    }
+    if (!postStore.getLikeCount(post.value?.id)) {
+      await postStore.fetchLikeCount(post.value?.id);
+    }
+    if (!postStore.getBookmarkCount(post.value?.id)) {
+      await postStore.fetchBookmarkCount(post.value?.id);
+    }
+    if (!postStore.getRepostCount(post.value?.id)) {
+      await postStore.fetchRepostCount(post.value?.id);
+    }
+    if (replyStore.checkReplied(post.value?.id) === null) {
+      await replyStore.fetchUserReplyStatus(post.value?.id);
+    }
   });
 });
 // timestamp
@@ -196,7 +206,7 @@ const date = computed(() => {
                 >
                   <IconsRepost />
                 </IconsBadge>
-                <span class="w-2"></span>
+                <span class="w-2">{{ postStore.getRepostCount(post.id) }}</span>
               </div>
               <!-- repost option menu -->
               <div class="relative">

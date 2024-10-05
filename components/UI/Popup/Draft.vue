@@ -11,7 +11,7 @@ const emit = defineEmits(["close"]);
       <IconsBadge size="small" @click="emit('close')">
         <IconsClose class="text-zinc-200" />
       </IconsBadge>
-      <div class="pr-4">
+      <div class="pr-3">
         <span class="text-sm font-bold text-sky-500">Drafts</span>
       </div>
     </div>
@@ -21,7 +21,7 @@ const emit = defineEmits(["close"]);
     </div>
 
     <!-- action buttons -->
-    <div class="flex h-min w-full flex-col gap-3">
+    <div class="flex h-min w-full flex-col gap-3 pb-2 pr-2">
       <slot name="button" />
     </div>
   </div>

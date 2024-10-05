@@ -1,6 +1,12 @@
 <script setup>
 import { useProfileStore } from "~/stores/profile";
+import { usePostStore } from "~/stores/post";
+import { useReplyStore } from "~/stores/reply";
+import { useFollowingStore } from "~/stores/following";
 const store = useProfileStore();
+const postStore = usePostStore();
+const replyStore = useReplyStore();
+const followingStore = useFollowingStore();
 
 // Supabase
 const user = useSupabaseUser();
@@ -31,6 +37,9 @@ async function signOut() {
   toggleMenu(null, "account");
   const { error } = await client.auth.signOut();
   store.clearProfile();
+  postStore.clearBookmarks();
+  replyStore.clearReplies();
+  followingStore.clearFollowing();
 }
 </script>
 <template>

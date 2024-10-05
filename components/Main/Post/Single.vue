@@ -29,6 +29,9 @@ onMounted(async () => {
     if (!postStore.getBookmarkCount(post.id)) {
       await postStore.fetchBookmarkCount(post.id);
     }
+    if (!postStore.getRepostCount(post.value?.id)) {
+      await postStore.fetchRepostCount(post.value?.id);
+    }
     await replyStore.fetchUserReplyStatus(post.id);
   });
   watchEffect(async () => {
@@ -214,7 +217,7 @@ const date = computed(() => {
             >
               <IconsRepost />
             </IconsBadge>
-            <span class="w-2"></span>
+            <span class="w-2">{{ postStore.getRepostCount(post.id) }}</span>
           </div>
           <!-- repost option menu -->
           <div class="relative">

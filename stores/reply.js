@@ -216,5 +216,9 @@ export const useReplyStore = defineStore({
         } catch (error) {}
       }
     },
+    clearReplies() {
+      this.userHasReplied = {};
+      this.userReplies = {};
+    },
   },
 });

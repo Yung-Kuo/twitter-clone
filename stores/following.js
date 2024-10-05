@@ -118,5 +118,8 @@ export const useFollowingStore = defineStore({
         );
       }
     },
+    clearFollowing() {
+      this.isFollowing = {};
+    },
   },
 });
