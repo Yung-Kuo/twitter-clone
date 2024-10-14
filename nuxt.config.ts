@@ -14,6 +14,20 @@ export default defineNuxtConfig({
       },
     },
   },
+  supabase: {
+    redirectOptions: {
+      // login: "/login",
+      // callback: "/confirm",
+      // include: undefined,
+      // exclude: [],
+      // cookieRedirect: false,
+    },
+    cookieOptions: {
+      maxAge: 60 * 60 * 8,
+      sameSite: "lax",
+      secure: true,
+    },
+  },
   pinia: {
     autoImports: [
       // automatically imports `defineStore`
