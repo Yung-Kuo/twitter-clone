@@ -25,7 +25,7 @@ const blue_hollow =
 const orange_solid =
   "w-full h-12 md:h-14 rounded-md bg-orange-400 font-bold text-xl hover:bg-orange-500 active:bg-orange-600";
 const orange_hollow =
-  "w-full h-12 md:h-14 rounded-md border-2 border-orange-400 font-bold text-xl text-orange-400 hover:border-orange-500 hover:ring-2 hover:ring-orange-500 hover:text-orange-500 active:bg-orange-500 active:text-black";
+  "w-full h-12 md:h-14 rounded-md border-2 border-orange-400 text-xl text-orange-400 hover:border-orange-500 hover:ring-2 hover:ring-orange-500 hover:text-orange-500 active:bg-orange-500 active:text-black active:font-bold";
 const white_solid =
   "px-4 py-1 rounded-full bg-gray-200 font-medium text-black hover:bg-gray-300 active:bg-gray-400";
 const white_hollow =

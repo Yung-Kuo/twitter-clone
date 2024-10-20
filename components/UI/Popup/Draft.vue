@@ -21,7 +21,7 @@ const emit = defineEmits(["close"]);
     </div>
 
     <!-- action buttons -->
-    <div class="flex h-min w-full flex-col gap-3 pb-2 pr-2">
+    <div class="flex h-min w-full flex-col gap-3">
       <slot name="button" />
     </div>
   </div>

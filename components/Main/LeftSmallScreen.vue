@@ -1,6 +1,9 @@
 <script setup>
+const client = useSupabaseClient();
 const user = useSupabaseUser();
 const profileStore = useProfileStore();
+const postStore = usePostStore();
+const replyStore = useReplyStore();
 const followingStore = useFollowingStore();
 
 onMounted(async () => {
@@ -9,11 +12,20 @@ onMounted(async () => {
     await followingStore.fetchFollowers(user.value.id);
   }
 });
+
+async function signOut() {
+  const { error } = await client.auth.signOut();
+  profileStore.clearProfile();
+  postStore.clearBookmarks();
+  replyStore.clearReplies();
+  followingStore.clearFollowing();
+}
 </script>
 <template>
   <div
-    class="absolute -left-3/4 top-0 flex h-screen w-3/4 flex-col p-5 md:hidden"
+    class="absolute -left-3/4 top-0 flex h-full w-3/4 flex-col p-5 text-zinc-200 md:hidden"
   >
+    <!-- user info -->
     <div class="flex h-min w-full flex-col gap-2 p-4">
       <NuxtLink :to="`/${profileStore.getUsername}`" class="w-min rounded-full">
         <UIAvatar :user_id="user.id" size="small" />
@@ -33,12 +45,12 @@ onMounted(async () => {
         <span class="text-zinc-200"
           >{{ followingStore.getFollowing(user.id)?.length }}&nbsp</span
         >
-        <span class="pr-5 text-gray-500">Following</span>
+        <span class="pr-5 text-zinc-500">Following</span>
         <!-- follower -->
         <span class="text-zinc-200"
           >{{ followingStore.getFollowers(user.id)?.length }}&nbsp</span
         >
-        <span class="text-gray-500">Follower</span>
+        <span class="text-zinc-500">Follower</span>
       </div>
     </div>
     <!-- profile -->
@@ -54,10 +66,19 @@ onMounted(async () => {
     <NuxtLink to="/bookmarks">
       <MainMenuEntry>
         <template #smMenu>
-          <IconsBookmark />
+          <IconsBookmark class="text-zinc-200" />
         </template>
         <template #title>Bookmarks</template>
       </MainMenuEntry>
     </NuxtLink>
+    <!-- space filler -->
+    <div class="grow"></div>
+    <!-- logout -->
+    <MainMenuEntry @mousedown="signOut()">
+      <template #smMenu>
+        <IconsLogout class="text-zinc-200" />
+      </template>
+      <template #title>Logout</template>
+    </MainMenuEntry>
   </div>
 </template>

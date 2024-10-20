@@ -1,8 +1,8 @@
 <script setup>
-async function signInWithGoogle() {
+async function signInWithApple() {
   const supabase = useSupabaseClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
+    provider: "apple",
     options: {
       redirectTo: "http://localhost:3000/confirm",
     },
@@ -11,8 +11,8 @@ async function signInWithGoogle() {
 }
 </script>
 <template>
-  <UIButton3DGlow class="h-14 w-72 md:w-80" @mousedown="signInWithGoogle()">
-    <IconsGoogle />
-    Log in with Google
+  <UIButton3DGlow class="h-14 w-72 md:w-80" @mousedown="">
+    <IconsApple />
+    Log in with Apple
   </UIButton3DGlow>
 </template>

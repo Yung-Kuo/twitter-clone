@@ -9,7 +9,6 @@ definePageMeta({
 const profileStore = useProfileStore();
 const postStore = usePostStore();
 const user = useSupabaseUser();
-const router = useRouter();
 
 const handleClickOutside = inject("handleClickOutside");
 const showPopupPost = inject("showPopupPost");
@@ -19,9 +18,13 @@ onMounted(async () => {
     if (!user.value) {
       navigateTo("/login");
     }
+  });
+  watchEffect(async () => {
     if (profileStore.noProfile) {
       await profileStore.fetchProfile();
     }
+  });
+  watchEffect(async () => {
     await postStore.fetchLikes(user.value.id);
     await postStore.fetchBookmarks();
     await postStore.fetchBookmarkPosts();

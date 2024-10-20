@@ -1,25 +1,109 @@
 <script setup>
-const supabase = useSupabaseClient();
-const user = useSupabaseUser();
-const store = useProfileStore();
 // alert module
 const { alertMode, alertMessage, errorTimeout, hasError } = useAlert();
+const OAuthSignIn = ref(true);
 </script>
 
 <template>
   <div
-    class="flex h-screen w-screen items-center justify-center bg-gray-700 md:overflow-y-scroll md:py-20"
+    class="flex h-screen w-screen items-center justify-center bg-gray-700 md:overflow-y-scroll"
   >
     <UIAlert :mode="alertMode" :message="alertMessage" />
     <!-- center black block -->
     <div
-      class="flex h-full w-full flex-col items-center justify-center gap-10 bg-black pb-20 pt-16 md:h-min md:w-3/5 md:rounded-xl lg:h-min lg:w-2/5"
+      id="blackCard"
+      class="z-10 grid h-full w-full grid-cols-1 grid-rows-1 overflow-y-scroll bg-black shadow-2xl shadow-gray-400 md:h-[40rem] md:w-[32rem] md:rounded-xl md:bg-opacity-60"
     >
-      <div class="flex flex-col gap-5">
-        <LoginGoogle />
-        <LoginGithub />
-      </div>
-      <LoginLocal />
+      <!-- Social Login -->
+      <LoginTransitionFadeLeft>
+        <div
+          v-show="OAuthSignIn"
+          class="col-start-1 row-start-1 flex h-max min-h-full w-full flex-col items-center justify-center gap-4 py-16 text-center md:gap-8"
+        >
+          <div class="grid grid-cols-1 grid-rows-1 pb-16 md:pb-8">
+            <h1
+              class="z-20 col-start-1 row-start-1 text-5xl font-bold text-gray-400 transition-all sm:text-6xl"
+            >
+              twitter-clone
+            </h1>
+            <h1
+              class="z-10 col-start-1 row-start-1 translate-x-1 translate-y-1 text-5xl font-bold text-gray-600 transition-all sm:text-6xl"
+            >
+              twitter-clone
+            </h1>
+            <h1
+              class="col-start-1 row-start-1 translate-x-2 translate-y-2 text-5xl font-bold text-gray-700 transition-all sm:text-6xl"
+            >
+              twitter-clone
+            </h1>
+          </div>
+          <!-- <LoginApple />
+          <LoginApple />
+          <LoginApple />
+          <LoginApple />
+          <LoginApple />
+          <LoginApple /> -->
+          <LoginApple />
+          <LoginGoogle />
+          <LoginGithub />
+          <div class="flex w-full items-center justify-center gap-4">
+            <span
+              class="h-0 w-2/5 max-w-[10rem] rounded-full border-2 border-gray-700"
+            ></span>
+            <span class="text-xl font-bold text-zinc-200">or</span>
+            <span
+              class="h-0 w-2/5 max-w-[10rem] rounded-full border-2 border-gray-700"
+            ></span>
+          </div>
+          <UIButton3DGlow
+            class="h-14 w-72 md:w-80"
+            @click="OAuthSignIn = !OAuthSignIn"
+          >
+            <span class="flex w-full justify-center"> Email and Password </span>
+          </UIButton3DGlow>
+        </div>
+      </LoginTransitionFadeLeft>
+      <!-- Email & Password -->
+      <LoginTransitionFadeRight>
+        <div
+          v-show="!OAuthSignIn"
+          class="col-start-1 row-start-1 flex h-full w-full flex-col items-center gap-5"
+        >
+          <!-- top banner -->
+          <!-- go back to social login -->
+          <div
+            class="rounded- group sticky left-0 top-0 z-20 flex h-16 w-full cursor-pointer items-center bg-zinc-400 text-black transition-all hover:bg-zinc-200 2xl:h-20"
+            @mousedown="OAuthSignIn = !OAuthSignIn"
+          >
+            <div
+              class="flex h-full items-center transition-all group-hover:-translate-x-4"
+            >
+              <div
+                class="mx-2 flex h-10 w-10 items-center justify-center text-2xl transition-all md:mx-4 2xl:mx-10 2xl:text-4xl"
+              >
+                <IconsBack />
+              </div>
+              <span class="text-2xl font-bold transition-all 2xl:text-3xl"
+                >Back to Social Login</span
+              >
+            </div>
+          </div>
+          <!-- content -->
+          <div class="flex h-full w-full items-center justify-center">
+            <div class="flex w-5/6 flex-col gap-5 pb-16 xl:w-4/6">
+              <div class="w-full py-5">
+                <p
+                  class="w-full font-light text-red-400 transition-all 2xl:text-lg"
+                >
+                  * For existing users only. New users please use social login
+                  methods.
+                </p>
+              </div>
+              <LoginLocal />
+            </div>
+          </div>
+        </div>
+      </LoginTransitionFadeRight>
     </div>
   </div>
 </template>
@@ -30,5 +114,12 @@ input:-webkit-autofill {
   -webkit-text-fill-color: #e4e4e7;
   -webkit-text-fill-caret-color: #e4e4e7;
   caret-color: #e4e4e7;
+}
+#blackCard::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+#blackCard {
+  scrollbar-width: none;
 }
 </style>

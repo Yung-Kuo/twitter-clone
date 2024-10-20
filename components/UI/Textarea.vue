@@ -21,7 +21,7 @@ const blank = ref("");
   <div
     tabindex="0"
     @focusin="textarea.focus()"
-    class="grid h-full w-full grow grid-cols-1 grid-rows-1 px-2"
+    class="grid w-full grow grid-cols-1 grid-rows-1 rounded-xl px-2"
     :class="props.forProfile ? 'py-1 text-3xl' : 'py-2 text-xl'"
   >
     <textarea
