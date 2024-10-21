@@ -3,8 +3,9 @@
     <div
       class="grid h-full w-full grid-cols-1 grid-rows-1 overflow-visible rounded-2xl transition-all md:group-hover:-translate-y-2 md:group-active:-translate-y-1"
     >
+      <!-- surface -->
       <div
-        class="z-20 col-start-1 row-start-1 flex h-[calc(100%-0.875em)] w-[calc(100%-0.375em)] items-center gap-2 rounded-md bg-zinc-200 px-10 text-xl text-black transition-all md:translate-x-[0.05em] md:translate-y-[0.05em] md:bg-opacity-60 md:px-14 md:group-hover:bg-zinc-100 md:group-hover:opacity-100"
+        class="z-20 col-start-1 row-start-1 flex h-full w-full items-center gap-4 rounded-md bg-zinc-200 px-10 text-xl text-black transition-all md:h-[calc(100%-0.875em)] md:w-[calc(100%-0.375em)] md:translate-x-[0.05em] md:translate-y-[0.05em] md:bg-opacity-60 md:px-12 md:group-hover:bg-zinc-100 md:group-hover:opacity-100"
       >
         <slot />
       </div>

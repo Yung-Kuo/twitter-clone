@@ -54,4 +54,13 @@ export default defineNuxtConfig({
   app: {
     pageTransition: { name: "page", mode: "out-in" },
   },
+
+  runtimeConfig: {
+    public: {
+      baseURL:
+        process.env.NODE_ENV === "production"
+          ? process.env.BASE_URL_PRODUCTION
+          : "http://localhost:3000",
+    },
+  },
 });

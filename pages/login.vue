@@ -6,20 +6,21 @@ const OAuthSignIn = ref(true);
 
 <template>
   <div
-    class="flex h-screen w-screen items-center justify-center bg-gray-700 md:overflow-y-scroll"
+    class="flex h-screen w-screen items-center justify-center overflow-y-scroll bg-gray-700"
   >
     <UIAlert :mode="alertMode" :message="alertMessage" />
     <!-- center black block -->
     <div
       id="blackCard"
-      class="z-10 grid h-full w-full grid-cols-1 grid-rows-1 overflow-y-scroll bg-black shadow-2xl shadow-gray-400 md:h-[40rem] md:w-[32rem] md:rounded-xl md:bg-opacity-60"
+      class="z-10 grid h-full max-h-screen w-full grid-cols-1 grid-rows-1 overflow-y-scroll bg-black shadow-2xl shadow-gray-400 md:h-[40rem] md:w-[32rem] md:rounded-2xl md:bg-opacity-60"
     >
       <!-- Social Login -->
       <LoginTransitionFadeLeft>
         <div
           v-show="OAuthSignIn"
-          class="col-start-1 row-start-1 flex h-max min-h-full w-full flex-col items-center justify-center gap-4 py-16 text-center md:gap-8"
+          class="col-start-1 row-start-1 flex h-max min-h-full w-full flex-col items-center justify-center gap-8 py-16"
         >
+          <!-- twitter-clone logo -->
           <div class="grid grid-cols-1 grid-rows-1 pb-16 md:pb-8">
             <h1
               class="z-20 col-start-1 row-start-1 text-5xl font-bold text-gray-400 transition-all sm:text-6xl"
@@ -46,14 +47,10 @@ const OAuthSignIn = ref(true);
           <LoginApple />
           <LoginGoogle />
           <LoginGithub />
-          <div class="flex w-full items-center justify-center gap-4">
-            <span
-              class="h-0 w-2/5 max-w-[10rem] rounded-full border-2 border-gray-700"
-            ></span>
-            <span class="text-xl font-bold text-zinc-200">or</span>
-            <span
-              class="h-0 w-2/5 max-w-[10rem] rounded-full border-2 border-gray-700"
-            ></span>
+          <div class="flex h-min w-5/6 items-center justify-center gap-4">
+            <span class="h-0 grow rounded-full border-2 border-gray-700"></span>
+            <span class="grow-0 text-xl font-bold text-zinc-200">or</span>
+            <span class="h-0 grow rounded-full border-2 border-gray-700"></span>
           </div>
           <UIButton3DGlow
             class="h-14 w-72 md:w-80"
@@ -67,20 +64,18 @@ const OAuthSignIn = ref(true);
       <LoginTransitionFadeRight>
         <div
           v-show="!OAuthSignIn"
-          class="col-start-1 row-start-1 flex h-full w-full flex-col items-center gap-5"
+          class="col-start-1 row-start-1 flex h-full w-full flex-col items-center"
         >
           <!-- top banner -->
           <!-- go back to social login -->
           <div
-            class="rounded- group sticky left-0 top-0 z-20 flex h-16 w-full cursor-pointer items-center bg-zinc-400 text-black transition-all hover:bg-zinc-200 2xl:h-20"
+            class="group sticky left-0 top-0 z-20 flex h-16 w-full cursor-pointer rounded-none bg-zinc-200 text-black transition-all md:rounded-t-xl md:bg-zinc-400 md:hover:bg-zinc-200 2xl:h-20"
             @mousedown="OAuthSignIn = !OAuthSignIn"
           >
             <div
-              class="flex h-full items-center transition-all group-hover:-translate-x-4"
+              class="flex h-full items-center transition-all md:group-hover:-translate-x-4"
             >
-              <div
-                class="mx-2 flex h-10 w-10 items-center justify-center text-2xl transition-all md:mx-4 2xl:mx-10 2xl:text-4xl"
-              >
+              <div class="mx-4 text-2xl transition-all md:mx-8 2xl:text-4xl">
                 <IconsBack />
               </div>
               <span class="text-2xl font-bold transition-all 2xl:text-3xl"
