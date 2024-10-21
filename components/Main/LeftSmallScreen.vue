@@ -80,5 +80,7 @@ async function signOut() {
       </template>
       <template #title>Logout</template>
     </MainMenuEntry>
+    <!-- space filler -->
+    <div class="grow"></div>
   </div>
 </template>

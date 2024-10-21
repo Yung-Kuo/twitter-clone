@@ -14,5 +14,7 @@ watch(
 </script>
 
 <template>
-  <div class="text-zinc-200">Waiting for login...</div>
+  <div class="text-zinc-200">
+    <!-- Waiting for login... -->
+  </div>
 </template>
