@@ -75,8 +75,10 @@ const date = computed(() => {
         class="flex max-h-[18rem] w-full flex-col gap-3 overflow-y-scroll pl-2"
       >
         <!-- content -->
-        <div v-if="post.type !== 'repost && post.text !== repost'">
-          <pre>{{ post.text }}</pre>
+        <div>
+          <pre v-if="post.type !== 'repost' || post.text !== post.reply_to">{{
+            post.text
+          }}</pre>
         </div>
         <!-- repost / quote -->
         <div v-if="post.type === 'repost'" class="z-20 w-full">
