@@ -11,7 +11,7 @@ async function signInWithApple() {
 }
 </script>
 <template>
-  <UIButton3DGlow class="h-14 w-72 md:w-80" @mousedown="">
+  <UIButton3DGlow class="h-12 w-72 md:h-14 md:w-80" @mousedown="">
     <IconsApple />
     Log in with Apple
   </UIButton3DGlow>

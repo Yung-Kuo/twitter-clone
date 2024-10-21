@@ -12,7 +12,10 @@ async function signInWithGoogle() {
 }
 </script>
 <template>
-  <UIButton3DGlow class="h-14 w-72 md:w-80" @mousedown="signInWithGoogle()">
+  <UIButton3DGlow
+    class="h-12 w-72 md:h-14 md:w-80"
+    @mousedown="signInWithGoogle()"
+  >
     <IconsGoogle />
     Log in with Google
   </UIButton3DGlow>

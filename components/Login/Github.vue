@@ -12,7 +12,10 @@ async function signInWithGithub() {
 }
 </script>
 <template>
-  <UIButton3DGlow class="h-14 w-72 md:w-80" @mousedown="signInWithGithub()">
+  <UIButton3DGlow
+    class="h-12 w-72 md:h-14 md:w-80"
+    @mousedown="signInWithGithub()"
+  >
     <IconsGithub />
     Log in with Github
   </UIButton3DGlow>
