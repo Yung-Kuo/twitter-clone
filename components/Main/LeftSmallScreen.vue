@@ -9,6 +9,8 @@ const followingStore = useFollowingStore();
 onMounted(async () => {
   if (!followingStore.getFollowing(user.value.id)) {
     await followingStore.fetchFollowing(user.value.id);
+  }
+  if (!followingStore.getFollowers(user.value.id)) {
     await followingStore.fetchFollowers(user.value.id);
   }
 });
@@ -23,7 +25,7 @@ async function signOut() {
 </script>
 <template>
   <div
-    class="absolute -left-3/4 top-0 flex h-full w-3/4 flex-col p-5 text-zinc-200 md:hidden"
+    class="absolute -left-[20rem] top-0 flex h-full w-[20rem] flex-col p-5 text-zinc-200 md:hidden"
   >
     <!-- user info -->
     <div class="flex h-min w-full flex-col gap-2 p-4">

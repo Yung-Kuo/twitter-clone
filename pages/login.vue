@@ -49,7 +49,7 @@ const OAuthSignIn = ref(true);
           <LoginGithub />
           <div class="flex h-min w-5/6 items-center justify-center gap-4">
             <span class="h-0 grow rounded-full border-2 border-gray-700"></span>
-            <span class="text-xl font-bold text-zinc-200">or</span>
+            <span class="text-xl font-bold text-gray-400">or</span>
             <span class="h-0 grow rounded-full border-2 border-gray-700"></span>
           </div>
           <UIButton3DGlow

@@ -22,9 +22,9 @@ const props = defineProps({
 
 const showMask = ref(false);
 function toggleSidePanel() {
-  // toggle translate-x-[75%] to the body
+  // toggle translate-x-[20rem] to the body
   const mainPage = document.getElementById("mainPage");
-  mainPage.classList.toggle("translate-x-[75%]");
+  mainPage.classList.toggle("translate-x-[20rem]");
   mainPage.classList.toggle("md:translate-x-0");
   // toggle centerMask
   showMask.value = !showMask.value;
