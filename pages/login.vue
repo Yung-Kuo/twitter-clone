@@ -69,7 +69,7 @@ const OAuthSignIn = ref(true);
           <!-- top banner -->
           <!-- go back to social login -->
           <div
-            class="group sticky left-0 top-0 z-20 flex h-16 w-full cursor-pointer rounded-none bg-zinc-200 text-black transition-all md:rounded-t-xl md:bg-zinc-400 md:hover:bg-zinc-200 2xl:h-20"
+            class="group sticky left-0 top-0 z-20 flex h-16 w-full cursor-pointer rounded-none bg-gray-400 text-black transition-all md:rounded-t-xl md:bg-zinc-400 md:hover:bg-zinc-200 2xl:h-20"
             @mousedown="OAuthSignIn = !OAuthSignIn"
           >
             <div
