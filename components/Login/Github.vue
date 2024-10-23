@@ -9,6 +9,7 @@ async function signInWithGithub() {
     },
   });
   if (error) console.log(error);
+  if (data) console.log(data);
 }
 </script>
 <template>

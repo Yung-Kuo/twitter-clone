@@ -18,7 +18,7 @@ const OAuthSignIn = ref(true);
       <LoginTransitionFadeLeft>
         <div
           v-show="OAuthSignIn"
-          class="col-start-1 row-start-1 flex h-max min-h-full w-full flex-col items-center justify-center gap-8 py-16"
+          class="col-start-1 row-start-1 flex h-max min-h-full w-full flex-col items-center justify-center gap-8 pb-32 pt-16"
         >
           <!-- twitter-clone logo -->
           <div class="grid grid-cols-1 grid-rows-1 pb-16 md:pb-8">
@@ -38,13 +38,8 @@ const OAuthSignIn = ref(true);
               twitter-clone
             </h1>
           </div>
-          <!-- <LoginApple />
-          <LoginApple />
-          <LoginApple />
-          <LoginApple />
-          <LoginApple />
-          <LoginApple /> -->
-          <LoginApple />
+          <LoginApple class="cursor-not-allowed" />
+          <LoginFacebook />
           <LoginGoogle />
           <LoginGithub />
           <div class="flex h-min w-5/6 items-center justify-center gap-4">
