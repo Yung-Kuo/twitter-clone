@@ -7,6 +7,7 @@ export default function () {
   const previousScrollTop = ref(null);
   const scroll_record = ref(0);
   function handleScroll(event) {
+    console.log("handleScroll");
     // bottom opacity
     // hide & show top banner
     center.value = document.getElementById("center");
@@ -23,9 +24,8 @@ export default function () {
     scroll_record.value += scrollDistance;
     previousScrollTop.value = event.target.scrollTop;
 
-    // console.log("scrollTop + innerHeight:", event.target.scrollTop + window.innerHeight);
-    // console.log("scrollHeight:", center.value.scrollHeight);
     if (
+      // scroll down: hide banner & bottom
       scroll_record.value > 50 &&
       isVisible(bottom.value) &&
       event.target.scrollTop > 0 &&
@@ -35,34 +35,34 @@ export default function () {
       scroll_record.value = 0;
       bottom.value.classList.remove("backdrop-blur-md");
       bottom.value.classList.add("backdrop-blur-0", "opacity-50");
-      // banner.value.classList.add("-translate-y-14");
       if (route.path === "/") {
         banner.value.classList.add("-translate-y-24");
       } else {
         banner.value.classList.add("-translate-y-12");
       }
     } else if (scroll_record.value < -10 && isVisible(bottom.value)) {
+      // scroll up: show banner & bottom
       scroll_record.value = 0;
       bottom.value.classList.remove("backdrop-blur-0", "opacity-50");
       bottom.value.classList.add("backdrop-blur-md");
-      // banner.value.classList.remove("-translate-y-14");
       if (route.path === "/") {
         banner.value.classList.remove("-translate-y-24");
       } else {
         banner.value.classList.remove("-translate-y-12");
       }
     } else if (!isVisible(bottom.value)) {
-      if (
-        route.path === "/" &&
-        banner.value.classList.contains("-translate-y-24")
-      ) {
-        banner.value.classList.remove("-translate-y-24");
-      } else if (
-        route.path !== "/" &&
-        banner.value.classList.contains("-translate-y-12")
-      ) {
-        banner.value.classList.remove("-translate-y-12");
-      }
+      //
+      // if (
+      //   route.path === "/" &&
+      //   banner.value.classList.contains("-translate-y-24")
+      // ) {
+      //   banner.value.classList.remove("-translate-y-24");
+      // } else if (
+      //   route.path !== "/" &&
+      //   banner.value.classList.contains("-translate-y-12")
+      // ) {
+      //   banner.value.classList.remove("-translate-y-12");
+      // }
     }
   }
 

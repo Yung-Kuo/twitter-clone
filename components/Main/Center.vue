@@ -3,7 +3,6 @@ const router = useRouter();
 const route = useRoute();
 const user = useSupabaseUser();
 const profileStore = useProfileStore();
-const { swipeRight } = useSwipe();
 const handleWheelEvent = inject("handleWheelEvent");
 const handleScroll = inject("handleScroll");
 const getRect = inject("getRect", () => null);
@@ -28,14 +27,6 @@ function toggleSidePanel() {
   mainPage.classList.toggle("md:translate-x-0");
   // toggle centerMask
   showMask.value = !showMask.value;
-}
-function hasOpacity() {
-  const center = document.getElementById("center");
-  if (center.classList.contains("opacity-50")) {
-    return true;
-  } else {
-    return false;
-  }
 }
 </script>
 <template>
@@ -121,7 +112,7 @@ function hasOpacity() {
       class="flex h-full w-full overflow-y-scroll"
       @wheel="handleWheelEvent($event, 'center')"
       @scroll="
-        handleScroll($event, !props.initialScroll);
+        !props.initialScroll ? handleScroll($event) : null;
         getRect();
         menuGetRect();
       "

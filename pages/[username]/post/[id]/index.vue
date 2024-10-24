@@ -44,13 +44,14 @@ onMounted(async () => {
   watchEffect(async () => {
     if (post.value?.type === "reply") {
       await buildThread(post.value);
-      // if (thread.value.length > 0) {
-      // await nextTick();
-      // scrollToTarget();
-      setTimeout(() => {
-        scrollToTarget();
-      }, 500);
-      // }
+      if (thread.value.length > 0) {
+        // await nextTick();
+        // scrollToTarget();
+        setTimeout(() => {
+          scrollToTarget();
+        }, 500);
+        initialScroll.value = false;
+      }
     }
   });
 });
@@ -83,9 +84,8 @@ const initialScroll = ref(false);
 function scrollToTarget() {
   if (initialScroll.value) return;
   initialScroll.value = true;
-  console.log("scroll");
   target.value.scrollIntoView({ block: "start", behavior: "instant" });
-  initialScroll.value = false;
+  // initialScroll.value = false;
 }
 </script>
 <template>

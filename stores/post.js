@@ -444,6 +444,7 @@ export const usePostStore = defineStore({
       }
     },
     async fetchRepostCount(pid) {
+      if (!pid) return;
       const client = useSupabaseClient();
       try {
         const { count, error } = await client
@@ -451,7 +452,7 @@ export const usePostStore = defineStore({
           .select("*", { count: "exact", head: true })
           .eq("reply_to", pid)
           .eq("type", "repost");
-        this.repostCount[pid] = count;
+        if (count) this.repostCount[pid] = count;
         if (error) throw error;
       } catch (error) {
         console.log(error.message);
