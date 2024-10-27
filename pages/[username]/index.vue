@@ -121,7 +121,7 @@ const postList = computed(() => {
         <!-- user profile -->
         <MainSection>
           <!-- profile background image -->
-          <div class="h-60 w-full bg-zinc-800"></div>
+          <div class="h-60 w-full bg-zinc-800 2xl:h-96"></div>
           <!-- avatar -->
           <div
             class="relative -top-20 left-5 z-10 mt-2 h-min w-min rounded-full ring-4 ring-black"

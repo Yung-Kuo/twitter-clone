@@ -103,14 +103,12 @@ function scrollToTarget() {
           <!-- reply thread -->
           <ul v-if="thread.length > 0">
             <li v-for="threadPost in thread" :key="threadPost.id">
-              <MainPostReplyThread :post="threadPost" noHover class="px-3" />
+              <MainPostReplyThread :post="threadPost" noHover />
             </li>
           </ul>
           <div ref="target" class="scroll-mt-12 md:scroll-mt-14"></div>
           <!-- main post -->
-          <div class="px-3">
-            <MainPostSingle v-bind="post"></MainPostSingle>
-          </div>
+          <MainPostSingle v-bind="post"></MainPostSingle>
         </MainSection>
         <!-- lower section -->
         <div class="min-h-[40rem]">

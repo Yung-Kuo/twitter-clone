@@ -84,7 +84,10 @@ const date = computed(() => {
 });
 </script>
 <template>
-  <div class="w-full text-zinc-200" v-if="postStore.getProfile(post?.user_id)">
+  <div
+    class="w-full text-zinc-200 md:px-3 2xl:px-5"
+    v-if="postStore.getProfile(post?.user_id)"
+  >
     <MainSection>
       <article>
         <!-- upper section -->

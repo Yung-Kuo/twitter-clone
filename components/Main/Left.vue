@@ -44,13 +44,13 @@ async function signOut() {
 </script>
 <template>
   <div
-    class="hidden h-full w-1/6 justify-center border-r-2 border-zinc-800 md:flex xl:w-1/5 xl:justify-end 2xl:w-3/10"
+    class="hidden h-full w-1/6 justify-center border-r-2 border-zinc-800 md:flex xl:w-1/5 xl:justify-end xl:px-5 2xl:w-1/4 2xl:px-10"
   >
     <!-- navigation -->
     <!-- align upper & lower section -->
     <div
       id="left"
-      class="flex h-full w-max flex-col overflow-y-scroll md:px-5"
+      class="flex h-full w-max flex-col overflow-y-scroll"
       @wheel="stickyMenu()"
     >
       <!-- upper section -->

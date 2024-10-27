@@ -93,7 +93,9 @@ const date = computed(() => {
   <MainSection class="w-full">
     <!-- post -->
     <MainPostHoverClickWrapper :post="post">
-      <div class="flex w-full p-3 pb-0 text-zinc-200 md:p-3 md:pb-0">
+      <div
+        class="flex w-full p-3 pb-0 text-zinc-200 md:p-3 md:pb-0 2xl:p-5 2xl:pb-0"
+      >
         <!-- left column / avatar -->
         <div class="flex w-min flex-col">
           <!-- avatar for show post -->
@@ -313,7 +315,6 @@ const date = computed(() => {
     <MainPostReplyThread
       v-if="props.showAuthorReply && authorReplyId"
       :post="authorReplyPost"
-      class="px-3"
     />
     <MainPostHoverClickWrapper
       v-if="props.showAuthorReply && authorReplyId"

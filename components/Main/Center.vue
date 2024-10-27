@@ -30,9 +30,9 @@ function toggleSidePanel() {
 }
 </script>
 <template>
-  <div class="relative h-screen w-screen overflow-hidden md:w-5/6">
+  <div class="relative h-screen overflow-hidden grow">
     <!-- top banner -->
-    <div class="relative md:w-5/6 xl:w-5/8 2xl:w-3/5">
+    <div class="relative md:w-5/6 xl:w-5/8 2xl:w-7/12">
       <div
         id="banner"
         class="absolute left-0 top-0 z-20 flex w-full flex-col bg-black bg-opacity-20 backdrop-blur-md transition-all duration-300"
@@ -119,7 +119,7 @@ function toggleSidePanel() {
       @touchmove="swipeRight($event, $slots.mainBanner)"
     >
       <div
-        class="h-max w-full pb-32 md:w-5/6 md:pb-14 xl:w-5/8 2xl:w-3/5"
+        class="h-max w-full pb-32 md:w-5/6 md:pb-14 xl:w-5/8 2xl:w-7/12"
         :class="props.userPage
           ? ''
           : $slots.title && $slots.nav
@@ -129,6 +129,8 @@ function toggleSidePanel() {
       ">
         <slot name="main" />
       </div>
+      <!-- right panel -->
+      <!-- put the right panel inside center panel so that the scrollbar can be at the right most position -->
       <MainRight />
     </div>
   </div>

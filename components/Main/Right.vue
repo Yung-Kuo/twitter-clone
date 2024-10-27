@@ -34,7 +34,7 @@ function focusoutSearchBar() {
 <template>
   <div
     id="right"
-    class="absolute right-0 top-0 hidden h-full w-0 overflow-y-scroll border-l-2 border-zinc-800 md:visible md:block md:w-1/6 md:p-5 xl:w-3/8 2xl:w-2/5"
+    class="absolute right-0 top-0 hidden h-full w-0 overflow-y-scroll border-l-2 border-zinc-800 md:visible md:block md:w-1/6 md:p-5 xl:w-3/8 2xl:w-5/12"
     @wheel="
       handleWheelEvent($event, 'right');
       getRect();

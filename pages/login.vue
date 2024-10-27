@@ -12,7 +12,7 @@ const OAuthSignIn = ref(true);
     <!-- center black block -->
     <div
       id="blackCard"
-      class="z-10 grid h-full max-h-screen w-full grid-cols-1 grid-rows-1 overflow-y-scroll bg-black shadow-2xl shadow-gray-400 md:h-[40rem] md:w-[32rem] md:rounded-2xl md:bg-opacity-60"
+      class="z-10 grid h-full max-h-screen w-full grid-cols-1 grid-rows-1 overflow-y-scroll bg-black shadow-2xl shadow-gray-400 md:h-[40rem] md:w-[32rem] md:rounded-2xl md:bg-opacity-60 2xl:h-[50rem] 2xl:w-[40rem]"
     >
       <!-- Social Login -->
       <LoginTransitionFadeLeft>
