@@ -9,7 +9,9 @@ const { newPost, publishPost } = useWritePost();
 </script>
 <template>
   <MainSection>
-    <div class="flex w-full px-3 pt-3 text-gray-200 transition-all">
+    <div
+      class="flex w-full px-3 pt-3 tracking-wide text-gray-200 transition-all"
+    >
       <!-- left column / avatar -->
       <div class="flex h-max w-12 justify-start">
         <!-- avatar for writing new post -->

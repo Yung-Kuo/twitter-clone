@@ -21,7 +21,7 @@ const OAuthSignIn = ref(true);
           class="col-start-1 row-start-1 flex h-max min-h-full w-full flex-col items-center justify-center gap-8 pb-32 pt-16"
         >
           <!-- twitter-clone logo -->
-          <div class="grid grid-cols-1 grid-rows-1 pb-16 md:pb-8">
+          <div class="grid grid-cols-1 grid-rows-1 pb-16">
             <h1
               class="z-20 col-start-1 row-start-1 text-5xl font-bold text-gray-400 transition-all sm:text-6xl"
             >
@@ -64,7 +64,7 @@ const OAuthSignIn = ref(true);
           <!-- top banner -->
           <!-- go back to social login -->
           <div
-            class="group sticky left-0 top-0 z-20 flex h-16 w-full cursor-pointer rounded-none bg-gray-400 text-black transition-all md:rounded-t-xl md:bg-zinc-400 md:hover:bg-zinc-200 2xl:h-20"
+            class="group sticky left-0 top-0 z-20 flex h-16 w-full cursor-pointer rounded-none bg-zinc-400 text-black transition-all md:rounded-t-xl md:hover:bg-zinc-200 2xl:h-20"
             @mousedown="OAuthSignIn = !OAuthSignIn"
           >
             <div

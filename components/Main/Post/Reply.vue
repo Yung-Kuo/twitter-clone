@@ -25,7 +25,7 @@ const date = computed(() => {
 });
 </script>
 <template>
-  <MainPostHoverClickWrapper :post="post" noHover>
+  <MainPostHoverClickWrapper :post="post" noHover class="tracking-wide">
     <!-- left column / avatar -->
     <div class="flex w-10 flex-col">
       <!-- avatar for show post -->

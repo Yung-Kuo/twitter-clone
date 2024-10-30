@@ -90,7 +90,7 @@ const date = computed(() => {
 });
 </script>
 <template>
-  <MainSection class="w-full">
+  <MainSection class="w-full tracking-wide">
     <!-- post -->
     <MainPostHoverClickWrapper :post="post">
       <div
