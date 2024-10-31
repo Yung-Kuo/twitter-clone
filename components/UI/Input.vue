@@ -88,7 +88,7 @@ function inputFocusOut() {
     tabindex="0"
     @focusin="inputFocusIn"
     @focusout="inputFocusOut"
-    class="grid h-16 w-full grid-cols-1 grid-rows-1 overflow-hidden rounded-md border-2 transition-all focus-within:outline-transparent md:h-20"
+    class="grid h-16 w-full grid-cols-1 grid-rows-1 overflow-hidden rounded-md border-2 transition-all md:h-20"
     :class="inputValidFlag ? inputValidClass : inputInvalidClass"
   >
     <div
@@ -103,7 +103,7 @@ function inputFocusOut() {
         :id="id"
         v-model="text"
         @keydown="stopInputOverwrite"
-        class="h-full w-full rounded-sm bg-transparent px-1 text-xl text-zinc-200 focus:outline focus:outline-transparent sm:text-2xl md:text-3xl"
+        class="h-full w-full rounded-sm !bg-transparent px-1 text-xl text-zinc-200 focus:outline focus:outline-transparent sm:text-2xl md:text-3xl"
       />
     </div>
   </div>
@@ -111,11 +111,30 @@ function inputFocusOut() {
 
 <style scoped>
 input:is(:-webkit-autofill, :autofill) {
-  /* -webkit-box-shadow: 0 0 0 100px black inset; */
+  -webkit-box-shadow: 0 0 0 100px black inset;
   -webkit-text-fill-color: white;
   -webkit-text-fill-caret-color: white;
   caret-color: white;
-  -webkit-transition-delay: 9999s;
-  transition-delay: 9999s;
 }
+
+/* input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-animation: autofill 0s forwards;
+  animation: autofill 0s forwards;
+}
+@keyframes autofill {
+  100% {
+    background: transparent !important;
+    color: inherit;
+  }
+}
+
+@-webkit-keyframes autofill {
+  100% {
+    background: transparent !important;
+    color: inherit;
+  }
+} */
 </style>
