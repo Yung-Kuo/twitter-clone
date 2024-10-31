@@ -110,10 +110,12 @@ function inputFocusOut() {
 </template>
 
 <style scoped>
-/* input:is(:-webkit-autofill, :autofill) {
-  -webkit-box-shadow: 0 0 0 100px black inset;
+input:is(:-webkit-autofill, :autofill) {
+  /* -webkit-box-shadow: 0 0 0 100px black inset; */
   -webkit-text-fill-color: white;
   -webkit-text-fill-caret-color: white;
   caret-color: white;
-} */
+  -webkit-transition-delay: 9999s;
+  transition-delay: 9999s;
+}
 </style>
