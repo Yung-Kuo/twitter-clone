@@ -68,7 +68,7 @@ const date = computed(() => {
   <MainPostHoverClickWrapper :post="post" :noHover="props.noHover">
     <div
       v-if="postStore.getProfile(post?.user_id)"
-      class="flex h-min tracking-wide w-full text-zinc-200 transition-all hover:cursor-pointer md:px-3 2xl:px-5"
+      class="flex h-min w-full px-3 tracking-wide text-zinc-200 transition-all hover:cursor-pointer 2xl:px-5"
     >
       <!-- left column / avatar -->
       <div class="flex w-min cursor-default flex-col">

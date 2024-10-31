@@ -94,7 +94,7 @@ const date = computed(() => {
     <!-- post -->
     <MainPostHoverClickWrapper :post="post">
       <div
-        class="flex w-full p-3 pb-0 text-zinc-200 md:p-3 md:pb-0 2xl:p-5 2xl:pb-0"
+        class="flex w-full p-3 pb-0 text-zinc-200 2xl:p-5 2xl:pb-0"
       >
         <!-- left column / avatar -->
         <div class="flex w-min flex-col">
