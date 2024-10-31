@@ -139,7 +139,7 @@ const date = computed(() => {
                 </NuxtLink>
               </div>
               &ensp;
-              <div class="flex text-sm text-zinc-500">
+              <div class="text-sm text-zinc-500">
                 <!-- username -->
                 <div
                   :id="`${post.id}_username`"
@@ -151,6 +151,8 @@ const date = computed(() => {
                     <span> @{{ postStore.getUsername(post.user_id) }}</span>
                   </NuxtLink>
                 </div>
+              </div>
+              <div class="text-sm text-zinc-500">
                 <div class="flex w-max">
                   <!-- timestamp -->
                   <pre> · {{ date }}</pre>
