@@ -93,9 +93,7 @@ const date = computed(() => {
   <MainSection class="w-full tracking-wide">
     <!-- post -->
     <MainPostHoverClickWrapper :post="post">
-      <div
-        class="flex w-full p-3 pb-0 text-zinc-200 2xl:p-5 2xl:pb-0"
-      >
+      <div class="flex w-full p-3 pb-0 text-zinc-200 2xl:p-5 2xl:pb-0">
         <!-- left column / avatar -->
         <div class="flex w-min flex-col">
           <!-- avatar for show post -->
@@ -123,7 +121,7 @@ const date = computed(() => {
           <div class="flex h-5 w-full items-center pl-2">
             <!-- user info -->
             <div
-              class="flex items-center overflow-x-scroll whitespace-nowrap leading-tight"
+              class="flex h-full w-min items-center overflow-x-scroll whitespace-nowrap"
             >
               <!-- name -->
               <div
@@ -139,8 +137,8 @@ const date = computed(() => {
                 </NuxtLink>
               </div>
               &ensp;
-              <div class="text-sm text-zinc-500">
-                <!-- username -->
+              <!-- username -->
+              <div class="flex h-full items-end text-sm text-zinc-500">
                 <div
                   :id="`${post.id}_username`"
                   @mouseenter="showProfileCard($event.target.id, post.user_id)"
@@ -152,7 +150,8 @@ const date = computed(() => {
                   </NuxtLink>
                 </div>
               </div>
-              <div class="text-sm text-zinc-500">
+              <!-- others -->
+              <div class="flex h-full items-end text-sm text-zinc-500">
                 <div class="flex w-max">
                   <!-- timestamp -->
                   <pre> · {{ date }}</pre>
