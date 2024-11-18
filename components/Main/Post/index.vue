@@ -121,14 +121,14 @@ const date = computed(() => {
           <div class="flex h-5 w-full items-center pl-2">
             <!-- user info -->
             <div
-              class="flex h-full w-min items-center overflow-x-scroll whitespace-nowrap"
+              class="flex h-min w-min items-center overflow-x-scroll whitespace-nowrap leading-none"
             >
               <!-- name -->
               <div
                 :id="`${post.id}_name`"
                 @mouseenter="showProfileCard($event.target.id, post.user_id)"
                 @mouseleave="hideProfileCard()"
-                class="noForward w-max font-bold hover:underline"
+                class="noForward h-full w-max font-bold hover:underline"
               >
                 <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
                   <span class="noForward">
