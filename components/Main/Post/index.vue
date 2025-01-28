@@ -110,7 +110,7 @@ const date = computed(() => {
           <!-- thread -->
           <div
             v-if="props.showAuthorReply && authorReplyId"
-            class="flex w-full flex-grow justify-center"
+            class="flex w-full grow justify-center"
           >
             <span class="h-full border border-zinc-800"></span>
           </div>
@@ -194,15 +194,12 @@ const date = computed(() => {
           <div class="flex w-full flex-col pl-2">
             <!-- content -->
             <div v-if="post.type !== 'repost' || post.text !== post.reply_to">
-              <!-- text -->
-              <pre>{{ post.text }}</pre>
+              <pre class="whitespace-pre-wrap break-all">{{ post.text }}</pre>
             </div>
 
             <!-- repost / quote -->
-            <div v-if="post.type === 'repost'" class="noForward mt-3">
-              <MainPostRefer
-                v-bind="postStore.getPost(post.reply_to)"
-              ></MainPostRefer>
+            <div v-if="post.type === 'repost'" class="noForward mt-3 w-full">
+              <MainPostRefer v-bind="postStore.getPost(post.reply_to)" />
             </div>
           </div>
 

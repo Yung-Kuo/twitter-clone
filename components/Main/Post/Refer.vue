@@ -53,7 +53,7 @@ const date = computed(() => {
   <MainPostHoverClickWrapper
     :post="post"
     hasRing
-    class="flex flex-col gap-2 tracking-wide rounded-2xl border border-zinc-800 bg-black p-3 md:border-2"
+    class="flex flex-col gap-2 rounded-2xl border border-zinc-800 bg-black p-3 tracking-wide md:border-2"
   >
     <!-- upper section -->
     <div class="flex h-min w-full">
@@ -65,7 +65,7 @@ const date = computed(() => {
       </div>
       <!-- user info -->
       <div
-        class="flex h-8 grow items-center overflow-x-scroll whitespace-nowrap px-2 leading-none"
+        class="flex h-8 w-80 items-center overflow-x-scroll whitespace-nowrap px-2 leading-none"
       >
         <!-- name -->
         <div class="noForward flex h-5 items-center font-bold hover:underline">

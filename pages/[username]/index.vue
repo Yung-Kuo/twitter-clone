@@ -211,7 +211,7 @@ const postList = computed(() => {
           </div>
         </MainSection>
         <!-- post list -->
-        <div class="min-h-[40rem]">
+        <div class="min-h-[40rem] w-full">
           <ul>
             <li v-for="post in postList" :key="post.id">
               <MainPost :post="post"></MainPost>
