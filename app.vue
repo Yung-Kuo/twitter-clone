@@ -22,7 +22,7 @@ html {
 }
 pre {
   white-space: pre-line;
-  overflow-wrap: break-word;
+  overflow-wrap: normal;
   word-break: break-all;
 }
 </style>
