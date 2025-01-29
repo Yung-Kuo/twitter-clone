@@ -164,7 +164,7 @@ const date = computed(() => {
           <!-- content -->
           <div
             v-if="post.type !== 'repost' || post.text !== post.reply_to"
-            class="w-full break-all text-lg"
+            class="w-full text-lg"
           >
             <pre>{{ post.text }}</pre>
           </div>

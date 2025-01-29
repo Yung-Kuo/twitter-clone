@@ -193,8 +193,11 @@ const date = computed(() => {
           <!-- middle section -->
           <div class="flex w-full flex-col pl-2">
             <!-- content -->
-            <div v-if="post.type !== 'repost' || post.text !== post.reply_to">
-              <pre class="whitespace-pre-wrap break-all">{{ post.text }}</pre>
+            <div
+              v-if="post.type !== 'repost' || post.text !== post.reply_to"
+              class="w-full"
+            >
+              <pre>{{ post.text }}</pre>
             </div>
 
             <!-- repost / quote -->
