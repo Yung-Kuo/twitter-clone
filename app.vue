@@ -21,8 +21,9 @@ html {
   background-color: black;
 }
 pre {
-  white-space: pre-line;
-  overflow-wrap: normal;
-  word-break: break-all;
+  /* text-align: justify; */
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  /* word-break: break-all; */
 }
 </style>
