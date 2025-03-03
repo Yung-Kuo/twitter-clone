@@ -38,7 +38,9 @@ const OAuthSignIn = ref(true);
               twitter-clone
             </h1>
           </div>
-          <LoginApple class="!cursor-not-allowed" />
+          <div class="opacity-40">
+            <LoginApple class="!cursor-not-allowed" />
+          </div>
           <LoginFacebook />
           <LoginGoogle />
           <LoginGithub />
