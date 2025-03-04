@@ -49,6 +49,7 @@ const OAuthSignIn = ref(true);
             <span class="text-xl font-bold text-gray-400">or</span>
             <span class="h-0 grow rounded-full border-2 border-gray-700"></span>
           </div>
+          <LoginAnonymous />
           <UIButton3DGlow
             class="h-12 w-72 md:h-14 md:w-80"
             @click="OAuthSignIn = !OAuthSignIn"

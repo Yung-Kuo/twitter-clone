@@ -3,9 +3,12 @@ export default defineNuxtConfig({
   modules: [
     "@nuxtjs/tailwindcss",
     "@nuxtjs/supabase",
-    "@pinia//nuxt",
+    "@pinia/nuxt",
     "@nuxtjs/google-fonts",
+    "@nuxt/scripts",
+    "@nuxtjs/turnstile",
   ],
+
   vite: {
     vue: {
       script: {
@@ -14,6 +17,7 @@ export default defineNuxtConfig({
       },
     },
   },
+
   supabase: {
     redirectOptions: {
       login: "/login",
@@ -29,6 +33,7 @@ export default defineNuxtConfig({
       secure: process.env.NODE_ENV === "production",
     },
   },
+
   pinia: {
     // autoImports: [
     //   // automatically imports `defineStore`
@@ -36,6 +41,7 @@ export default defineNuxtConfig({
     //   ["defineStore", "definePiniaStore"], // import { defineStore as definePiniaStore } from 'pinia'
     // ],
   },
+
   googleFonts: {
     families: {
       Ubuntu: {
@@ -55,6 +61,10 @@ export default defineNuxtConfig({
     pageTransition: { name: "page", mode: "out-in" },
   },
 
+  turnstile: {
+    siteKey: "0x4AAAAAAA_eb1YrbgvOlalr",
+  },
+
   runtimeConfig: {
     public: {
       baseURL:
@@ -62,5 +72,12 @@ export default defineNuxtConfig({
           ? process.env.BASE_URL_PRODUCTION
           : "http://localhost:3000",
     },
+    turnstile: {
+      // This can be overridden at runtime via the NUXT_TURNSTILE_SECRET_KEY
+      // environment variable.
+      secretKey: "0x4AAAAAAA_eb7n83bbFE-LD6NBHfXIL4JE",
+    },
   },
+
+  compatibilityDate: "2025-03-04",
 });
