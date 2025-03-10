@@ -2,46 +2,64 @@
 import { IconsAnonymous } from "#components";
 
 const supabase = useSupabaseClient();
-const showCaptcha = ref(false);
+const router = useRouter();
+const showCaptcha = ref(false); // Show captcha immediately
 const captchaToken = ref("");
-async function signInAnonymously() {
-  if (!showCaptcha.value) {
-    showCaptcha.value = true;
-    return;
-  }
-  const { data, error } = await supabase.auth.signInAnonymously({
-    options: {
-      captchaToken: captchaToken.value,
-    },
-  });
+const loading = ref(false);
+const errorMsg = ref("");
 
-  if (error) console.log(error);
-  if (data) {
-    console.log(data);
-    router.push("/");
+async function signInAnonymously() {
+  loading.value = true;
+  errorMsg.value = "";
+
+  try {
+    const { data, error } = await supabase.auth.signInAnonymously({
+      options: {
+        captchaToken: captchaToken.value,
+      },
+    });
+
+    if (error) {
+      console.error("Supabase Error:", error);
+      errorMsg.value = "Sign-in failed. Please try again.";
+    } else if (data) {
+      console.log("Supabase Data:", data);
+      console.log("Redirecting to /");
+      router.push("/");
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      console.log("Supabase Session:", session);
+    }
+  } catch (err) {
+    console.error("Unexpected Error:", err);
+    errorMsg.value = "An unexpected error occurred.";
+  } finally {
+    loading.value = false;
   }
 }
+
+watch(captchaToken, (newValue) => {
+  if (showCaptcha.value && newValue) {
+    signInAnonymously();
+  }
+});
 </script>
+
 <template>
   <div>
     <UIButton3DGlow
       class="h-12 w-72 md:h-14 md:w-80"
-      @mousedown="signInAnonymously()"
+      :disabled="loading || captchaToken"
+      @click="showCaptcha = true"
     >
       <IconsAnonymous />
-      Sign In Anonymously
+      <span v-if="loading">Signing In...</span>
+      <span v-else>Sign In Anonymously</span>
     </UIButton3DGlow>
-    <Transition
-      enter-active-class="transition-all duration-500 overflow-y-hidden"
-      enter-from-class="opacity-0 max-h-0"
-      enter-to-class="opacity-100 max-h-screen"
-      leave-active-class="transition-all duration-500 overflow-y-hidden"
-      leave-from-class="opacity-100 max-h-screen"
-      leave-to-class="opacity-0 max-h-0"
-    >
-      <div v-if="showCaptcha" class="flex w-full justify-center py-5">
-        <NuxtTurnstile v-model="captchaToken" />
-      </div>
-    </Transition>
+    <div v-if="showCaptcha" class="flex w-full justify-center py-5">
+      <NuxtTurnstile v-model="captchaToken" />
+    </div>
+    <div v-if="errorMsg" class="mt-2 text-red-500">{{ errorMsg }}</div>
   </div>
 </template>
