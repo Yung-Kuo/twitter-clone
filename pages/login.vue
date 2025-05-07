@@ -1,4 +1,9 @@
 <script setup>
+useSeoMeta({
+  title: "Twitter Clone",
+  description:
+    "This is a Twitter Clone built by Yung Kuo. Please choose a method to sign in or sign up.",
+});
 // alert module
 const { alertMode, alertMessage, errorTimeout, hasError } = useAlert();
 const OAuthSignIn = ref(true);

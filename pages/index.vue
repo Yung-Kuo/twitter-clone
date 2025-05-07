@@ -1,4 +1,9 @@
 <script setup>
+useSeoMeta({
+  title: "Twitter Clone",
+  description:
+    "This is a Twitter Clone built by Yung Kuo Using Nuxt and Supabase.",
+});
 import { useProfileStore } from "~/stores/profile";
 import { usePostStore } from "~/stores/post";
 definePageMeta({
