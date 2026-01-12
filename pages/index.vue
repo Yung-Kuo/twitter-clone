@@ -85,11 +85,7 @@ async function fetchNewPost() {
         <!-- write new post -->
         <MainPostWrite class="hidden md:flex" />
         <!-- post list -->
-        <ul class="pt-12 md:pt-0">
-          <li v-for="post in postList" :key="post.id">
-            <MainPost :post="post"></MainPost>
-          </li>
-        </ul>
+        <LazyMainPostList :postList="postList" class="pt-12 md:pt-0" />
       </template>
     </MainCenter>
   </div>

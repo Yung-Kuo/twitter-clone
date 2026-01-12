@@ -45,11 +45,7 @@ const bookmarkList = computed(() => postStore.getBookmarkPosts);
       <template #title>Bookmarks</template>
       <template #subtitle>@{{ postStore.getUsername(user.id) }}</template>
       <template #main>
-        <ul>
-          <li v-for="post in bookmarkList" :key="post.id">
-            <MainPost :post="post"></MainPost>
-          </li>
-        </ul>
+        <LazyMainPostList :postList="bookmarkList" />
       </template>
     </MainCenter>
     <!-- <MainRight /> -->

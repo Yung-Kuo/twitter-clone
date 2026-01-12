@@ -101,11 +101,12 @@ function scrollToTarget() {
         <!-- upper section -->
         <MainSection class="noForward">
           <!-- reply thread -->
-          <ul v-if="thread.length > 0">
+          <!-- <ul v-if="thread.length > 0">
             <li v-for="threadPost in thread" :key="threadPost.id">
               <MainPostReplyThread :post="threadPost" noHover />
             </li>
-          </ul>
+          </ul> -->
+          <LazyMainPostList v-if="thread.length > 0" :postList="thread" />
           <div ref="target" class="scroll-mt-12 md:scroll-mt-14"></div>
           <!-- main post -->
           <MainPostSingle v-bind="post"></MainPostSingle>
@@ -113,11 +114,12 @@ function scrollToTarget() {
         <!-- lower section -->
         <div class="min-h-[40rem]">
           <!-- replies -->
-          <ul>
+          <!-- <ul>
             <li v-for="post in replyList" :key="post.id">
               <MainPost :post="post" showAuthorReply />
             </li>
-          </ul>
+          </ul> -->
+          <LazyMainPostList :postList="replyList" showAuthorReply />
         </div>
       </template>
     </MainCenter>
