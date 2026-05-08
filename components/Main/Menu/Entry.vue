@@ -23,7 +23,7 @@
       v-if="$slots.lgMenu"
       class="hidden h-min items-center rounded-full transition-all hover:bg-zinc-900 active:bg-zinc-800 xl:flex"
     >
-      <IconsBadge size="large" noHover>
+      <IconsBadge size="large" no-hover>
         <slot name="lgMenu" />
       </IconsBadge>
       <div

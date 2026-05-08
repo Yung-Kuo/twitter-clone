@@ -93,9 +93,9 @@ function scrollToTarget() {
     <!-- UI popup -->
     <UIPopupCollection />
     <!-- layout -->
-    <MainLeft @popupPost="showPopupPost = true" />
+    <MainLeft @popup-post="showPopupPost = true" />
     <MainBottom />
-    <MainCenter :initialScroll="initialScroll">
+    <MainCenter :initial-scroll="initialScroll">
       <template #title>Post</template>
       <template #main>
         <!-- upper section -->
@@ -106,10 +106,10 @@ function scrollToTarget() {
               <MainPostReplyThread :post="threadPost" noHover />
             </li>
           </ul> -->
-          <LazyMainPostList v-if="thread.length > 0" :postList="thread" />
-          <div ref="target" class="scroll-mt-12 md:scroll-mt-14"></div>
+          <LazyMainPostList v-if="thread.length > 0" :post-list="thread" />
+          <div ref="target" class="scroll-mt-12 md:scroll-mt-14"/>
           <!-- main post -->
-          <MainPostSingle v-bind="post"></MainPostSingle>
+          <MainPostSingle v-bind="post"/>
         </MainSection>
         <!-- lower section -->
         <div class="min-h-[40rem]">
@@ -119,7 +119,7 @@ function scrollToTarget() {
               <MainPost :post="post" showAuthorReply />
             </li>
           </ul> -->
-          <LazyMainPostList :postList="replyList" showAuthorReply />
+          <LazyMainPostList :post-list="replyList" show-author-reply />
         </div>
       </template>
     </MainCenter>

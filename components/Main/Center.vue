@@ -1,8 +1,9 @@
 <script setup>
+const layoutRefs = inject("layoutRefs");
+const scrollChrome = inject("scrollChrome");
+const mainPageShifted = inject("mainPageShifted");
 const router = useRouter();
-const route = useRoute();
 const user = useSupabaseUser();
-const profileStore = useProfileStore();
 const handleWheelEvent = inject("handleWheelEvent");
 const handleScroll = inject("handleScroll");
 const getRect = inject("getRect", () => null);
@@ -21,12 +22,12 @@ const props = defineProps({
 
 const showMask = ref(false);
 function toggleSidePanel() {
-  // toggle translate-x-[20rem] to the body
-  const mainPage = document.getElementById("mainPage");
-  mainPage.classList.toggle("translate-x-[20rem]");
-  mainPage.classList.toggle("md:translate-x-0");
-  // toggle centerMask
+  mainPageShifted.value = !mainPageShifted.value;
   showMask.value = !showMask.value;
+}
+
+function layoutRefBinder(key, el) {
+  layoutRefs[key].value = el;
 }
 </script>
 <template>
@@ -34,9 +35,13 @@ function toggleSidePanel() {
     <!-- top banner -->
     <div class="relative md:w-5/6 xl:w-5/8 2xl:w-7/12">
       <div
-        id="banner"
-        class="absolute left-0 top-0 z-20 flex w-full flex-col bg-black bg-opacity-20 backdrop-blur-md transition-all duration-300"
-        :class="{ 'border-b border-zinc-800 md:border-b-2': $slots.nav }"
+        :ref="(el) => layoutRefBinder('banner', el)"
+        class="absolute left-0 top-0 z-20 flex w-full flex-col bg-black bg-opacity-20 backdrop-blur-md transition-colors transition-transform duration-300"
+        :class="{
+          'border-b border-zinc-800 md:border-b-2': $slots.nav,
+          '-translate-y-24': scrollChrome.bannerLift === 'home',
+          '-translate-y-12': scrollChrome.bannerLift === 'other',
+        }"
       >
         <!-- mask -->
         <div v-if="!$slots.title" class="flex md:hidden">
@@ -50,8 +55,8 @@ function toggleSidePanel() {
           >
             <div
               v-show="showMask"
-              @mousedown="toggleSidePanel()"
               class="absolute left-0 top-0 z-30 h-screen w-screen overflow-hidden bg-zinc-800 bg-opacity-50"
+              @mousedown="toggleSidePanel()"
             />
           </Transition>
           <!-- avatar -->
@@ -63,7 +68,7 @@ function toggleSidePanel() {
                 size="xsmall"
                 class="z-40 cursor-pointer"
                 @mousedown="toggleSidePanel()"
-              ></UIAvatar>
+              />
             </div>
           </div>
         </div>
@@ -76,7 +81,7 @@ function toggleSidePanel() {
           <div v-if="$slots.title" class="flex h-full w-min items-center">
             <NuxtLink @click="router.back()">
               <IconsBadge size="small">
-                <IconsBack></IconsBack>
+                <IconsBack/>
               </IconsBadge>
             </NuxtLink>
           </div>
@@ -108,7 +113,7 @@ function toggleSidePanel() {
 
     <!-- main section -->
     <div
-      id="center"
+      :ref="(el) => layoutRefBinder('center', el)"
       class="flex h-full w-full overflow-y-scroll"
       @wheel="handleWheelEvent($event, 'center')"
       @scroll="
@@ -120,13 +125,15 @@ function toggleSidePanel() {
     >
       <div
         class="h-max w-full pb-32 md:w-5/6 md:pb-14 xl:w-5/8 2xl:w-7/12"
-        :class="props.userPage
-          ? ''
-          : $slots.title && $slots.nav
-          ? 'pt-24 md:pt-28'
-          : 'pt-12 md:pt-14',
-        $slots.nav ? 'border-t-2 border-transparent': ''
-      ">
+        :class="[
+          props.userPage
+            ? ''
+            : $slots.title && $slots.nav
+              ? 'pt-24 md:pt-28'
+              : 'pt-12 md:pt-14',
+          $slots.nav ? 'border-t-2 border-transparent' : '',
+        ]"
+      >
         <slot name="main" />
       </div>
       <!-- right panel -->

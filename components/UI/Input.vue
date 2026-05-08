@@ -6,7 +6,7 @@ const props = defineProps([
   "inputOverwrite",
   "firstEdit",
 ]);
-const { id, type, flag, inputOverwrite, firstEdit } = toRefs(props);
+const { id, type, flag } = toRefs(props);
 const text = defineModel("text");
 // const flag = defineModel('flag');
 const emit = defineEmits(["update:text", "edited", "updateValid"]);
@@ -35,7 +35,7 @@ watch(text, (curVal) => {
   if (curVal) inputFocusFlag.value = true;
 
   if (type.value == "email") {
-    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(curVal)) {
+    if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(curVal)) {
       inputValidFlag.value = false;
     } else {
       inputValidFlag.value = true;
@@ -70,8 +70,10 @@ const inputFocusInClass = "text-xl md:text-2xl pt-1";
 const inputFocusOutClass = ["text-2xl", "md:text-3xl", "pt-4", "md:pt-5"];
 
 const inputFocusFlag = ref(false);
+const inputEl = ref(null);
+
 function inputFocusIn() {
-  document.getElementById(id.value).focus();
+  inputEl.value?.focus?.();
   inputFocusFlag.value = true;
 }
 function inputFocusOut() {
@@ -86,10 +88,10 @@ function inputFocusOut() {
 <template>
   <div
     tabindex="0"
-    @focusin="inputFocusIn"
-    @focusout="inputFocusOut"
     class="grid h-16 w-full grid-cols-1 grid-rows-1 overflow-hidden rounded-md border-2 transition-all md:h-20"
     :class="inputValidFlag ? inputValidClass : inputInvalidClass"
+    @focusin="inputFocusIn"
+    @focusout="inputFocusOut"
   >
     <div
       class="z-10 col-start-1 row-start-1 h-full w-max px-2 text-zinc-500 transition-all"
@@ -99,12 +101,13 @@ function inputFocusOut() {
     </div>
     <div class="col-start-1 row-start-1 h-full w-full p-1 pt-8">
       <input
-        :type="type"
         :id="id"
+        ref="inputEl"
         v-model="text"
-        @keydown="stopInputOverwrite"
+        :type="type"
         class="h-full w-full rounded-sm !bg-transparent px-1 text-xl text-zinc-200 focus:outline focus:outline-transparent sm:text-2xl md:text-3xl"
-      />
+        @keydown="stopInputOverwrite"
+      >
     </div>
   </div>
 </template>

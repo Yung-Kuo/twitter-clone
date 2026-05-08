@@ -23,13 +23,8 @@ async function signInAnonymously() {
       console.error("Supabase Error:", error);
       errorMsg.value = "Sign-in failed. Please try again.";
     } else if (data) {
-      console.log("Supabase Data:", data);
-      console.log("Redirecting to /");
       router.push("/");
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      console.log("Supabase Session:", session);
+      await supabase.auth.getSession();
     }
   } catch (err) {
     console.error("Unexpected Error:", err);

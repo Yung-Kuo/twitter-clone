@@ -14,11 +14,11 @@ const post = computed(() => postStore.getPost(pid.value));
   <UIPopupDraft @close="emit('close')">
     <template #center>
       <!-- replying post -->
-      <MainPostReply v-bind="post"></MainPostReply>
+      <MainPostReply v-bind="post"/>
       <!-- reply -->
       <div class="flex">
         <div class="h-min w-min">
-          <UIAvatar :user_id="user.id" size="small"></UIAvatar>
+          <UIAvatar :user_id="user.id" size="small"/>
         </div>
         <div class="grow">
           <UITextarea v-model="reply" placeholder="Post your reply" />
@@ -29,7 +29,7 @@ const post = computed(() => postStore.getPost(pid.value));
     <template #button>
       <!-- action buttons -->
       <div class="flex justify-between">
-        <div></div>
+        <div/>
         <UIButton
           color="blue"
           :solid="true"

@@ -1,41 +1,40 @@
 export default function () {
   const postStore = usePostStore();
   const target_post = ref(null);
-  // process click post noForward
+
   async function clickPost(event) {
-    const element = ref(null);
-    element.value = event.target;
-    while (element.value && element.value !== document.body) {
-      if (element?.value.classList.contains("noForward")) return;
-      else if (element?.value.classList.contains(target_post.value.id)) break;
-      element.value = element.value.parentElement;
+    let el = event.target;
+    while (el?.parentElement) {
+      if (el?.classList?.contains("noForward")) return;
+      else if (el?.classList?.contains(target_post.value.id)) break;
+      el = el.parentElement;
     }
     navigateTo(
       `/${postStore.getUsername(target_post.value.user_id)}/post/${
         target_post.value.id
-      }`
+      }`,
     );
   }
+
   function hoverPost(event) {
-    const element = ref(null);
-    element.value = event.target;
-    while (element.value && element.value !== document.body) {
-      if (element.value.classList.contains(target_post.value?.id)) {
-        element.value.classList.add(
+    let element = event.target;
+    while (element?.parentElement) {
+      if (element.classList?.contains(target_post.value?.id)) {
+        element.classList.add(
           "bg-zinc-800",
           "bg-opacity-30",
           "ring-1",
-          "ring-zinc-800"
+          "ring-zinc-800",
         );
-      } else if (element.value.classList.contains("stopHere")) {
-        element.value.classList.remove(
+      } else if (element.classList.contains("stopHere")) {
+        element.classList.remove(
           "bg-zinc-800",
           "bg-opacity-30",
           "ring-1",
-          "ring-zinc-800"
+          "ring-zinc-800",
         );
       }
-      element.value = element.value.parentElement;
+      element = element.parentElement;
     }
   }
 

@@ -16,7 +16,7 @@ onMounted(async () => {
 });
 
 async function signOut() {
-  const { error } = await client.auth.signOut();
+  await client.auth.signOut();
   profileStore.clearProfile();
   postStore.clearBookmarks();
   replyStore.clearReplies();
@@ -45,12 +45,12 @@ async function signOut() {
       <div>
         <!-- following -->
         <span class="text-zinc-200"
-          >{{ followingStore.getFollowing(user.id)?.length }}&nbsp</span
+          >{{ followingStore.getFollowing(user.id)?.length }}&nbsp;</span
         >
         <span class="pr-5 text-zinc-500">Following</span>
         <!-- follower -->
         <span class="text-zinc-200"
-          >{{ followingStore.getFollowers(user.id)?.length }}&nbsp</span
+          >{{ followingStore.getFollowers(user.id)?.length }}&nbsp;</span
         >
         <span class="text-zinc-500">Follower</span>
       </div>
@@ -74,7 +74,7 @@ async function signOut() {
       </MainMenuEntry>
     </NuxtLink>
     <!-- space filler -->
-    <div class="grow"></div>
+    <div class="grow"/>
     <!-- logout -->
     <MainMenuEntry @mousedown="signOut()">
       <template #smMenu>
@@ -83,6 +83,6 @@ async function signOut() {
       <template #title>Logout</template>
     </MainMenuEntry>
     <!-- space filler -->
-    <div class="grow"></div>
+    <div class="grow"/>
   </div>
 </template>

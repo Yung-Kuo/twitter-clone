@@ -1,8 +1,7 @@
 import { useFollowingStore } from "~/stores/following";
 import { useReplyStore } from "~/stores/reply";
-export const usePostStore = defineStore({
-  id: "post",
-  // pinia store to upload and download personal post
+// pinia store to upload and download personal post
+export const usePostStore = defineStore("post", {
   state: () => ({
     // posts: [], // all posts or following
     userPosts: {}, // user's posts
@@ -191,11 +190,11 @@ export const usePostStore = defineStore({
           const newPostAddress = `/${this.getUsername(user.value.id)}/post/${
             data.id
           }`;
-          // console.log(newPostAddress);
+          // console.error(newPostAddress);
           return newPostAddress;
         }
       } catch (error) {
-        console.log(`error message: ${error.message}`);
+        console.error(`error message: ${error.message}`);
         return false;
       }
     },
@@ -210,7 +209,6 @@ export const usePostStore = defineStore({
           .single();
         if (error) throw error;
         if (data) {
-          console.log("data: ", data);
           this.allPosts.set(data.id, data);
           // if this is a reply
           if (data.type === "reply" && data.reply_to) {
@@ -220,7 +218,7 @@ export const usePostStore = defineStore({
           return true;
         }
       } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
         return false;
       }
     },
@@ -231,7 +229,6 @@ export const usePostStore = defineStore({
       const client = useSupabaseClient();
       const user = useSupabaseUser();
       try {
-        console.log("run delete post!!!");
         const { error } = await client.from("posts").delete().match({
           id: pid,
           user_id: user.value.id,
@@ -244,7 +241,7 @@ export const usePostStore = defineStore({
           return true;
         }
       } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
         return false;
       }
     },
@@ -295,7 +292,7 @@ export const usePostStore = defineStore({
         }
         if (error) throw error;
       } catch (error) {
-        console.log("error: ", error.message);
+        console.error("error: ", error.message);
       }
     },
     async fetchAllPosts() {
@@ -314,7 +311,7 @@ export const usePostStore = defineStore({
         }
         if (error) throw error;
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     },
     async fetchFollowingPosts() {
@@ -351,7 +348,7 @@ export const usePostStore = defineStore({
           }
           if (error) throw error;
         } catch (error) {
-          console.log("error: ", error);
+          console.error("error: ", error);
         }
       }
     },
@@ -378,7 +375,7 @@ export const usePostStore = defineStore({
         }
         if (error) throw error;
       } catch (error) {
-        console.log("error: ", error);
+        console.error("error: ", error);
       }
     },
     async fetchQuotes(pid) {
@@ -409,7 +406,7 @@ export const usePostStore = defineStore({
         }
         if (error) throw error;
       } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
       }
     },
     async fetchReposts(pid) {
@@ -440,7 +437,7 @@ export const usePostStore = defineStore({
         }
         if (error) throw error;
       } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
       }
     },
     async fetchRepostCount(pid) {
@@ -455,7 +452,7 @@ export const usePostStore = defineStore({
         if (count) this.repostCount[pid] = count;
         if (error) throw error;
       } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
       }
     },
     async downloadAvatar(uid, url) {
@@ -470,9 +467,9 @@ export const usePostStore = defineStore({
           if (error) throw error;
           this.userAvatars[uid] = URL.createObjectURL(data);
         } catch (error) {
-          console.log(error.message);
+          console.error(error.message);
         } finally {
-          // console.log(this.userAvatars[uid]);
+          // console.error(this.userAvatars[uid]);
         }
       }
     },
@@ -487,7 +484,7 @@ export const usePostStore = defineStore({
         }
         if (error) throw error;
       } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
       }
     },
     async fetchUserProfile(uid) {
@@ -501,9 +498,9 @@ export const usePostStore = defineStore({
             .single();
           if (error) throw error;
           this.userProfile[uid] = data;
-          // console.log("userProfile: ", this.userProfile[uid]);
+          // console.error("userProfile: ", this.userProfile[uid]);
         } catch (error) {
-          console.log(error.message);
+          console.error(error.message);
         }
       }
     },
@@ -529,7 +526,7 @@ export const usePostStore = defineStore({
         }
         if (error) throw error;
       } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
       }
     },
     async unbookmarkPost(pid) {
@@ -548,7 +545,7 @@ export const usePostStore = defineStore({
           if (this.bookmarkCount[pid]) this.bookmarkCount[pid] -= 1;
         }
       } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
       }
     },
     async fetchBookmarks() {
@@ -560,11 +557,11 @@ export const usePostStore = defineStore({
           .select("post_id")
           .eq("user_id", user.value.id)
           .order("created_at", { ascending: false });
-        // console.log("fetchBookmarks: ", data.value);
+        // console.error("fetchBookmarks: ", data.value);
         if (data) this.bookmarks = data;
         if (error) throw error;
       } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
       }
     },
     async fetchBookmarkPosts() {
@@ -583,7 +580,7 @@ export const usePostStore = defineStore({
           .select()
           .in("id", map)
           .order("created_at", { ascending: false });
-        // console.log("fetchBookmarkPosts: ", data.value);
+        // console.error("fetchBookmarkPosts: ", data.value);
         if (data) {
           for (const post of data) {
             if (!this.allPosts.has(post.id)) {
@@ -600,7 +597,7 @@ export const usePostStore = defineStore({
         }
         if (error) throw error;
       } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
       }
     },
     async fetchBookmarkCount(pid) {
@@ -614,7 +611,7 @@ export const usePostStore = defineStore({
           this.bookmarkCount[pid] = count;
           if (error) throw error;
         } catch (error) {
-          console.log(error.message);
+          console.error(error.message);
         }
       }
     },
@@ -631,13 +628,14 @@ export const usePostStore = defineStore({
           .select("post_id")
           .single();
         if (data) {
+          if (!this.likes[user.value.id]) this.likes[user.value.id] = [];
           this.likes[user.value.id].unshift(data);
           if (this.likeCount[pid]) this.likeCount[pid] += 1;
           else this.likeCount[pid] = 1;
         }
         if (error) return error;
       } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
       }
     },
     async unlikePost(pid) {
@@ -650,13 +648,14 @@ export const usePostStore = defineStore({
         });
         if (error) return error;
         else {
+          if (!this.likes[user.value.id]) this.likes[user.value.id] = [];
           this.likes[user.value.id] = this.likes[user.value.id].filter(
             (like) => like.post_id !== pid
           );
           if (this.likeCount[pid]) this.likeCount[pid] -= 1;
         }
       } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
       }
     },
     async fetchLikes(uid) {
@@ -671,7 +670,7 @@ export const usePostStore = defineStore({
         if (data) this.likes[uid] = data;
         if (error) throw error;
       } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
       }
     },
     async fetchLikePosts(uid) {
@@ -707,7 +706,7 @@ export const usePostStore = defineStore({
         }
         if (error) throw error;
       } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
       }
     },
     async fetchLikeCount(pid) {
@@ -721,7 +720,7 @@ export const usePostStore = defineStore({
           this.likeCount[pid] = count;
           if (error) throw error;
         } catch (error) {
-          console.log(error.message);
+          console.error(error.message);
         }
       }
     },
@@ -742,7 +741,7 @@ export const usePostStore = defineStore({
         }
         if (error) throw error;
       } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
       }
     },
     clearBookmarks() {

@@ -1,40 +1,54 @@
 export default function () {
-  // collection of composables
+  const scrollChrome = reactive({
+    bottomMuted: false,
+    bannerLift: null,
+  });
+  provide("scrollChrome", scrollChrome);
 
-  // error
-  const { alertMode, alertMessage, errorTimeout, hasError } = useAlert();
+  const mainPageShifted = ref(false);
+  provide("mainPageShifted", mainPageShifted);
+
+  const layoutRefs = {
+    center: shallowRef(null),
+    right: shallowRef(null),
+    bottom: shallowRef(null),
+    banner: shallowRef(null),
+  };
+  provide("layoutRefs", layoutRefs);
+
+  const { alertMode, alertMessage, hasError } = useAlert();
   provide("useAlert", { alertMode, alertMessage, hasError });
 
-  // wheel sync
-  const { handleWheelEvent } = useWheelSync();
+  const { handleWheelEvent } = useWheelSync(layoutRefs);
   provide("handleWheelEvent", handleWheelEvent);
 
-  // scroll
-  const { handleScroll } = useScroll();
+  const { handleScroll } = useScroll(layoutRefs, scrollChrome);
   provide("handleScroll", handleScroll);
 
-  // profile card
   const {
     profileCardVis,
-    hoveredElement,
     hoveredUserId,
     getRect,
     showProfileCard,
     hideProfileCard,
-  } = useProfileCard();
+    bindProfileCard,
+    profileCardStyle,
+  } = useProfileCard(layoutRefs);
   provide("useProfileCard", {
     profileCardVis,
-    hoveredElement,
     hoveredUserId,
     getRect,
     showProfileCard,
     hideProfileCard,
+    bindProfileCard,
+    profileCardStyle,
   });
   provide("profileCard", { showProfileCard, hideProfileCard });
   provide("getRect", getRect);
+  provide("profileCardStyle", profileCardStyle);
+  provide("bindProfileCard", bindProfileCard);
   provide("profileCardVis", { profileCardVis, hoveredUserId });
 
-  // toggle menu
   const {
     showMenu,
     menu_pid,
@@ -42,14 +56,24 @@ export default function () {
     toggleMenu,
     handleClickOutside,
     menuGetRect,
-  } = useToggleMenu();
+    bindMenuElement,
+    menuPlacementClass,
+    accountMenuStyle,
+  } = useToggleMenu(layoutRefs);
+  provide("bindMenuElement", bindMenuElement);
   provide("handleClickOutside", handleClickOutside);
+  provide("menuPlacementClass", menuPlacementClass);
+  provide("accountMenuStyle", accountMenuStyle);
   provide("toggleMenu", toggleMenu);
   provide("menuGetRect", menuGetRect);
   provide("togglePostMenu", { showMenu, menu_pid, type, toggleMenu });
-  provide("toggleAccountMenu", { showMenu, type, toggleMenu, menuGetRect });
+  provide("toggleAccountMenu", {
+    showMenu,
+    type,
+    toggleMenu,
+    menuGetRect,
+  });
 
-  // write post & quote
   const {
     showPopupPost,
     newPost,
@@ -69,12 +93,10 @@ export default function () {
   provide("showPopupPost", showPopupPost);
   provide("repost_pid", repost_pid);
 
-  // reply
   const { showPopupReply, pid, clickReply, publishReply } = useReply();
   provide("clickReply", clickReply);
   provide("popupReply", { pid, publishReply });
 
-  // edit
   const { showPopupEdit, editPost, newText, selectEditPost, publishEdit } =
     useEdit();
   provide("useEdit", {
@@ -86,11 +108,9 @@ export default function () {
   });
   provide("selectEditPost", selectEditPost);
 
-  // click post
   const { target_post, clickPost, hoverPost } = useClickPost();
   provide("clickPost", { target_post, clickPost, hoverPost });
 
-  // for collection
   provide("useCollection", {
     profileCardVis,
     hoveredUserId,

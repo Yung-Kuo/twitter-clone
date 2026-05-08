@@ -12,11 +12,11 @@
       <!-- corner & edge slope -->
       <div
         class="z-10 col-start-1 row-start-1 hidden h-[calc(100%-0.75em)] w-[calc(100%-0.25em)] rounded-md bg-zinc-300 bg-opacity-60 transition-all md:flex md:group-hover:bg-opacity-80"
-      ></div>
+      />
       <!-- side -->
       <div
         class="col-start-1 row-start-1 hidden h-full w-full bg-zinc-500 transition-all md:flex md:rounded-[0.375em_0.65em_0.375em_0.75em/0.375em_1.125em_0.375em_1.125em] md:group-hover:bg-zinc-400 md:group-hover:bg-opacity-90 md:group-hover:shadow-lg md:group-hover:shadow-zinc-300 md:group-active:group-hover:shadow-md md:group-active:group-hover:shadow-zinc-300"
-      ></div>
+      />
     </div>
   </div>
 </template>

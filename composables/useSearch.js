@@ -3,7 +3,6 @@ export default function () {
 
   function toggleSearch() {
     showSearch.value = !showSearch.value;
-    console.log("toggle search", showSearch.value);
   }
 
   return {

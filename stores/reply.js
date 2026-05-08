@@ -1,6 +1,5 @@
 import { usePostStore } from "~/stores/post";
-export const useReplyStore = defineStore({
-  id: "reply",
+export const useReplyStore = defineStore("reply", {
   state: () => ({
     allReply: new Map(),
     postReplyId: {},
@@ -84,7 +83,7 @@ export const useReplyStore = defineStore({
         }
         if (error) throw error;
       } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
         return false;
       }
     },
@@ -96,7 +95,7 @@ export const useReplyStore = defineStore({
       this.allReply.delete(pid);
       this.postReplyId[pid] = [];
       this.postReplyId[reply_to] = this.postReplyId[reply_to].filter(
-        (replyId) => replyId !== pid
+        (replyId) => replyId !== pid,
       );
       if (this.authorHasReplied[reply_to] === pid) {
         this.authorHasReplied[reply_to] = null;
@@ -123,7 +122,7 @@ export const useReplyStore = defineStore({
           }
           if (error) throw error;
         } catch (error) {
-          console.log(error.message);
+          console.error(error.message);
         }
       }
     },
@@ -143,7 +142,7 @@ export const useReplyStore = defineStore({
         }
         if (error) throw error;
       } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
       }
     },
     setReplies(data) {
@@ -167,7 +166,7 @@ export const useReplyStore = defineStore({
           }
           if (error) throw error;
         } catch (error) {
-          console.log(error.message);
+          console.error(error.message);
         }
       }
     },
@@ -186,7 +185,9 @@ export const useReplyStore = defineStore({
           if (data.length) this.userHasReplied[pid] = true;
           else this.userHasReplied[pid] = false;
           if (error) throw error;
-        } catch (error) {}
+        } catch (error) {
+          console.error(error?.message ?? error);
+        }
       }
     },
     async fetchAuthorReplyStatus(pid) {
@@ -213,7 +214,9 @@ export const useReplyStore = defineStore({
             // return data[0].id;
           }
           if (error) throw error;
-        } catch (error) {}
+        } catch (error) {
+          console.error(error?.message ?? error);
+        }
       }
     },
     clearReplies() {

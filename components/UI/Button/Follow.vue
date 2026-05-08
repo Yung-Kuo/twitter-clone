@@ -8,12 +8,15 @@ const following_hover = ref(false);
 <template>
   <div v-if="props?.uid" class="min-w-max">
     <!-- self -->
-    <NuxtLink to="/profile" v-if="props.uid === user.id">
+    <NuxtLink v-if="props.uid === user.id" to="/profile">
       <UIButton color="white"> Edit Profile </UIButton>
     </NuxtLink>
     <!-- other user -->
     <UIButton
       v-else
+      color="white"
+      :solid="!followingStore.getFollowingStatus(props?.uid)"
+      :turn-red="followingStore.getFollowingStatus(props?.uid)"
       @click="
         followingStore.getFollowingStatus(props.uid)
           ? followingStore.unfollowUser(props.uid)
@@ -21,9 +24,6 @@ const following_hover = ref(false);
       "
       @mouseenter="following_hover = true"
       @mouseleave="following_hover = false"
-      color="white"
-      :solid="!followingStore.getFollowingStatus(props?.uid)"
-      :turnRed="followingStore.getFollowingStatus(props?.uid)"
     >
       <!-- already followed -->
       <div

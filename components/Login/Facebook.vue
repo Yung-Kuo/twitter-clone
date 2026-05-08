@@ -2,13 +2,13 @@
 const config = useRuntimeConfig();
 const supabase = useSupabaseClient();
 async function signInWithFacebook() {
-  const { data, error } = await supabase.auth.signInWithOAuth({
+  const { error } = await supabase.auth.signInWithOAuth({
     provider: "facebook",
     options: {
       redirectTo: `${config.public.baseURL}/confirm`,
     },
   });
-  if (error) console.log(error);
+  if (error) console.error(error);
 }
 </script>
 <template>

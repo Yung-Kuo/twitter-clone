@@ -2,14 +2,13 @@
 const config = useRuntimeConfig();
 const supabase = useSupabaseClient();
 async function signInWithGithub() {
-  const { data, error } = await supabase.auth.signInWithOAuth({
+  const { error } = await supabase.auth.signInWithOAuth({
     provider: "github",
     options: {
       redirectTo: `${config.public.baseURL}/confirm`,
     },
   });
-  if (error) console.log(error);
-  if (data) console.log(data);
+  if (error) console.error(error);
 }
 </script>
 <template>

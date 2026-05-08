@@ -10,15 +10,12 @@ export default function () {
 
   // post
   async function publishPost() {
-    const temp = newPost.value;
-    newPost.value = newPost.value.trim();
-    if (newPost.value) newPost.value = temp;
-    if (!newPost.value) {
-      console.log("empty!");
+    const trimmed = newPost.value.trim();
+    if (!trimmed) {
       return;
     }
     const address = await postStore.uploadPost({
-      text: newPost.value,
+      text: trimmed,
       pictures: [],
       reply_to: null,
       type: "post",
@@ -44,7 +41,6 @@ export default function () {
     if (address) {
       newPost.value = "";
       repost_pid.value = "";
-      console.log("address: ", address);
       // navigate to post page if not at home page
       if (
         route.fullPath !== "/" &&
@@ -63,7 +59,6 @@ export default function () {
     if (address) {
       newPost.value = "";
       repost_pid.value = "";
-      console.log("address: ", address);
       // navigate to post page if not at home page
       if (
         route.fullPath !== "/" &&

@@ -13,22 +13,24 @@ const user = useSupabaseUser();
 const handleClickOutside = inject("handleClickOutside");
 const showPopupPost = inject("showPopupPost");
 
-onMounted(async () => {
-  watchEffect(async () => {
-    if (!user.value) {
-      navigateTo("/login");
-    }
-  });
-  watchEffect(async () => {
-    if (profileStore.noProfile) {
-      await profileStore.fetchProfile();
-    }
-  });
-  watchEffect(async () => {
-    await postStore.fetchLikes(user.value.id);
-    await postStore.fetchBookmarks();
-    await postStore.fetchBookmarkPosts();
-  });
+watchEffect(() => {
+  if (!user.value) {
+    navigateTo("/login");
+  }
+});
+
+watchEffect(async () => {
+  if (profileStore.noProfile) {
+    await profileStore.fetchProfile();
+  }
+});
+
+watchEffect(async () => {
+  const id = user.value?.id;
+  if (!id) return;
+  await postStore.fetchLikes(id);
+  await postStore.fetchBookmarks();
+  await postStore.fetchBookmarkPosts();
 });
 
 const bookmarkList = computed(() => postStore.getBookmarkPosts);
@@ -39,13 +41,13 @@ const bookmarkList = computed(() => postStore.getBookmarkPosts);
     <UIPopupCollection />
 
     <!-- layout -->
-    <MainLeft @popupPost="showPopupPost = !showPopupPost" />
+    <MainLeft @popup-post="showPopupPost = !showPopupPost" />
     <MainBottom />
     <MainCenter>
       <template #title>Bookmarks</template>
       <template #subtitle>@{{ postStore.getUsername(user.id) }}</template>
       <template #main>
-        <LazyMainPostList :postList="bookmarkList" />
+        <LazyMainPostList :post-list="bookmarkList" />
       </template>
     </MainCenter>
     <!-- <MainRight /> -->

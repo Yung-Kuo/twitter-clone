@@ -26,20 +26,20 @@ onMounted(async () => {
     <UIPopupCollection />
 
     <!-- layout -->
-    <MainLeft @popupPost="showPopupPost = true" />
+    <MainLeft @popup-post="showPopupPost = true" />
     <MainBottom />
     <MainCenter>
       <template #title>Post engagements</template>
       <template #nav>
         <!-- Quotes -->
         <UINavTab
-          :isActive="activeTab === 'Quotes'"
+          :is-active="activeTab === 'Quotes'"
           @mousedown="activeTab = 'Quotes'"
           >Quotes</UINavTab
         >
         <!-- Reposts -->
         <UINavTab
-          :isActive="activeTab === 'Reposts'"
+          :is-active="activeTab === 'Reposts'"
           @mousedown="activeTab = 'Reposts'"
           >Reposts</UINavTab
         >

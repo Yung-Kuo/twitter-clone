@@ -23,10 +23,10 @@ const small = "h-8 w-8 text-xl";
 const smallPlus = "h-10 w-10 text-2xl";
 const medium = "h-12 w-12 text-2xl";
 const large = "h-14 w-14 text-2xl";
-const size = ref(medium);
+const sizeClass = ref(medium);
 // color
-const color = ref(gray);
 const gray = "md:hover:bg-zinc-900 active:bg-zinc-800";
+const colorClass = ref(gray);
 const red =
   "md:hover:bg-opacity-10 md:hover:bg-pink-600 md:hover:text-pink-600 md:active:bg-opacity-20";
 const red_clicked =
@@ -41,12 +41,12 @@ const blue_clicked =
   "md:hover:bg-opacity-10 md:hover:bg-sky-500 text-sky-500 md:active:bg-opacity-20";
 onMounted(() => {
   // size
-  if (!props.size) size.value = medium;
-  else if (props.size === "xsmall") size.value = xsmall;
-  else if (props.size === "small") size.value = small;
-  else if (props.size === "smallPlus") size.value = smallPlus;
-  else if (props.size === "medium") size.value = medium;
-  else if (props.size === "large") size.value = large;
+  if (!props.size) sizeClass.value = medium;
+  else if (props.size === "xsmall") sizeClass.value = xsmall;
+  else if (props.size === "small") sizeClass.value = small;
+  else if (props.size === "smallPlus") sizeClass.value = smallPlus;
+  else if (props.size === "medium") sizeClass.value = medium;
+  else if (props.size === "large") sizeClass.value = large;
   // color
   changeColor();
 });
@@ -59,25 +59,25 @@ watch(
   () => changeColor()
 );
 function changeColor() {
-  if (props.noHover) color.value = null;
+  if (props.noHover) colorClass.value = null;
   else if (props.color === "gray") {
-    color.value = gray;
+    colorClass.value = gray;
   } else if (props.color === "red") {
-    if (props.clicked) color.value = red_clicked;
-    else color.value = red;
+    if (props.clicked) colorClass.value = red_clicked;
+    else colorClass.value = red;
   } else if (props.color === "green") {
-    if (props.clicked) color.value = green_clicked;
-    else color.value = green;
+    if (props.clicked) colorClass.value = green_clicked;
+    else colorClass.value = green;
   } else if (props.color === "blue") {
-    if (props.clicked) color.value = blue_clicked;
-    else color.value = blue;
+    if (props.clicked) colorClass.value = blue_clicked;
+    else colorClass.value = blue;
   }
 }
 </script>
 <template>
   <div
     class="flex cursor-pointer items-center justify-center rounded-full transition-all"
-    :class="[size, color]"
+    :class="[sizeClass, colorClass]"
   >
     <slot />
   </div>

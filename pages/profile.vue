@@ -10,89 +10,52 @@ const user = useSupabaseUser();
 const store = useProfileStore();
 const postStore = usePostStore();
 const { getError } = storeToRefs(store);
-const { alertMode, alertMessage, errorTimeout, hasError } = useAlert();
-
-// wheel sync
-const { handleWheelEvent } = useWheelSync();
-provide("handleWheelEvent", handleWheelEvent);
-// scroll
-const { handleScroll } = useScroll();
-provide("handleScroll", handleScroll);
-
-// profile card
+const { alertMode, alertMessage, hasError } = inject("useAlert");
+const handleClickOutside = inject("handleClickOutside");
 const {
   profileCardVis,
-  hoveredElement,
   hoveredUserId,
-  getRect,
   showProfileCard,
   hideProfileCard,
-} = useProfileCard();
-provide("profileCard", { showProfileCard, hideProfileCard });
-provide("getRect", getRect);
+  bindProfileCard,
+  profileCardStyle,
+} = inject("useProfileCard");
 
-// post action menu / repost menu
-const {
-  showMenu,
-  menu_pid,
-  menu_uid,
-  type,
-  icon_id,
-  toggleMenu,
-  handleClickOutside,
-  menuGetRect,
-} = useToggleMenu();
-provide("useToggleMenu", {
-  showMenu,
-  menu_pid,
-  menu_uid,
-  type,
-  icon_id,
-  toggleMenu,
-  handleClickOutside,
-  menuGetRect,
+const userProfile = reactive({});
+const firstEdit = ref(false);
+
+watchEffect(() => {
+  if (!user.value) {
+    navigateTo("/login");
+  }
 });
-provide("toggleMenu", toggleMenu);
-provide("menuGetRect", menuGetRect);
-provide("toggleAccountMenu", { showMenu, type, toggleMenu, menuGetRect });
 
-onMounted(async () => {
-  watchEffect(async () => {
-    if (!user.value) {
-      navigateTo("/login");
+watchEffect(async () => {
+  if (store.noProfile) {
+    await store.fetchProfile();
+    if (getError.value) {
+      alertMode.value = "error";
+      alertMessage.value = getError.value;
+      hasError();
     }
-    if (store.noProfile) {
-      await store.fetchProfile();
-      if (getError.value) {
-        alertMode.value = "error";
-        alertMessage.value = getError.value;
-        hasError();
-      }
-    }
-  });
-  Object.assign(userProfile, store.getProfile);
+  }
+});
+
+onMounted(() => {
+  if (store.getProfile) {
+    Object.assign(userProfile, store.getProfile);
+  }
   if (!userProfile.username) firstEdit.value = true;
 });
 
-// const userProfile = computed(() => store.getProfile);
-const userProfile = reactive({});
-const firstEdit = ref(false);
 watch(userProfile, (curVal) => {
-  console.log("username, firstEdit ", curVal.username, firstEdit.value);
   if (curVal.first_name || curVal.last_name) {
-    // When there's a first_name or last_name
     if (firstEdit.value) {
-      console.log("fl auto");
-      // When user edit username for the first time
       curVal.username = curVal.first_name + "_" + curVal.last_name;
     }
   } else if (!curVal.username && !curVal.first_name && !curVal.last_name) {
-    console.log("all empty");
-    // When all fields are empty
     firstEdit.value = true;
   } else if (firstEdit.value) {
-    console.log("first edit empty");
-    // During first edit, when user empty the first&last name field, empty the username field.
     curVal.username = "";
   }
 });
@@ -120,17 +83,14 @@ function onFileSelected(event) {
   }
 }
 async function onUpload() {
-  console.log("filePath: ", filePath.value);
   await store.uploadAvatar(file.value, filePath.value);
   if (getError.value) {
-    console.log("onUpload error");
     alertMode.value = "error";
     alertMessage.value = getError.value;
     hasError();
   } else {
     old_avatar_url.value = userProfile.avatar_url;
     userProfile.avatar_url = filePath.value;
-    console.log("userProfile.avatar_url: ", userProfile.avatar_url);
     files.value = null;
     file.value = null;
     fileExt.value = null;
@@ -140,11 +100,8 @@ async function onUpload() {
 
 async function updateProfile() {
   if (file.value && filePath.value) {
-    console.log(`old avatar_url is ${userProfile.avatar_url}`);
     await onUpload();
-    console.log(`new avatar_url is ${userProfile.avatar_url}`);
   }
-  console.log("userProfile: ", userProfile);
   await store.updateProfile(userProfile);
   await postStore.downloadAvatar(userProfile.id, userProfile.avatar_url);
   if (getError.value) {
@@ -156,7 +113,6 @@ async function updateProfile() {
       store.deleteOldAvatar(old_avatar_url.value);
       old_avatar_url.value = null;
     }
-    // userProfile.value = store.getProfile;
     Object.assign(userProfile, store.getProfile);
     alertMode.value = "notify";
     alertMessage.value = "Your profile has been updated!";
@@ -190,16 +146,16 @@ const buttonActiveFlag = computed(() => {
       <UIPopupTransition leave-active-class="delay-200">
         <UIPopupProfileCard
           v-show="profileCardVis"
-          id="profileCard"
-          :userId="hoveredUserId"
+          :ref="bindProfileCard"
+          :style="profileCardStyle"
+          :user-id="hoveredUserId"
           @mouseenter="showProfileCard(null, null)"
           @mouseleave="hideProfileCard()"
-        >
-        </UIPopupProfileCard>
+        />
       </UIPopupTransition>
     </div>
     <!-- navigation -->
-    <MainLeft></MainLeft>
+    <MainLeft/>
     <MainCenter>
       <template #title>Edit Profile</template>
       <template #main>
@@ -213,7 +169,7 @@ const buttonActiveFlag = computed(() => {
                     :file="src"
                     :user_id="userProfile?.id"
                     size="large"
-                  ></UIAvatar>
+                  />
                 </div>
                 <div
                   class="z-10 col-start-1 row-start-1 rounded-full transition-all hover:bg-slate-900 hover:bg-opacity-60"
@@ -222,16 +178,16 @@ const buttonActiveFlag = computed(() => {
                     <span
                       class="flex h-full w-full cursor-pointer items-center justify-center text-transparent transition-all hover:text-white"
                     >
-                      <IconsEdit class="text-4xl"></IconsEdit>
+                      <IconsEdit class="text-4xl"/>
                     </span>
                     <input
-                      type="file"
                       id="avatar"
+                      type="file"
                       name="avatar"
                       accept=".jpg, .jpeg, .png"
-                      @change="onFileSelected"
                       class="hidden"
-                    />
+                      @change="onFileSelected"
+                    >
                   </label>
                 </div>
               </div>
@@ -239,40 +195,30 @@ const buttonActiveFlag = computed(() => {
             <!-- first_name -->
             <UIInput
               id="first_name"
-              type="text"
               v-model:text="userProfile.first_name"
+              type="text"
               :flag="first_nameValidFlag"
-              @updateValid="(value) => (first_nameValidFlag = value)"
+              @update-valid="(value) => (first_nameValidFlag = value)"
               >First Name
             </UIInput>
             <!-- last_name -->
             <UIInput
               id="last_name"
-              type="text"
               v-model:text="userProfile.last_name"
+              type="text"
               :flag="last_nameValidFlag"
-              @updateValid="
-                (value) => (
-                  (last_nameValidFlag = value),
-                  console.log('lastNameValidFlag: ', !!value)
-                )
-              "
+              @update-valid="(value) => (last_nameValidFlag = value)"
               >Last Name</UIInput
             >
             <!-- username -->
             <UIInput
               id="username"
-              type="text"
               v-model:text="userProfile.username"
-              :firstEdit="firstEdit"
-              @edited="firstEdit = false"
+              type="text"
+              :first-edit="firstEdit"
               :flag="usernameValidFlag"
-              @updateValid="
-                (value) => (
-                  (usernameValidFlag = value),
-                  console.log('usernameValidFlag: ', !!value)
-                )
-              "
+              @edited="firstEdit = false"
+              @update-valid="(value) => (usernameValidFlag = value)"
               >Username</UIInput
             >
             <!-- description -->
@@ -280,7 +226,7 @@ const buttonActiveFlag = computed(() => {
             <div
               class="no-wheel-sync flex max-h-[20em] min-h-[8em] grow flex-col overflow-y-scroll rounded-md border-2 border-zinc-600 transition-all focus-within:border-sky-500 focus-within:ring-1 focus-within:ring-sky-500"
             >
-              <UITextarea v-model="userProfile.description" forProfile />
+              <UITextarea v-model="userProfile.description" for-profile />
             </div>
             <!-- Update Profile -->
             <UIButton

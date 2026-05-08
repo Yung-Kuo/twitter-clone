@@ -1,11 +1,11 @@
 <script setup>
+import { useProfileStore } from "~/stores/profile";
+import { usePostStore } from "~/stores/post";
 useSeoMeta({
   title: "Twitter Clone",
   description:
     "This is a Twitter Clone built by Yung Kuo Using Nuxt and Supabase.",
 });
-import { useProfileStore } from "~/stores/profile";
-import { usePostStore } from "~/stores/post";
 definePageMeta({
   middleware: ["auth"],
 });
@@ -14,33 +14,43 @@ const store = useProfileStore();
 const postStore = usePostStore();
 const handleClickOutside = inject("handleClickOutside");
 const showPopupPost = inject("showPopupPost");
+const mainPageShifted = inject("mainPageShifted");
+
+const activeTab = ref("For You");
+
+watchEffect(() => {
+  if (!user.value) {
+    navigateTo("/login");
+  }
+});
+
+watchEffect(async () => {
+  if (store.noProfile) {
+    await store.fetchProfile();
+  }
+});
 
 onMounted(async () => {
-  watchEffect(() => {
-    if (!user.value) {
-      navigateTo("/login");
-    }
-  });
-  activeTab.value = "For You";
-  // load profile
-  watchEffect(async () => {
-    if (store.noProfile) {
-      await store.fetchProfile();
-    }
-  });
-  await postStore.fetchLikes(user.value.id);
-  await postStore.fetchBookmarks();
+  const id = user.value?.id;
+  if (id) {
+    await postStore.fetchLikes(id);
+    await postStore.fetchBookmarks();
+  }
 });
 
-// Load different feed
-const activeTab = ref("");
-watch(activeTab, async () => {
-  await fetchNewPost();
-});
+// Load different feed (immediate: load default "For You" on mount)
+watch(
+  activeTab,
+  async () => {
+    await fetchNewPost();
+  },
+  { immediate: true },
+);
 
 const postList = computed(() => {
   if (activeTab.value === "Following") return postStore.getFollowingPosts;
-  else if (activeTab.value === "For You") return postStore.getAllPosts;
+  if (activeTab.value === "For You") return postStore.getAllPosts;
+  return [];
 });
 
 // Publish new post
@@ -52,15 +62,18 @@ async function fetchNewPost() {
 
 <template>
   <div
-    id="mainPage"
     class="flex h-screen w-screen transition-all"
+    :class="{
+      'translate-x-[20rem]': mainPageShifted,
+      'md:translate-x-0': mainPageShifted,
+    }"
     @mousedown="handleClickOutside($event)"
   >
     <!-- UI popup -->
     <UIPopupCollection />
 
     <!-- layout -->
-    <MainLeft @popupPost="showPopupPost = true" />
+    <MainLeft @popup-post="showPopupPost = true" />
     <MainLeftSmallScreen />
     <MainBottom />
     <MainCenter>
@@ -69,13 +82,13 @@ async function fetchNewPost() {
       <template #nav>
         <!-- For you -->
         <UINavTab
-          :isActive="activeTab === 'For You'"
+          :is-active="activeTab === 'For You'"
           @mousedown="activeTab = 'For You'"
           >For You</UINavTab
         >
         <!-- Following -->
         <UINavTab
-          :isActive="activeTab === 'Following'"
+          :is-active="activeTab === 'Following'"
           @mousedown="activeTab = 'Following'"
           >Following</UINavTab
         >
@@ -85,7 +98,7 @@ async function fetchNewPost() {
         <!-- write new post -->
         <MainPostWrite class="hidden md:flex" />
         <!-- post list -->
-        <LazyMainPostList :postList="postList" class="pt-12 md:pt-0" />
+        <LazyMainPostList :post-list="postList" class="pt-12 md:pt-0" />
       </template>
     </MainCenter>
   </div>

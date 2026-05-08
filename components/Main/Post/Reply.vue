@@ -1,8 +1,5 @@
 <script setup>
-import { useProfileStore } from "~/stores/profile";
 import { usePostStore } from "~/stores/post";
-const user = useSupabaseUser();
-const profileStore = useProfileStore();
 const postStore = usePostStore();
 const post = defineProps({
   id: String,
@@ -25,7 +22,7 @@ const date = computed(() => {
 });
 </script>
 <template>
-  <MainPostHoverClickWrapper :post="post" noHover class="tracking-wide">
+  <MainPostHoverClickWrapper :post="post" no-hover class="tracking-wide">
     <!-- left column / avatar -->
     <div class="flex w-10 flex-col">
       <!-- avatar for show post -->
@@ -36,7 +33,7 @@ const date = computed(() => {
       </div>
       <!-- thread -->
       <div class="noForward flex w-full grow cursor-default justify-center">
-        <span class="h-full border border-zinc-800"></span>
+        <span class="h-full border border-zinc-800"/>
       </div>
     </div>
     <!-- right column -->
@@ -84,7 +81,7 @@ const date = computed(() => {
         <div v-if="post.type === 'repost'" class="z-20 w-full">
           <MainPostRefer
             v-bind="postStore.getPost(post.reply_to)"
-          ></MainPostRefer>
+          />
         </div>
       </div>
       <!-- lower section -->

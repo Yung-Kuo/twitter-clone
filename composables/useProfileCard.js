@@ -1,52 +1,66 @@
-export default function () {
-  // profile card
+export default function useProfileCard(layoutRefs) {
   const profileCardVis = ref(false);
-  const hoveredElement = ref(null);
+  const hoveredAnchorEl = shallowRef(null);
   const hoveredUserId = ref(null);
-  function getRect() {
-    if (profileCardVis.value) {
-      nextTick(() => {
-        // center
-        const center = document.getElementById("center");
-        const centerRect = center.getBoundingClientRect();
-        // profile card
-        const card = document.getElementById("profileCard");
-        const cardRect = card.getBoundingClientRect();
-        // hovered element
-        const element = document.getElementById(hoveredElement.value);
-        const rect = element.getBoundingClientRect();
+  const profileCardEl = shallowRef(null);
+  const profileCardStyle = ref({});
 
-        // if there's room at the bottom
-        if (rect.top + rect.height + cardRect.height + 16 < centerRect.height) {
-          card.style.top = `${rect.top + rect.height + 16}px`;
-          card.style.left = `${
-            rect.left + rect.width / 2 - cardRect.width / 2
-          }px`;
-        } else {
-          card.style.top = `${rect.top - cardRect.height - 20}px`;
-          card.style.left = `${
-            rect.left + rect.width / 2 - cardRect.width / 2
-          }px`;
-        }
-      });
+  function bindProfileCard(instance) {
+    if (!instance) {
+      profileCardEl.value = null;
+      return;
     }
+    const el = instance.$el ?? instance;
+    profileCardEl.value = el instanceof HTMLElement ? el : null;
   }
+
+  function getRect() {
+    if (!profileCardVis.value) return;
+    nextTick(() => {
+      const centerEl = layoutRefs.center.value;
+      const card = profileCardEl.value;
+      const anchor = hoveredAnchorEl.value;
+      if (!centerEl || !card || !anchor) return;
+
+      const centerRect = centerEl.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+      const rect = anchor.getBoundingClientRect();
+
+      if (rect.top + rect.height + cardRect.height + 16 < centerRect.height) {
+        profileCardStyle.value = {
+          top: `${rect.top + rect.height + 16}px`,
+          left: `${rect.left + rect.width / 2 - cardRect.width / 2}px`,
+        };
+      } else {
+        profileCardStyle.value = {
+          top: `${rect.top - cardRect.height - 20}px`,
+          left: `${rect.left + rect.width / 2 - cardRect.width / 2}px`,
+        };
+      }
+    });
+  }
+
   function showProfileCard(el, uid) {
-    if (el !== null) hoveredElement.value = el;
-    if (el !== null) hoveredUserId.value = uid;
+    if (el) hoveredAnchorEl.value = el;
+    if (uid !== undefined && uid !== null) hoveredUserId.value = uid;
     profileCardVis.value = true;
     getRect();
   }
+
   function hideProfileCard() {
     profileCardVis.value = false;
+    hoveredAnchorEl.value = null;
+    profileCardStyle.value = {};
   }
 
   return {
     profileCardVis,
-    hoveredElement,
+    hoveredAnchorEl,
     hoveredUserId,
     getRect,
     showProfileCard,
     hideProfileCard,
+    bindProfileCard,
+    profileCardStyle,
   };
 }

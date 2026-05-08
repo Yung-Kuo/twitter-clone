@@ -1,5 +1,4 @@
 <script setup>
-import { useProfileStore } from "~/stores/profile";
 import { usePostStore } from "~/stores/post";
 
 const postStore = usePostStore();
@@ -53,6 +52,6 @@ const avatar_src = computed(() => {
       v-if="file || avatar_src"
       :src="file || avatar_src"
       class="h-full w-full rounded-full object-cover object-top"
-    />
+    >
   </div>
 </template>

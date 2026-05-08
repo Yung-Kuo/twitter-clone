@@ -1,9 +1,6 @@
 <script setup>
-import { useProfileStore } from "~/stores/profile";
 import { usePostStore } from "~/stores/post";
 import { useReplyStore } from "~/stores/reply";
-const user = useSupabaseUser();
-const profileStore = useProfileStore();
 const postStore = usePostStore();
 const replyStore = useReplyStore();
 const props = defineProps({
@@ -22,36 +19,34 @@ const { showProfileCard, hideProfileCard } = inject("profileCard");
 // write post
 const {
   showPopupPost,
-  newPost,
   repost_pid,
-  publishPost,
   publishRepost,
-  publishQuote,
 } = inject("writePost");
 // toggle menu
-const { showMenu, menu_pid, type, toggleMenu } = inject("togglePostMenu");
+const { showMenu, menu_pid, type: menuType, toggleMenu } = inject("togglePostMenu");
+const bindMenuElement = inject("bindMenuElement");
 // action buttons
 const clickReply = inject("clickReply");
 const { clickLike, clickBookmark } = useLikeBookmark();
 
-onMounted(async () => {
-  watchEffect(async () => {
-    if (!replyStore.getReplyCount(post.value?.id)) {
-      await replyStore.fetchReplyCount(post.value?.id);
-    }
-    if (!postStore.getLikeCount(post.value?.id)) {
-      await postStore.fetchLikeCount(post.value?.id);
-    }
-    if (!postStore.getBookmarkCount(post.value?.id)) {
-      await postStore.fetchBookmarkCount(post.value?.id);
-    }
-    if (!postStore.getRepostCount(post.value?.id)) {
-      await postStore.fetchRepostCount(post.value?.id);
-    }
-    if (replyStore.checkReplied(post.value?.id) === null) {
-      await replyStore.fetchUserReplyStatus(post.value?.id);
-    }
-  });
+watchEffect(async () => {
+  const id = post.value?.id;
+  if (!id) return;
+  if (!replyStore.getReplyCount(id)) {
+    await replyStore.fetchReplyCount(id);
+  }
+  if (!postStore.getLikeCount(id)) {
+    await postStore.fetchLikeCount(id);
+  }
+  if (!postStore.getBookmarkCount(id)) {
+    await postStore.fetchBookmarkCount(id);
+  }
+  if (!postStore.getRepostCount(id)) {
+    await postStore.fetchRepostCount(id);
+  }
+  if (replyStore.checkReplied(id) === null) {
+    await replyStore.fetchUserReplyStatus(id);
+  }
 });
 // timestamp
 const date = computed(() => {
@@ -65,7 +60,7 @@ const date = computed(() => {
 });
 </script>
 <template>
-  <MainPostHoverClickWrapper :post="post" :noHover="props.noHover">
+  <MainPostHoverClickWrapper :post="post" :no-hover="props.noHover">
     <div
       v-if="postStore.getProfile(post?.user_id)"
       class="flex h-min w-full px-3 tracking-wide text-zinc-200 transition-all hover:cursor-pointer 2xl:px-5"
@@ -74,18 +69,17 @@ const date = computed(() => {
       <div class="flex w-min cursor-default flex-col">
         <!-- avatar for show post -->
         <div
-          :id="`${post.id}_avatar`"
-          @mouseenter="showProfileCard($event.target.id, post.user_id)"
-          @mouseleave="hideProfileCard()"
           class="noForward rounded-full"
+          @mouseenter="showProfileCard($event.currentTarget, post.user_id)"
+          @mouseleave="hideProfileCard()"
         >
           <NuxtLink :to="`/${postStore.getUsername(post?.user_id)}`">
-            <UIAvatar :user_id="post?.user_id" size="small"> </UIAvatar>
+            <UIAvatar :user_id="post?.user_id" size="small"/>
           </NuxtLink>
         </div>
         <!-- thread -->
         <div class="noForward flex w-full flex-grow justify-center">
-          <span class="h-full border border-zinc-800"></span>
+          <span class="h-full border border-zinc-800"/>
         </div>
       </div>
       <!-- right column -->
@@ -100,8 +94,9 @@ const date = computed(() => {
               <!-- name -->
               <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
                 <div
-                  :id="`${post.id}_name`"
-                  @mouseenter="showProfileCard($event.target.id, post.user_id)"
+                  @mouseenter="
+                    showProfileCard($event.currentTarget, post.user_id)
+                  "
                   @mouseleave="hideProfileCard()"
                 >
                   <span>
@@ -115,8 +110,9 @@ const date = computed(() => {
               <!-- username -->
               <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
                 <div
-                  :id="`${post.id}_username`"
-                  @mouseenter="showProfileCard($event.target.id, post.user_id)"
+                  @mouseenter="
+                    showProfileCard($event.currentTarget, post.user_id)
+                  "
                   @mouseleave="hideProfileCard()"
                 >
                   <span> @{{ postStore.getUsername(post.user_id) }}</span>
@@ -130,33 +126,37 @@ const date = computed(() => {
             </div>
           </div>
           <!-- spacing -->
-          <div class="grow"></div>
+          <div class="grow"/>
           <!-- post action -->
           <div class="flex flex-col">
             <!-- icon -->
             <div class="flex h-min items-center text-zinc-500">
-              <IconsBadge
-                size="small"
-                color="blue"
-                :clicked="menu_pid === post.id && type === 'post_action'"
-                :id="`${post.id}_menu_icon`"
-                @mousedown="toggleMenu(post.id, 'post_action')"
-                class="noForward"
+              <div
+                :ref="(el) => bindMenuElement(`${post.id}_menu_icon`, el)"
+                class="flex noForward"
               >
-                <IconsMore />
-              </IconsBadge>
+                <IconsBadge
+                  size="small"
+                  color="blue"
+                  :clicked="menu_pid === post.id && menuType === 'post_action'"
+                  class="noForward"
+                  @mousedown="toggleMenu(post.id, 'post_action')"
+                >
+                  <IconsMore />
+                </IconsBadge>
+              </div>
             </div>
             <!-- menu -->
             <!-- <div class="relative -translate-x-52 translate-y-2"> -->
             <UIPopupTransition>
               <UIPopupMenu
                 v-if="
-                  showMenu && type === 'post_action' && menu_pid === post.id
+                  showMenu && menuType === 'post_action' && menu_pid === post.id
                 "
                 :pid="post.id"
                 :uid="post.user_id"
                 class="noForward"
-              ></UIPopupMenu>
+              />
             </UIPopupTransition>
             <!-- </div> -->
           </div>
@@ -164,14 +164,14 @@ const date = computed(() => {
         <!-- middle section -->
         <div class="flex w-full flex-col gap-2 pl-2">
           <!-- content -->
-          <div v-if="post.type !== 'repost && post.text !== repost'">
+          <div v-if="post.type !== 'repost' || post.text !== post.reply_to">
             <!-- don't show text when repost  -->
             <pre>{{ post.text }}</pre>
           </div>
 
           <!-- repost / quote -->
           <div v-if="post.type === 'repost'">
-            <MainPostRefer v-bind="post"></MainPostRefer>
+            <MainPostRefer v-bind="post"/>
           </div>
         </div>
         <!-- lower section -->
@@ -197,23 +197,26 @@ const date = computed(() => {
             <!-- Repost -->
             <div class="noForward flex">
               <div class="flex items-center">
-                <IconsBadge
-                  size="small"
-                  color="green"
-                  :clicked="menu_pid === post.id && type === 'repost'"
-                  :id="`${post.id}_repost_menu_icon`"
-                  @mousedown="toggleMenu(post.id, 'repost')"
+                <div
+                  :ref="(el) => bindMenuElement(`${post.id}_repost_menu_icon`, el)"
+                  class="flex"
                 >
-                  <IconsRepost />
-                </IconsBadge>
+                  <IconsBadge
+                    size="small"
+                    color="green"
+                    :clicked="menu_pid === post.id && menuType === 'repost'"
+                    @mousedown="toggleMenu(post.id, 'repost')"
+                  >
+                    <IconsRepost />
+                  </IconsBadge>
+                </div>
                 <span class="w-2">{{ postStore.getRepostCount(post.id) }}</span>
               </div>
               <!-- repost option menu -->
               <div class="relative">
                 <UIPopupTransition>
                   <UIPopupRepostMenu
-                    v-if="showMenu && type === 'repost' && menu_pid === post.id"
-                    :id="`${post.id}_repost_menu`"
+                    v-if="showMenu && menuType === 'repost' && menu_pid === post.id"
                     :pid="menu_pid"
                     :username="postStore.getUsername(post.user_id)"
                     @repost="publishRepost(menu_pid)"
@@ -221,7 +224,7 @@ const date = computed(() => {
                       repost_pid = menu_pid;
                       showPopupPost = true;
                     "
-                  ></UIPopupRepostMenu>
+                  />
                 </UIPopupTransition>
               </div>
             </div>

@@ -15,9 +15,10 @@ const emit = defineEmits(["popupPost"]);
 const route = useRoute();
 // post action menu
 const { showMenu, type, toggleMenu, menuGetRect } = inject("toggleAccountMenu");
+const bindMenuElement = inject("bindMenuElement");
+const accountMenuStyle = inject("accountMenuStyle");
 function stickyMenu() {
   if (showMenu.value && type.value === "account") {
-    console.log("stickyMenu");
     menuGetRect();
   }
 }
@@ -35,7 +36,7 @@ onBeforeUnmount(() => {
 
 async function signOut() {
   toggleMenu(null, "account");
-  const { error } = await client.auth.signOut();
+  await client.auth.signOut();
   store.clearProfile();
   postStore.clearBookmarks();
   replyStore.clearReplies();
@@ -61,10 +62,10 @@ async function signOut() {
         <NuxtLink to="/">
           <MainMenuEntry>
             <template #mdMenu>
-              <IconsHome :solid="route.path === '/'"></IconsHome>
+              <IconsHome :solid="route.path === '/'"/>
             </template>
             <template #lgMenu>
-              <IconsHome :solid="route.path === '/'"></IconsHome>
+              <IconsHome :solid="route.path === '/'"/>
             </template>
             <template #title>Home</template>
           </MainMenuEntry>
@@ -73,10 +74,10 @@ async function signOut() {
         <NuxtLink>
           <MainMenuEntry>
             <template #mdMenu>
-              <IconsSearch></IconsSearch>
+              <IconsSearch/>
             </template>
             <template #lgMenu>
-              <IconsSearch></IconsSearch>
+              <IconsSearch/>
             </template>
             <template #title>Search</template>
           </MainMenuEntry>
@@ -85,10 +86,10 @@ async function signOut() {
         <NuxtLink>
           <MainMenuEntry>
             <template #mdMenu>
-              <IconsNotification></IconsNotification>
+              <IconsNotification/>
             </template>
             <template #lgMenu>
-              <IconsNotification></IconsNotification>
+              <IconsNotification/>
             </template>
             <template #title>Notification</template>
           </MainMenuEntry>
@@ -97,10 +98,10 @@ async function signOut() {
         <NuxtLink>
           <MainMenuEntry>
             <template #mdMenu>
-              <IconsMessage></IconsMessage>
+              <IconsMessage/>
             </template>
             <template #lgMenu>
-              <IconsMessage></IconsMessage>
+              <IconsMessage/>
             </template>
             <template #title>Message</template>
           </MainMenuEntry>
@@ -111,12 +112,12 @@ async function signOut() {
             <template #mdMenu>
               <IconsBookmark
                 :solid="route.path === '/bookmarks'"
-              ></IconsBookmark>
+              />
             </template>
             <template #lgMenu>
               <IconsBookmark
                 :solid="route.path === '/bookmarks'"
-              ></IconsBookmark>
+              />
             </template>
             <template #title>Bookmarks</template>
           </MainMenuEntry>
@@ -127,20 +128,20 @@ async function signOut() {
             <template #mdMenu>
               <IconsProfile
                 :solid="route.path === `/${store.getUsername}`"
-              ></IconsProfile>
+              />
             </template>
             <template #lgMenu>
               <IconsProfile
                 :solid="route.path === `/${store.getUsername}`"
-              ></IconsProfile>
+              />
             </template>
             <template #title>Profile</template>
           </MainMenuEntry>
         </NuxtLink>
         <!-- write post -->
-        <div @click="emit('popupPost')" class="mt-2">
+        <div class="mt-2" @click="emit('popupPost')">
           <IconsBadge size="medium" class="xl:hidden">
-            <IconsWrite></IconsWrite>
+            <IconsWrite/>
           </IconsBadge>
           <div class="hidden h-14 w-52 xl:flex 2xl:w-60">
             <UIButton color="blue" :solid="true" class="w-full">Post</UIButton>
@@ -148,15 +149,16 @@ async function signOut() {
         </div>
       </div>
       <!-- height filler -->
-      <div class="grow"></div>
+      <div class="grow"/>
       <!-- lower section -->
       <div class="w-full py-5">
         <!-- account menu -->
         <UIPopupTransition>
           <div
             v-if="showMenu && type === 'account'"
-            id="account_menu"
+            :ref="(el) => bindMenuElement('account_menu', el)"
             class="absolute z-10 h-28 w-60 -translate-y-32 rounded-xl bg-black py-2 text-xl text-zinc-200 shadow-3xl shadow-zinc-700 transition-all"
+            :style="accountMenuStyle"
           >
             <!-- edit profile -->
             <NuxtLink to="/profile">
@@ -168,8 +170,8 @@ async function signOut() {
             </NuxtLink>
             <!-- sign out -->
             <div
-              @click="signOut()"
               class="flex h-1/2 w-full items-center justify-start p-5 transition-all hover:bg-zinc-900 active:bg-zinc-800"
+              @click="signOut()"
             >
               Sign Out
             </div>
@@ -177,15 +179,13 @@ async function signOut() {
         </UIPopupTransition>
 
         <!-- account icon -->
-        <MainMenuEntry
-          id="account_menu_icon"
-          @mousedown="toggleMenu(null, 'account')"
-        >
+        <div :ref="(el) => bindMenuElement('account_menu_icon', el)">
+          <MainMenuEntry @mousedown="toggleMenu(null, 'account')">
           <template #mdMenu>
-            <UIAvatar :user_id="user.id" size="small"></UIAvatar>
+            <UIAvatar :user_id="user.id" size="small"/>
           </template>
           <template #lgMenu>
-            <UIAvatar :user_id="user.id" size="small"></UIAvatar>
+            <UIAvatar :user_id="user.id" size="small"/>
           </template>
           <template #title>
             <div
@@ -202,6 +202,7 @@ async function signOut() {
             </div>
           </template>
         </MainMenuEntry>
+        </div>
       </div>
     </div>
   </div>

@@ -1,11 +1,6 @@
 <script setup>
-import { useProfileStore } from "~/stores/profile";
 import { usePostStore } from "~/stores/post";
-import { useReplyStore } from "~/stores/reply";
-const user = useSupabaseUser();
-const profileStore = useProfileStore();
 const postStore = usePostStore();
-const replyStore = useReplyStore();
 // const emit = defineEmits(["reply"]);
 const post = defineProps({
   id: String,
@@ -28,17 +23,6 @@ onMounted(async () => {
 });
 
 // timestamp
-const time = computed(() => {
-  const dt = new Date(post.created_at);
-  // Format the time portion
-  const time = dt.toLocaleString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  });
-  return time;
-});
-// timestamp
 const date = computed(() => {
   const dt = new Date(post.created_at);
   // Format the date portion
@@ -52,7 +36,7 @@ const date = computed(() => {
 <template>
   <MainPostHoverClickWrapper
     :post="post"
-    hasRing
+    has-ring
     class="flex flex-col gap-2 rounded-2xl border border-zinc-800 bg-black p-3 tracking-wide md:border-2"
   >
     <!-- upper section -->
@@ -60,7 +44,7 @@ const date = computed(() => {
       <!-- avatar -->
       <div class="noForward flex w-min items-center">
         <NuxtLink :to="`/${postStore.getUsername(post?.user_id)}`">
-          <UIAvatar :user_id="post.user_id" size="xsmall"> </UIAvatar>
+          <UIAvatar :user_id="post.user_id" size="xsmall"/>
         </NuxtLink>
       </div>
       <!-- user info -->
@@ -104,7 +88,7 @@ const date = computed(() => {
       <div v-if="post.type === 'repost'" class="noForward">
         <MainPostRefer
           v-bind="postStore.getPost(post.reply_to)"
-        ></MainPostRefer>
+        />
       </div>
     </div>
   </MainPostHoverClickWrapper>

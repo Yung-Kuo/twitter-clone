@@ -3,7 +3,6 @@ import { usePostStore } from "~/stores/post";
 import { useFollowingStore } from "~/stores/following";
 const props = defineProps(["userId"]);
 const { userId } = toRefs(props);
-const user = useSupabaseUser();
 const postStore = usePostStore();
 const followingStore = useFollowingStore();
 const userProfile = computed(() => postStore.getProfile(userId?.value));
@@ -28,11 +27,11 @@ onMounted(async () => {
           :path="userProfile?.avatar_url"
           :user_id="userId"
           size="medium"
-        ></UIAvatar>
+        />
       </NuxtLink>
       <!-- Extra layer of div to avoid following/follow button filling the full height because of flex -->
       <div class="h-min">
-        <UIButtonFollow :uid="userProfile?.id"></UIButtonFollow>
+        <UIButtonFollow :uid="userProfile?.id"/>
       </div>
     </div>
     <!-- name / username -->
@@ -42,7 +41,7 @@ onMounted(async () => {
           >{{ userProfile?.first_name }} {{ userProfile?.last_name }}</span
         >
       </NuxtLink>
-      <br />
+      <br >
       <NuxtLink :to="`/${userProfile?.username}`">
         <span class="text-sm leading-none text-gray-500"
           >@{{ userProfile?.username }}</span
@@ -56,10 +55,10 @@ onMounted(async () => {
     <!-- following / followers -->
     <div class="pt-2 text-sm">
       <!-- following -->
-      <span>{{ followingStore.getFollowing(userId)?.length }}&nbsp</span>
+      <span>{{ followingStore.getFollowing(userId)?.length }}&nbsp;</span>
       <span class="pr-5 text-gray-500">Following</span>
       <!-- follower -->
-      <span>{{ followingStore.getFollowers(userId)?.length }}&nbsp</span>
+      <span>{{ followingStore.getFollowers(userId)?.length }}&nbsp;</span>
       <span class="text-gray-500">Follower</span>
     </div>
   </div>

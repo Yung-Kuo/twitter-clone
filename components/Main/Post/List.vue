@@ -15,8 +15,8 @@ const props = defineProps({
     <li v-for="post in props.postList" :key="post.id">
       <MainPost
         :post="post"
-        :showAuthorReply="props.showAuthorReply"
-      ></MainPost>
+        :show-author-reply="props.showAuthorReply"
+      />
     </li>
   </ul>
 </template>

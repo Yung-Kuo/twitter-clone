@@ -1,7 +1,6 @@
 <script setup>
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
-const profileStore = useProfileStore();
 const { alertMode, alertMessage, hasError } = inject("useAlert");
 const loading = ref(false);
 // email & password
@@ -14,7 +13,7 @@ const buttonActiveFlag = computed(() => {
   // else return false;
   return emailValidFlag.value && passwordValidFlag.value;
 });
-async function signUp() {
+async function _signUp() {
   if (!email.value) {
     emailValidFlag.value = false;
     alertMode.value = "error";
@@ -39,7 +38,6 @@ async function signUp() {
     } catch (error) {
       alertMode.value = "error";
       alertMessage.value = error.message;
-      console.log(alertMessage.value);
       emailValidFlag.value = false;
       passwordValidFlag.value = false;
       hasError();
@@ -60,7 +58,6 @@ watch(
   { immediate: true }
 );
 async function login() {
-  console.log("login");
   if (!email.value) {
     emailValidFlag.value = false;
     alertMode.value = "error";
@@ -79,18 +76,16 @@ async function login() {
   } else {
     try {
       loading.value = true;
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email: email.value,
         password: password.value,
       });
-      console.log(data);
       if (error) throw error;
       // watcher above will redirect to protected page
       // if (data) {}
     } catch (error) {
       alertMode.value = "error";
       alertMessage.value = error.message;
-      console.log(alertMessage.value);
       emailValidFlag.value = false;
       passwordValidFlag.value = false;
       hasError();
@@ -101,7 +96,7 @@ async function login() {
 }
 
 function validateEmail() {
-  if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email.value)) {
+  if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email.value)) {
     emailValidFlag.value = false;
     return false;
   } else {
@@ -109,27 +104,26 @@ function validateEmail() {
     return true;
   }
 }
-const isLogin = ref(true);
 </script>
 <template>
   <div class="flex w-full flex-col gap-10">
     <!-- email -->
     <UIInput
-      type="email"
       id="email"
       v-model:text="email"
+      type="email"
       :flag="emailValidFlag"
-      @updateValid="(value) => (emailValidFlag = value)"
+      @update-valid="(value) => (emailValidFlag = value)"
       >Email</UIInput
     >
     <!--  -->
     <!-- password -->
     <UIInput
-      type="password"
       id="password"
       v-model:text="password"
+      type="password"
       :flag="passwordValidFlag"
-      @updateValid="(value) => (passwordValidFlag = value)"
+      @update-valid="(value) => (passwordValidFlag = value)"
       >Password</UIInput
     >
     <!--  -->
@@ -145,12 +139,13 @@ const isLogin = ref(true);
           >Log In</UIButton
         >
       </div>
-      <div class="w-2/5 md:w-1/3">
+      <div class="invisible pointer-events-none w-2/5 md:w-1/3" aria-hidden="true">
         <UIButton
           color="orange"
           :solid="false"
-          :active="buttonActiveFlag && false"
-          @mousedown="false && signUp()"
+          :active="false"
+          type="button"
+          tabindex="-1"
           >Sign Up</UIButton
         >
       </div>

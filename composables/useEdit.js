@@ -14,9 +14,7 @@ export default function () {
     } else {
       newText.value = editPost.value.text;
     }
-    // newText.value = editPost.value.text;
     showPopupEdit.value = true;
-    // showPopupEdit.value = !showPopupEdit.value;
   }
   async function publishEdit() {
     if (newText.value) {
@@ -25,7 +23,7 @@ export default function () {
         text: newText.value,
       });
     } else {
-      console.log("Cannot be empty!");
+      return;
     }
   }
 

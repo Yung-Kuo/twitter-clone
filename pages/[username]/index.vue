@@ -1,5 +1,4 @@
 <script setup>
-import { storeToRefs } from "pinia";
 import { useProfileStore } from "~/stores/profile";
 import { usePostStore } from "~/stores/post";
 import { useReplyStore } from "~/stores/reply";
@@ -10,10 +9,8 @@ definePageMeta({
 });
 
 const route = useRoute();
-const router = useRouter();
 
 const user = useSupabaseUser();
-const supabase = useSupabaseClient();
 const store = useProfileStore();
 const postStore = usePostStore();
 const replyStore = useReplyStore();
@@ -88,13 +85,10 @@ const activeTab = ref("Posts");
 const postList = computed(() => {
   if (!userProfile.value) return null;
   if (activeTab.value === "Posts") {
-    console.log("load posts");
     return postStore.getUserPosts(userProfile.value.id);
   } else if (activeTab.value === "Likes") {
-    console.log("load likes");
     return postStore.getLikePosts(userProfile.value.id);
   } else if (activeTab.value === "Replies") {
-    console.log("load replies");
     return replyStore.getUserReplies(userProfile.value.id);
   } else return null;
 });
@@ -105,9 +99,9 @@ const postList = computed(() => {
     <UIPopupCollection />
 
     <!-- layout -->
-    <MainLeft @popupPost="showPopupPost = !showPopupPost" />
+    <MainLeft @popup-post="showPopupPost = !showPopupPost" />
     <MainBottom />
-    <MainCenter userPage>
+    <MainCenter user-page>
       <template #title>
         {{ userProfile?.first_name }} {{ userProfile?.last_name }}
       </template>
@@ -121,18 +115,18 @@ const postList = computed(() => {
         <!-- user profile -->
         <MainSection>
           <!-- profile background image -->
-          <div class="h-60 w-full bg-zinc-800 2xl:h-96"></div>
+          <div class="h-60 w-full bg-zinc-800 2xl:h-96"/>
           <!-- avatar -->
           <div
             class="relative -top-20 left-5 z-10 mt-2 h-min w-min rounded-full ring-4 ring-black"
           >
-            <UIAvatar :user_id="userProfile.id" size="large"></UIAvatar>
+            <UIAvatar :user_id="userProfile.id" size="large"/>
           </div>
           <!-- lower section -->
           <div class="relative -top-32 w-full p-5 text-gray-200">
             <!-- action buttons -->
             <div class="relative -top-4 flex h-10 w-full justify-end">
-              <UIButtonFollow :uid="userProfile?.id"></UIButtonFollow>
+              <UIButtonFollow :uid="userProfile?.id"/>
             </div>
             <!-- user info -->
             <div class="relative top-6 w-full">
@@ -150,19 +144,16 @@ const postList = computed(() => {
               </div>
               <!-- following -->
               <span
-                @mousedown="
-                  console.log(followingStore.getFollowing(userProfile.id))
-                "
                 >{{
                   followingStore.getFollowing(userProfile.id)?.length
-                }}&nbsp</span
+                }}&nbsp;</span
               >
               <span class="pr-5 text-gray-500">Following</span>
               <!-- follower -->
               <span
                 >{{
                   followingStore.getFollowers(userProfile.id)?.length
-                }}&nbsp</span
+                }}&nbsp;</span
               >
               <span class="text-gray-500">Follower</span>
             </div>
@@ -173,38 +164,38 @@ const postList = computed(() => {
           >
             <!-- Posts -->
             <UINavTab
-              :isActive="activeTab === 'Posts'"
+              :is-active="activeTab === 'Posts'"
               @mousedown="activeTab = 'Posts'"
               >Posts
             </UINavTab>
             <!-- Replies -->
             <UINavTab
-              :isActive="activeTab === 'Replies'"
+              :is-active="activeTab === 'Replies'"
               @mousedown="activeTab = 'Replies'"
               >Replies
             </UINavTab>
             <!-- Highlights -->
             <UINavTab
-              :isActive="activeTab === 'Highlights'"
+              :is-active="activeTab === 'Highlights'"
               @mousedown="activeTab = 'Highlights'"
             >
               Highlights</UINavTab
             >
             <!-- Articles -->
             <UINavTab
-              :isActive="activeTab === 'Articles'"
+              :is-active="activeTab === 'Articles'"
               @mousedown="activeTab = 'Articles'"
               >Articles
             </UINavTab>
             <!-- Media -->
             <UINavTab
-              :isActive="activeTab === 'Media'"
+              :is-active="activeTab === 'Media'"
               @mousedown="activeTab = 'Media'"
               >Media
             </UINavTab>
             <!-- Likes -->
             <UINavTab
-              :isActive="activeTab === 'Likes'"
+              :is-active="activeTab === 'Likes'"
               @mousedown="activeTab = 'Likes'"
               >Likes
             </UINavTab>
@@ -212,7 +203,7 @@ const postList = computed(() => {
         </MainSection>
         <!-- post list -->
         <div class="min-h-[40rem] w-full">
-          <LazyMainPostList :postList="postList" />
+          <LazyMainPostList :post-list="postList" />
         </div>
       </template>
     </MainCenter>

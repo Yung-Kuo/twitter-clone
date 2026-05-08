@@ -1,6 +1,4 @@
 <script setup>
-import { usePostStore } from "~/stores/post";
-const postStore = usePostStore();
 const props = defineProps({
   pid: {
     type: String,
@@ -11,13 +9,11 @@ const props = defineProps({
     default: "",
   },
 });
-const emit = defineEmits(["quote"]);
-const route = useRoute();
+const emit = defineEmits(["quote", "repost"]);
 
 const toggleMenu = inject("toggleMenu");
-
-// repost
-const repost_pid = inject("repost_pid");
+const bindMenuElement = inject("bindMenuElement");
+const menuPlacementClass = inject("menuPlacementClass");
 
 const repost = {
   name: "Repost",
@@ -51,13 +47,16 @@ onMounted(() => {
 </script>
 <template>
   <div
+    :ref="(el) => bindMenuElement(`${props.pid}_repost_menu`, el)"
     class="absolute z-10 flex h-min w-max flex-col rounded-xl bg-black text-zinc-200 shadow-3xl shadow-zinc-700 transition-all duration-200"
+    :class="menuPlacementClass"
   >
     <ul>
       <li
-        v-for="action in actionList"
-        @mousedown="action.function"
+        v-for="(action, idx) in actionList"
+        :key="idx"
         class="flex h-12 w-full cursor-pointer items-center gap-4 pl-4 pr-6 first:rounded-t-xl first:pt-1 last:rounded-b-xl last:pb-1 hover:bg-zinc-800 hover:bg-opacity-30 active:bg-opacity-40"
+        @mousedown="action.function"
       >
         <component :is="action.icons" class="text-xl" />
         <span>{{ action.name }}</span>

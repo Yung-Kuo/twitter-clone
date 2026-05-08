@@ -3,7 +3,7 @@ import { usePostStore } from "~/stores/post";
 const user = useSupabaseUser();
 const postStore = usePostStore();
 const emit = defineEmits(["close"]);
-const { newPost, repost_pid, publishPost, publishRepost, publishQuote } =
+const { newPost, repost_pid, publishPost, publishQuote } =
   inject("writePost");
 
 onMounted(() => {
@@ -11,7 +11,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <UIPopupDraft @close="emit('close')" class="min-h-[40%]">
+  <UIPopupDraft class="min-h-[40%]" @close="emit('close')">
     <template #center>
       <div class="flex w-full gap-2">
         <!-- left column -->
@@ -31,7 +31,7 @@ onMounted(() => {
           <div v-if="repost_pid" class="noForward w-full">
             <MainPostRefer
               v-bind="postStore.getPost(repost_pid)"
-            ></MainPostRefer>
+            />
           </div>
         </div>
       </div>
@@ -40,7 +40,7 @@ onMounted(() => {
       <MainSection class="w-full" />
       <!-- action buttons -->
       <div class="flex justify-between">
-        <div></div>
+        <div/>
         <UIButton
           color="blue"
           :solid="true"

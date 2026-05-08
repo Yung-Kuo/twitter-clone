@@ -2,24 +2,28 @@
 import { useProfileStore } from "~/stores/profile";
 const store = useProfileStore();
 
-// Supabase
-const user = useSupabaseUser();
-const client = useSupabaseClient();
-const emit = defineEmits(["popupPost"]);
-const route = useRoute();
-const showPopupPost = inject("showPopupPost");
-async function signOut() {
-  const { error } = await client.auth.signOut();
-  store.clearProfile();
+const layoutRefs = inject("layoutRefs");
+const scrollChrome = inject("scrollChrome");
+
+function bindBottom(el) {
+  layoutRefs.bottom.value = el;
 }
 
+// Supabase
+const route = useRoute();
+const showPopupPost = inject("showPopupPost");
 const { showSearch, toggleSearch } = useSearch();
 provide("useSearch", { showSearch, toggleSearch });
 </script>
 <template>
   <div
-    id="bottom"
-    class="absolute bottom-0 left-0 z-20 flex h-14 w-full justify-between border-t border-zinc-800 bg-black bg-opacity-20 text-zinc-200 backdrop-blur-md transition-all duration-500 md:hidden"
+    :ref="bindBottom"
+    class="absolute bottom-0 left-0 z-20 flex h-14 w-full justify-between border-t border-zinc-800 bg-black bg-opacity-20 text-zinc-200 transition-all duration-500 md:hidden"
+    :class="
+      scrollChrome.bottomMuted
+        ? 'backdrop-blur-0 opacity-50'
+        : 'backdrop-blur-md'
+    "
   >
     <!-- Search -->
     <Teleport to="body">
@@ -27,30 +31,30 @@ provide("useSearch", { showSearch, toggleSearch });
     </Teleport>
     <NuxtLink to="/">
       <div class="flex h-full w-min items-center px-3">
-        <IconsBadge noHover>
+        <IconsBadge no-hover>
           <IconsHome :solid="route.path === '/'" />
         </IconsBadge>
       </div>
     </NuxtLink>
     <div class="flex h-full w-min items-center px-3">
-      <IconsBadge noHover @mousedown="toggleSearch()">
+      <IconsBadge no-hover @mousedown="toggleSearch()">
         <IconsSearch />
       </IconsBadge>
     </div>
     <NuxtLink :to="`/${store.getUsername}`">
       <div class="flex h-full w-min items-center px-3">
-        <IconsBadge noHover>
+        <IconsBadge no-hover>
           <IconsProfile :solid="route.path === `/${store.getUsername}`" />
         </IconsBadge>
       </div>
     </NuxtLink>
     <div class="flex h-full w-min items-center px-3">
-      <IconsBadge noHover>
+      <IconsBadge no-hover>
         <IconsNotification />
       </IconsBadge>
     </div>
     <div class="flex h-full w-min items-center px-3">
-      <IconsBadge noHover>
+      <IconsBadge no-hover>
         <IconsMessage />
       </IconsBadge>
     </div>

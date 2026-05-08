@@ -8,6 +8,8 @@ const props = defineProps(["pid", "uid"]);
 const route = useRoute();
 
 const toggleMenu = inject("toggleMenu");
+const bindMenuElement = inject("bindMenuElement");
+const menuPlacementClass = inject("menuPlacementClass");
 // edit
 const selectEditPost = inject("selectEditPost");
 
@@ -23,9 +25,8 @@ const deletePost = {
   name: "Delete",
   function: async () => {
     toggleMenu(props.pid, "post_action");
-    (await postStore.deletePost(props.pid)) && route.params.id === props.pid
-      ? navigateTo("/")
-      : null;
+    const deleted = await postStore.deletePost(props.pid);
+    if (deleted && route.params.id === props.pid) await navigateTo("/");
   },
 };
 const follow = {
@@ -79,14 +80,16 @@ function assignActionList() {
 <template>
   <div class="relative z-10 -translate-x-40 translate-y-2">
     <div
-      :id="`${props.pid}_post_action_menu`"
+      :ref="(el) => bindMenuElement(`${props.pid}_post_action_menu`, el)"
       class="absolute flex h-max w-48 flex-col rounded-xl bg-black text-zinc-200 shadow-3xl shadow-zinc-700 transition-all duration-200"
+      :class="menuPlacementClass"
     >
       <ul>
         <li
-          v-for="action in actionList"
-          @mousedown="action.function"
+          v-for="(action, idx) in actionList"
+          :key="idx"
           class="flex h-10 w-full cursor-pointer items-center px-5 transition-all duration-200 first:rounded-t-xl first:pt-1 last:rounded-b-xl last:pb-1 hover:bg-zinc-700 hover:bg-opacity-30 active:bg-opacity-40"
+          @mousedown="action.function"
         >
           <span>{{ action.name }}</span>
         </li>

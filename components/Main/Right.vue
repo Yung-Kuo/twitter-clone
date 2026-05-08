@@ -2,6 +2,13 @@
 import { usePostStore } from "~/stores/post";
 const postStore = usePostStore();
 
+const layoutRefs = inject("layoutRefs");
+const searchBarRef = ref(null);
+
+function bindRight(el) {
+  layoutRefs.right.value = el;
+}
+
 const handleWheelEvent = inject("handleWheelEvent");
 const getRect = inject("getRect");
 const menuGetRect = inject("menuGetRect", () => null);
@@ -24,7 +31,7 @@ const userProfileList = computed(() => {
 const search = ref("");
 const clicked = ref(false);
 function focusinSearchBar() {
-  document.querySelector("#search_bar").focus();
+  searchBarRef.value?.focus();
   clicked.value = true;
 }
 function focusoutSearchBar() {
@@ -33,8 +40,8 @@ function focusoutSearchBar() {
 </script>
 <template>
   <div
-    id="right"
-    class="absolute right-0 top-0 hidden h-full w-0 overflow-y-scroll border-l-2 border-zinc-800 md:visible md:block md:w-1/6 md:p-5 xl:w-3/8 2xl:w-5/12"
+    :ref="bindRight"
+    class="main-right-scrollbar absolute right-0 top-0 hidden h-full w-0 overflow-y-scroll border-l-2 border-zinc-800 md:visible md:block md:w-1/6 md:p-5 xl:w-3/8 2xl:w-5/12"
     @wheel="
       handleWheelEvent($event, 'right');
       getRect();
@@ -45,29 +52,30 @@ function focusoutSearchBar() {
       <!-- search bar -->
       <div
         tabindex="0"
+        class="flex h-12 w-full items-center gap-2 rounded-full border-2 border-zinc-800 bg-zinc-800 px-3 text-zinc-500 focus-within:border-sky-500 focus-within:bg-black"
         @focusin="focusinSearchBar()"
         @focusout="focusoutSearchBar()"
-        class="flex h-12 w-full items-center gap-2 rounded-full border-2 border-zinc-800 bg-zinc-800 px-3 text-zinc-500 focus-within:border-sky-500 focus-within:bg-black"
       >
         <div class="flex-none">
-          <IconsBadge size="xsmall" :noHover="true">
-            <IconsSearch :class="{ 'text-sky-500': clicked }"></IconsSearch>
+          <IconsBadge size="xsmall" :no-hover="true">
+            <IconsSearch :class="{ 'text-sky-500': clicked }"/>
           </IconsBadge>
         </div>
         <div class="grow">
           <input
             id="search_bar"
+            ref="searchBarRef"
+            v-model="search"
             class="w-full bg-transparent text-lg text-zinc-200 outline-none placeholder:text-zinc-400"
             placeholder="Search"
-            v-model="search"
-          />
+          >
         </div>
 
         <!-- empty search query -->
         <div
           v-show="search && clicked"
-          @click="search = ''"
           class="flex h-6 w-6 flex-none items-center justify-center rounded-full bg-sky-500 text-black"
+          @click="search = ''"
         >
           <IconsClose />
         </div>
@@ -82,7 +90,10 @@ function focusoutSearchBar() {
         <div v-else class="flex flex-col gap-4">
           <h1 class="text-xl font-bold">You might like</h1>
           <ul class="flex flex-col gap-4">
-            <li v-for="userProfile in userProfileList">
+            <li
+              v-for="userProfile in userProfileList"
+              :key="userProfile.id"
+            >
               <UIUserInfoCompact :user_id="userProfile.id" />
             </li>
           </ul>
@@ -94,17 +105,17 @@ function focusoutSearchBar() {
       >
         <h1 class="text-xl font-bold">Trends for you</h1>
       </div>
-      <div class="h-80 w-full rounded-2xl border-2 border-zinc-800"></div>
+      <div class="h-80 w-full rounded-2xl border-2 border-zinc-800"/>
     </div>
   </div>
 </template>
 
-<style>
-#right::-webkit-scrollbar {
+<style scoped>
+.main-right-scrollbar::-webkit-scrollbar {
   width: 0px;
   height: 0px;
 }
-#right {
+.main-right-scrollbar {
   scrollbar-width: none;
 }
 </style>

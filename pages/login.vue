@@ -5,7 +5,7 @@ useSeoMeta({
     "This is a Twitter Clone built by Yung Kuo. Please choose a method to sign in or sign up.",
 });
 // alert module
-const { alertMode, alertMessage, errorTimeout, hasError } = useAlert();
+const { alertMode, alertMessage } = useAlert();
 const OAuthSignIn = ref(true);
 </script>
 
@@ -43,16 +43,12 @@ const OAuthSignIn = ref(true);
               twitter-clone
             </h1>
           </div>
-          <!-- <div class="opacity-40">
-            <LoginApple class="!cursor-not-allowed" />
-          </div> -->
-          <LoginFacebook />
           <LoginGoogle />
           <LoginGithub />
           <div class="flex h-min w-5/6 items-center justify-center gap-4">
-            <span class="h-0 grow rounded-full border-2 border-gray-700"></span>
+            <span class="h-0 grow rounded-full border-2 border-gray-700"/>
             <span class="text-xl font-bold text-gray-400">or</span>
-            <span class="h-0 grow rounded-full border-2 border-gray-700"></span>
+            <span class="h-0 grow rounded-full border-2 border-gray-700"/>
           </div>
           <LoginAnonymous />
           <UIButton3DGlow

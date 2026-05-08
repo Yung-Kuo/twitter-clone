@@ -5,7 +5,7 @@ const postStore = usePostStore();
 const emit = defineEmits(["close"]);
 
 // edit
-const { showPopupEdit, editPost, newText, selectEditPost, publishEdit } =
+const { editPost, newText, publishEdit } =
   inject("useEdit");
 // reply
 const replyPost = computed(() => {
@@ -41,7 +41,7 @@ const replyPost = computed(() => {
           <MainPostReply
             v-if="editPost?.type === 'reply'"
             v-bind="replyPost"
-          ></MainPostReply>
+          />
           <!-- your post / reply -->
           <div class="flex flex-col gap-3">
             <div v-if="editPost?.type === 'reply'" class="w-min">
@@ -59,7 +59,7 @@ const replyPost = computed(() => {
             >
               <MainPostRefer
                 v-bind="postStore.getPost(editPost?.reply_to)"
-              ></MainPostRefer>
+              />
             </div>
           </div>
         </div>
@@ -69,7 +69,7 @@ const replyPost = computed(() => {
       <MainSection class="w-full" />
       <!-- action buttons -->
       <div class="flex justify-between">
-        <div></div>
+        <div/>
         <UIButton
           color="blue"
           :solid="true"

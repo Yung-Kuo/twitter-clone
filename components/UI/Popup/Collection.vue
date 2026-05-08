@@ -11,6 +11,9 @@ const {
   showPopupEdit,
   editPost,
 } = inject("useCollection");
+const { alertMode, alertMessage } = inject("useAlert");
+const bindProfileCard = inject("bindProfileCard");
+const profileCardStyle = inject("profileCardStyle");
 </script>
 <template>
   <div>
@@ -20,12 +23,12 @@ const {
     <UIPopupTransition leave-active-class="delay-200">
       <UIPopupProfileCard
         v-show="profileCardVis"
-        id="profileCard"
-        :userId="hoveredUserId"
+        :ref="bindProfileCard"
+        :style="profileCardStyle"
+        :user-id="hoveredUserId"
         @mouseenter="showProfileCard(null, null)"
         @mouseleave="hideProfileCard()"
-      >
-      </UIPopupProfileCard>
+      />
     </UIPopupTransition>
     <!-- Backdrop -->
     <UIPopupTransition>

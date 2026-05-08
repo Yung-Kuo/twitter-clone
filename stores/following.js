@@ -1,5 +1,4 @@
-export const useFollowingStore = defineStore({
-  id: "following",
+export const useFollowingStore = defineStore("following", {
   state: () => ({
     following: {},
     followers: {},
@@ -82,40 +81,46 @@ export const useFollowingStore = defineStore({
     async followUser(uid) {
       const user = useSupabaseUser();
       const client = useSupabaseClient();
+      const myId = user.value.id;
       try {
         const { error } = await client.from("following").insert({
-          follower_id: user.value.id,
+          follower_id: myId,
           following_id: uid,
         });
         if (error) throw error;
-        else this.isFollowing[uid] = true;
+        this.isFollowing[uid] = true;
+        if (!this.following[myId]) this.following[myId] = [];
+        if (!this.followers[uid]) this.followers[uid] = [];
+        this.following[myId].push(uid);
+        this.followers[uid].push(myId);
       } catch (error) {
         this.error = error.message;
-      } finally {
-        this.following[user.value.id].push(uid);
-        this.followers[uid].push(user.value.id);
       }
     },
     // cancelled
     async unfollowUser(uid) {
       const user = useSupabaseUser();
       const client = useSupabaseClient();
+      const myId = user.value.id;
       try {
         const { error } = await client.from("following").delete().match({
-          follower_id: user.value.id,
+          follower_id: myId,
           following_id: uid,
         });
         if (error) throw error;
-        else this.isFollowing[uid] = false;
+        this.isFollowing[uid] = false;
+        if (this.following[myId]) {
+          this.following[myId] = this.following[myId].filter(
+            (id) => id !== uid,
+          );
+        }
+        if (this.followers[uid]) {
+          this.followers[uid] = this.followers[uid].filter(
+            (id) => id !== myId,
+          );
+        }
       } catch (error) {
         this.error = error.message;
-      } finally {
-        this.following[user.value.id] = this.following[user.value.id].filter(
-          (id) => id !== uid
-        );
-        this.followers[uid] = this.followers[uid].filter(
-          (id) => id !== user.value.id
-        );
       }
     },
     clearFollowing() {

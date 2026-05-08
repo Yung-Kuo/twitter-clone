@@ -1,11 +1,10 @@
 import { usePostStore } from "~/stores/post";
-export const useProfileStore = defineStore({
-  id: "profile",
+export const useProfileStore = defineStore("profile", {
   state: () => ({
-    profile: "",
+    profile: null,
     avatar_src: "",
-    loading: "",
-    error: "",
+    loading: false,
+    error: null,
   }),
   getters: {
     getUsername: (state) => {
@@ -27,10 +26,7 @@ export const useProfileStore = defineStore({
       return state.avatar_src;
     },
     getAvatarUrl: (state) => {
-      return state.profile.avatar_url;
-    },
-    getAvatar: (state) => {
-      return state.avatar_src;
+      return state.profile?.avatar_url ?? null;
     },
     isLoading: (state) => {
       return state.loading;
@@ -84,6 +80,7 @@ export const useProfileStore = defineStore({
       const client = useSupabaseClient();
       const user = useSupabaseUser();
       const postStore = usePostStore();
+      if (!this.profile) return;
 
       this.profile.id = user.value.id;
       this.profile.first_name = data.first_name;
@@ -132,12 +129,11 @@ export const useProfileStore = defineStore({
           .from("avatars")
           .upload(filePath, file);
         if (uploadError) {
-          console.log("uploadAvatar has error!!!");
           throw uploadError;
         }
       } catch (error) {
         this.error = error.message;
-        console.log("uploadAvatar error: ", error.message);
+        console.error("uploadAvatar error:", error.message);
       } finally {
         this.loading = false;
       }
@@ -150,19 +146,18 @@ export const useProfileStore = defineStore({
           .from("avatars")
           .remove([filePath]);
         if (deleteError) throw deleteError;
-        else console.log("delete success!!");
       } catch (error) {
-        console.log("delete failed!!");
+        console.error("deleteOldAvatar failed:", error.message);
         this.error = error.message;
       } finally {
         this.loading = false;
       }
     },
     clearProfile() {
-      this.profile = "";
+      this.profile = null;
       this.avatar_src = "";
-      this.loading = "";
-      this.error = "";
+      this.loading = false;
+      this.error = null;
     },
   },
 });
