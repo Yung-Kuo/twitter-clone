@@ -1,6 +1,9 @@
 {
   "name": "nuxt-app",
   "private": true,
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -34,7 +37,7 @@
     "@types/node": "^20.19.40",
     "@unhead/vue": "^2.0.3",
     "@vee-validate/zod": "^4.15.1",
-    "@vitest/coverage-v8": "^2.1.9",
+    "@vitest/coverage-v8": "^4.1.7",
     "@vue/test-utils": "^2.4.10",
     "eslint": "^10.3.0",
     "husky": "^9.1.7",
@@ -44,7 +47,7 @@
     "prettier-plugin-tailwindcss": "^0.2.8",
     "typescript": "~5.6.3",
     "vee-validate": "^4.15.1",
-    "vitest": "^2.1.9",
+    "vitest": "^4.1.7",
     "vue-tsc": "^3.2.8",
     "zod": "^3.23.8"
   },
