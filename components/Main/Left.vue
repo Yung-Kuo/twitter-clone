@@ -209,9 +209,11 @@ async function signOut() {
 </template>
 
 <style>
-#left::-webkit-scrollbar {
-  width: 0px;
-  height: 0px;
+@supports selector(::-webkit-scrollbar) {
+  #left::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+  }
 }
 #left {
   scrollbar-width: none;

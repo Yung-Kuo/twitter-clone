@@ -98,7 +98,7 @@ async function fetchNewPost() {
         <!-- write new post -->
         <MainPostWrite class="hidden md:flex" />
         <!-- post list -->
-        <LazyMainPostList :post-list="postList" class="pt-12 md:pt-0" />
+        <MainPostList :post-list="postList" class="pt-12 md:pt-0" />
       </template>
     </MainCenter>
   </div>

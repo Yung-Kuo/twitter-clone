@@ -11,23 +11,23 @@ Source curriculum and backlog: Cursor plan **junior-to-senior-curriculum** (`.cu
 - **Phase 7 (foundation only):** `schemas/post.ts` (Zod) + `tests/unit/schemas.spec.ts` — boundary parse + alert union not wired everywhere.
 - **Phase 2 (core DOM):** Central `layoutRefs` + `scrollChrome` + `mainPageShifted` via `useMainComposables`; `useScroll` / `useWheelSync` / `useToggleMenu` / `useProfileCard` avoid `document` / `getElementById` / `querySelector`; `:class`/`:style` for banner bottom and menus; profile card anchored with `HTMLElement` + `bindProfileCard`; `Collection.vue` alerts inject fix; `/profile` uses shared injected composables (no duplicate Pinia/menu instances); moved `watchEffect` out of `onMounted` where touched (`index`, `profile`, bookmarks, post list/reply/Single`).
 - Remaining Phase 2: **`classList`** only in `useClickPost.js` (explicit Phase 8 per curriculum); **`transition-all`** grep cleanup (2e) optional if you want zero tailwind shorthand.
-- **Build:** `npm run build` succeeds.
+- **Phase 3 (partial — stores + compiler):** Root `tsconfig` enables `noUncheckedIndexedAccess`; `types/database.types.ts` adds `Relationships: []` per table/view for PostgREST inference; `posts.pictures` typed `unknown | null` to avoid recursive Json + TS2589; `types/supabase-select.ts` lists explicit `.select()` columns; Pinia stores are **`stores/*.ts`** with `useSupabaseClient<Database>()`; `npm run typecheck` passes; **`composables/keys.ts`** stub for future `InjectionKey`s — composables still mostly `.js`; leaf components not yet `lang="ts"`.
 
 ## Active next steps (order matters)
 
-Phase **2 → 3 → 4**, then TanStack-heavy **5 / 6 / 7**, then **8**, then fuller **9**. See curriculum **Prioritized backlog** and **`rg`** cheatsheet — do not mark Phase 5 complete until no `.from()` in Pinia actions.
+Phase **3** (finish 3d–3e) → **4**, then TanStack-heavy **5 / 6 / 7**, then **8**, then fuller **9**. See curriculum **Prioritized backlog** and **`rg`** cheatsheet — do not mark Phase 5 complete until no `.from()` in Pinia actions.
 
-| Phase | Status          | Notes                                                                                                                                                                      |
-| ----- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2     | **Mostly done** | No `document`/`querySelector` under app sources; menu/post/profile positioning uses refs + reactive layout state; **`classList` remains in `useClickPost`** until Phase 8. |
-| 3     | Not started     | Stores still `.js`; add strict TS + migration                                                                                                                              |
-| 4     | Not started     | Profile fields still split with `post` store                                                                                                                               |
-| 5     | Foundation      | Wire `useQuery` / `useMutation`; optimistic updates                                                                                                                        |
-| 6     | Migration ready | Point feed at `posts_with_meta` after DB apply                                                                                                                             |
-| 7     | Partial         | Extend Zod + `useAlert` discriminated union                                                                                                                                |
-| 8     | Not started     | PostHeader/Body/ActionBar, Floating UI                                                                                                                                     |
-| 9     | Partial         | Full E2E happy path + component + screenshot tests                                                                                                                         |
-| 10    | Optional        | CI gate, a11y, perf (curriculum stretch)                                                                                                                                   |
+| Phase | Status          | Notes                                                                                                                                                                                                       |
+| ----- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2     | **Mostly done** | No `document`/`querySelector` under app sources; menu/post/profile positioning uses refs + reactive layout state; **`classList` remains in `useClickPost`** until Phase 8.                                  |
+| 3     | **Partial**     | Stores migrated to `.ts`, strict indexed access, Supabase-typed client, `types/supabase-select`; composables `.js` + `keys.ts` stub remain; Avatar/Follow `lang="ts"` etc. still TODO per curriculum 3d–3e. |
+| 4     | Not started     | Profile fields still split with `post` store                                                                                                                                                                |
+| 5     | Foundation      | Wire `useQuery` / `useMutation`; optimistic updates                                                                                                                                                         |
+| 6     | Migration ready | Point feed at `posts_with_meta` after DB apply                                                                                                                                                              |
+| 7     | Partial         | Extend Zod + `useAlert` discriminated union                                                                                                                                                                 |
+| 8     | Not started     | PostHeader/Body/ActionBar, Floating UI                                                                                                                                                                      |
+| 9     | Partial         | Full E2E happy path + component + screenshot tests                                                                                                                                                          |
+| 10    | Optional        | CI gate, a11y, perf (curriculum stretch)                                                                                                                                                                    |
 
 ## Housekeeping
 

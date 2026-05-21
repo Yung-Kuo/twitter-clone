@@ -1,10 +1,21 @@
+import type { Database } from "#build/types/supabase-database";
+import { PROFILE_COLUMNS } from "~/types/supabase-select";
+import { errMsg } from "~/utils/errMsg";
 import { usePostStore } from "~/stores/post";
+
+type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+
+type ProfileUpdatePayload = Pick<
+  ProfileRow,
+  "first_name" | "last_name" | "username" | "avatar_url" | "description"
+>;
+
 export const useProfileStore = defineStore("profile", {
   state: () => ({
-    profile: null,
+    profile: null as ProfileRow | null,
     avatar_src: "",
     loading: false,
-    error: null,
+    error: null as string | null,
   }),
   getters: {
     getUsername: (state) => {
@@ -36,13 +47,14 @@ export const useProfileStore = defineStore("profile", {
     },
   },
   actions: {
-    async fetchOtherProfile(username = null) {
-      const client = useSupabaseClient();
+    async fetchOtherProfile(username: string | null = null) {
+      if (username == null) return;
+      const client = useSupabaseClient<Database>();
       this.loading = true;
       try {
         const { error, data } = await client
           .from("profiles")
-          .select()
+          .select(PROFILE_COLUMNS)
           .eq("username", username)
           .single();
 
@@ -53,75 +65,77 @@ export const useProfileStore = defineStore("profile", {
           return data;
         }
       } catch (error) {
-        this.error = error.message;
+        this.error = errMsg(error);
       } finally {
         this.loading = false;
       }
     },
     async fetchProfile() {
-      const client = useSupabaseClient();
+      const client = useSupabaseClient<Database>();
       const user = useSupabaseUser();
+      const uid = user.value?.id;
+      if (!uid) return;
       this.loading = true;
       try {
         const { error, data } = await client
           .from("profiles")
-          .select()
-          .eq("id", user.value.id)
+          .select(PROFILE_COLUMNS)
+          .eq("id", uid)
           .single();
         if (error) throw error;
         else this.profile = data;
       } catch (error) {
-        this.error = error.message;
+        this.error = errMsg(error);
       } finally {
         this.loading = false;
       }
     },
-    async updateProfile(data) {
-      const client = useSupabaseClient();
+    async updateProfile(data: ProfileUpdatePayload) {
+      const client = useSupabaseClient<Database>();
       const user = useSupabaseUser();
       const postStore = usePostStore();
-      if (!this.profile) return;
+      const uid = user.value?.id;
+      if (!this.profile || !uid) return;
 
-      this.profile.id = user.value.id;
+      this.profile.id = uid;
       this.profile.first_name = data.first_name;
       this.profile.last_name = data.last_name;
       this.profile.username = data.username;
       this.profile.avatar_url = data.avatar_url;
       this.profile.description = data.description;
-      this.profile.updated_at = new Date();
+      this.profile.updated_at = new Date().toISOString();
 
       this.loading = true;
       try {
         const { error } = await client
           .from("profiles")
           .upsert(this.profile)
-          .eq("id", user.value.id)
+          .eq("id", uid)
           .single();
         if (error) throw error;
       } catch (error) {
-        this.error = error.message;
+        this.error = errMsg(error);
       } finally {
         this.loading = false;
         postStore.setProfile(this.profile);
       }
     },
-    async downloadAvatar(avatarUrl) {
-      // download avatar from url store in supabase
-      const client = useSupabaseClient();
+    async downloadAvatar(avatarUrl: string) {
+      const client = useSupabaseClient<Database>();
       try {
         const { data, error } = await client.storage
           .from("avatars")
           .download(avatarUrl);
         if (error) throw error;
-        this.avatar_src = URL.createObjectURL(data);
+        if (data) this.avatar_src = URL.createObjectURL(data);
       } catch (error) {
-        this.error = error.message;
+        this.error = errMsg(error);
       } finally {
         this.loading = false;
       }
     },
-    async uploadAvatar(file, filePath) {
-      const client = useSupabaseClient();
+    async uploadAvatar(file: File, filePath: string) {
+      const client = useSupabaseClient<Database>();
 
       this.loading = true;
       try {
@@ -132,14 +146,14 @@ export const useProfileStore = defineStore("profile", {
           throw uploadError;
         }
       } catch (error) {
-        this.error = error.message;
-        console.error("uploadAvatar error:", error.message);
+        this.error = errMsg(error);
+        console.error("uploadAvatar error:", errMsg(error));
       } finally {
         this.loading = false;
       }
     },
-    async deleteOldAvatar(filePath) {
-      const client = useSupabaseClient();
+    async deleteOldAvatar(filePath: string) {
+      const client = useSupabaseClient<Database>();
       this.loading = true;
       try {
         const { error: deleteError } = await client.storage
@@ -147,8 +161,8 @@ export const useProfileStore = defineStore("profile", {
           .remove([filePath]);
         if (deleteError) throw deleteError;
       } catch (error) {
-        console.error("deleteOldAvatar failed:", error.message);
-        this.error = error.message;
+        console.error("deleteOldAvatar failed:", errMsg(error));
+        this.error = errMsg(error);
       } finally {
         this.loading = false;
       }

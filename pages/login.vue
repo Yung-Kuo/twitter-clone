@@ -109,9 +109,11 @@ input:-webkit-autofill {
   -webkit-text-fill-caret-color: #e4e4e7;
   caret-color: #e4e4e7;
 }
-#blackCard::-webkit-scrollbar {
-  width: 0px;
-  height: 0px;
+@supports selector(::-webkit-scrollbar) {
+  #blackCard::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+  }
 }
 #blackCard {
   scrollbar-width: none;

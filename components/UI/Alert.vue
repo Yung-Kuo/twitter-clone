@@ -5,10 +5,9 @@ const props = defineProps(["mode", "message"]);
 <template>
   <transition
     enter-from-class="-translate-y-40"
-    enter-active-class="transition-all duration-200"
-    leave-active-class="transition-all duration-200"
+    enter-active-class="transition-all duration-200 ease-out"
+    leave-active-class="transition-all duration-200 ease-in"
     leave-to-class="-translate-y-40"
-    mode="ease-in"
   >
     <div
       v-if="props.message"

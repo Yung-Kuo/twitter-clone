@@ -106,7 +106,7 @@ function scrollToTarget() {
               <MainPostReplyThread :post="threadPost" noHover />
             </li>
           </ul> -->
-          <LazyMainPostList v-if="thread.length > 0" :post-list="thread" />
+          <MainPostList v-if="thread.length > 0" :post-list="thread" />
           <div ref="target" class="scroll-mt-12 md:scroll-mt-14"/>
           <!-- main post -->
           <MainPostSingle v-bind="post"/>
@@ -119,7 +119,7 @@ function scrollToTarget() {
               <MainPost :post="post" showAuthorReply />
             </li>
           </ul> -->
-          <LazyMainPostList :post-list="replyList" show-author-reply />
+          <MainPostList :post-list="replyList" show-author-reply />
         </div>
       </template>
     </MainCenter>

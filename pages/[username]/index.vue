@@ -203,7 +203,7 @@ const postList = computed(() => {
         </MainSection>
         <!-- post list -->
         <div class="min-h-[40rem] w-full">
-          <LazyMainPostList :post-list="postList" />
+          <MainPostList :post-list="postList" />
         </div>
       </template>
     </MainCenter>

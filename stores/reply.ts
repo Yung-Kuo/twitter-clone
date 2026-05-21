@@ -1,116 +1,127 @@
+import type { Database } from "#build/types/supabase-database";
+import { POST_COLUMNS } from "~/types/supabase-select";
+import { errMsg } from "~/utils/errMsg";
 import { usePostStore } from "~/stores/post";
+
+type PostRow = Database["public"]["Tables"]["posts"]["Row"];
+type PostId = string;
+
+export type NewReplyInput = Pick<
+  PostRow,
+  "text" | "pictures" | "reply_to" | "type"
+>;
+
 export const useReplyStore = defineStore("reply", {
   state: () => ({
-    allReply: new Map(),
-    postReplyId: {},
-    replyCount: {},
-    userHasReplied: {},
-    authorHasReplied: {},
-    userReplies: {},
+    allReply: new Map<PostId, PostRow>(),
+    postReplyId: {} as Record<PostId, PostId[]>,
+    replyCount: {} as Record<PostId, number>,
+    userHasReplied: {} as Record<PostId, boolean>,
+    authorHasReplied: {} as Record<PostId, PostId | null>,
+    userReplies: {} as Record<PostId, PostId[]>,
   }),
   getters: {
     getReplies(state) {
-      return (pid) => {
-        const filteredReplies = [];
+      return (pid: PostId) => {
+        const filteredReplies: PostRow[] = [];
         if (!state.postReplyId[pid]) return null;
-        for (const replyId of state.postReplyId[pid]) {
+        for (const replyId of state.postReplyId[pid] ?? []) {
           if (state.allReply.has(replyId)) {
-            filteredReplies.push(state.allReply.get(replyId));
+            filteredReplies.push(state.allReply.get(replyId)!);
           }
         }
-        return filteredReplies || null;
+        return filteredReplies.length ? filteredReplies : null;
       };
     },
     getUserReplies(state) {
-      return (pid) => {
+      return (pid: PostId) => {
         if (!state.userReplies[pid]) return null;
-        const filteredReplies = [];
-        for (const replyId of state.userReplies[pid]) {
+        const filteredReplies: PostRow[] = [];
+        for (const replyId of state.userReplies[pid] ?? []) {
           if (state.allReply.has(replyId)) {
-            filteredReplies.push(state.allReply.get(replyId));
+            filteredReplies.push(state.allReply.get(replyId)!);
           }
         }
         return filteredReplies;
       };
     },
     getReplyCount(state) {
-      return (pid) =>
-        state.replyCount[pid] > 0 ? state.replyCount[pid] : null;
+      return (pid: PostId) => {
+        const n = state.replyCount[pid];
+        return n != null && n > 0 ? n : null;
+      };
     },
     checkReplied(state) {
-      return (pid) => state.userHasReplied[pid] || null;
+      return (pid: PostId) => state.userHasReplied[pid] || null;
     },
     checkAuthorReplied(state) {
-      return (pid) => state.authorHasReplied[pid] || null;
+      return (pid: PostId) => state.authorHasReplied[pid] || null;
     },
   },
   actions: {
-    async uploadReply(newReply) {
-      const client = useSupabaseClient();
+    async uploadReply(newReply: NewReplyInput) {
+      const client = useSupabaseClient<Database>();
       const user = useSupabaseUser();
+      const uid = user.value?.id;
+      if (!uid) return false;
       try {
-        const { error, data } = await client
+        const { error, data: row } = await client
           .from("posts")
           .insert({
-            user_id: user.value.id,
+            user_id: uid,
             text: newReply.text,
             pictures: newReply.pictures,
             reply_to: newReply.reply_to,
             type: newReply.type,
           })
-          .select()
+          .select(POST_COLUMNS)
           .single();
-        if (data) {
-          if (!this.postReplyId[data.reply_to])
-            this.postReplyId[data.reply_to] = [];
-          // store reply
+        const data = row as PostRow | null;
+        if (error) throw error;
+        if (data?.reply_to) {
+          const replyTo = data.reply_to;
+          if (!this.postReplyId[replyTo]) this.postReplyId[replyTo] = [];
           this.allReply.set(data.id, data);
-          // store id into post's reply list
-          // use reply_to as key
-          this.postReplyId[data.reply_to].unshift(data.id);
-          // user has replied & reply count
-          this.userHasReplied[data.reply_to] = true;
-          if (this.replyCount[data.reply_to])
-            this.replyCount[data.reply_to] += 1;
-          else this.replyCount[data.reply_to] = 1;
+          this.postReplyId[replyTo].unshift(data.id);
+          this.userHasReplied[replyTo] = true;
+          if (this.replyCount[replyTo]) this.replyCount[replyTo] += 1;
+          else this.replyCount[replyTo] = 1;
 
-          // update the postStore
-          // setReplies deals with list, thus [data]
           const postStore = usePostStore();
           postStore.setReplies([data]);
-          await this.fetchAuthorReplyStatus(data.reply_to);
+          await this.fetchAuthorReplyStatus(replyTo);
           return true;
         }
-        if (error) throw error;
       } catch (error) {
-        console.error(error.message);
+        console.error(errMsg(error));
         return false;
       }
+      return false;
     },
-    editReply(pid, data) {
+    editReply(pid: PostId, data: PostRow) {
       this.allReply.set(pid, data);
     },
-    async deleteReply(pid, reply_to) {
-      // assume postStore.deletePost(pid) could do the job
+    async deleteReply(pid: PostId, reply_to: PostId) {
       this.allReply.delete(pid);
       this.postReplyId[pid] = [];
-      this.postReplyId[reply_to] = this.postReplyId[reply_to].filter(
-        (replyId) => replyId !== pid,
-      );
+      const list = this.postReplyId[reply_to];
+      if (list)
+        this.postReplyId[reply_to] = list.filter((replyId) => replyId !== pid);
       if (this.authorHasReplied[reply_to] === pid) {
         this.authorHasReplied[reply_to] = null;
       }
       await this.fetchUserReplyStatus(reply_to);
       await this.fetchAuthorReplyStatus(reply_to);
-      if (this.replyCount[reply_to] >= 1) this.replyCount[reply_to] -= 1;
+      const rc = this.replyCount[reply_to] ?? 0;
+      if (rc >= 1) this.replyCount[reply_to] = rc - 1;
     },
-    async fetchReplies(pid) {
+    async fetchReplies(pid: PostId) {
       if (pid) {
-        const client = useSupabaseClient();
+        const client = useSupabaseClient<Database>();
         try {
           const { error, data } = await client
             .from("posts")
-            .select()
+            .select(POST_COLUMNS)
             .eq("type", "reply")
             .eq("reply_to", pid)
             .order("created_at", { ascending: true });
@@ -122,17 +133,17 @@ export const useReplyStore = defineStore("reply", {
           }
           if (error) throw error;
         } catch (error) {
-          console.error(error.message);
+          console.error(errMsg(error));
         }
       }
     },
-    async fetchUserReplies(uid) {
+    async fetchUserReplies(uid: PostId) {
       if (!uid) return;
-      const client = useSupabaseClient();
+      const client = useSupabaseClient<Database>();
       try {
         const { error, data } = await client
           .from("posts")
-          .select()
+          .select(POST_COLUMNS)
           .eq("type", "reply")
           .eq("user_id", uid)
           .order("created_at", { ascending: false });
@@ -142,19 +153,19 @@ export const useReplyStore = defineStore("reply", {
         }
         if (error) throw error;
       } catch (error) {
-        console.error(error.message);
+        console.error(errMsg(error));
       }
     },
-    setReplies(data) {
+    setReplies(data: PostRow[]) {
       const postStore = usePostStore();
       for (const reply of data) {
         this.allReply.set(reply.id, reply);
       }
       postStore.setReplies(data);
     },
-    async fetchReplyCount(pid) {
+    async fetchReplyCount(pid: PostId) {
       if (pid) {
-        const client = useSupabaseClient();
+        const client = useSupabaseClient<Database>();
         try {
           const { error, count } = await client
             .from("posts")
@@ -166,56 +177,59 @@ export const useReplyStore = defineStore("reply", {
           }
           if (error) throw error;
         } catch (error) {
-          console.error(error.message);
+          console.error(errMsg(error));
         }
       }
     },
-    async fetchUserReplyStatus(pid) {
+    async fetchUserReplyStatus(pid: PostId) {
       if (pid) {
-        const client = useSupabaseClient();
+        const client = useSupabaseClient<Database>();
         const user = useSupabaseUser();
+        const uid = user.value?.id;
+        if (!uid) return;
         try {
           const { error, data } = await client
             .from("posts")
             .select("id")
             .eq("type", "reply")
             .eq("reply_to", pid)
-            .eq("user_id", user.value.id)
+            .eq("user_id", uid)
             .limit(1);
-          if (data.length) this.userHasReplied[pid] = true;
-          else this.userHasReplied[pid] = false;
+          this.userHasReplied[pid] = (data?.length ?? 0) > 0;
           if (error) throw error;
         } catch (error) {
-          console.error(error?.message ?? error);
+          console.error(errMsg(error));
         }
       }
     },
-    async fetchAuthorReplyStatus(pid) {
+    async fetchAuthorReplyStatus(pid: PostId) {
       if (pid) {
-        const client = useSupabaseClient();
+        const client = useSupabaseClient<Database>();
         let authorId = "";
         if (this.allReply.has(pid)) {
-          authorId = this.allReply.get(pid).user_id;
+          authorId = this.allReply.get(pid)!.user_id;
         } else {
           const postStore = usePostStore();
-          authorId = postStore.getPost(pid).user_id;
+          const p = postStore.getPost(pid);
+          if (!p) return;
+          authorId = p.user_id;
         }
         try {
           const { error, data } = await client
             .from("posts")
-            .select("*")
+            .select(POST_COLUMNS)
             .eq("reply_to", pid)
             .eq("user_id", authorId)
             .order("created_at")
             .limit(1);
-          if (data.length) {
-            this.setReplies(data);
-            this.authorHasReplied[pid] = data[0].id;
-            // return data[0].id;
+          if (data?.length) {
+            const rows = data as PostRow[];
+            this.setReplies(rows);
+            this.authorHasReplied[pid] = rows[0]!.id;
           }
           if (error) throw error;
         } catch (error) {
-          console.error(error?.message ?? error);
+          console.error(errMsg(error));
         }
       }
     },

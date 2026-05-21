@@ -111,9 +111,11 @@ function focusoutSearchBar() {
 </template>
 
 <style scoped>
-.main-right-scrollbar::-webkit-scrollbar {
-  width: 0px;
-  height: 0px;
+@supports selector(::-webkit-scrollbar) {
+  .main-right-scrollbar::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+  }
 }
 .main-right-scrollbar {
   scrollbar-width: none;

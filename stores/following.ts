@@ -1,29 +1,34 @@
+import type { Database } from "#build/types/supabase-database";
+import { FOLLOWING_COLUMNS } from "~/types/supabase-select";
+import { errMsg } from "~/utils/errMsg";
+
+type UserId = string;
+
 export const useFollowingStore = defineStore("following", {
   state: () => ({
-    following: {},
-    followers: {},
-    isFollowing: {},
+    following: {} as Record<UserId, UserId[]>,
+    followers: {} as Record<UserId, UserId[]>,
+    isFollowing: {} as Record<UserId, boolean>,
     error: "",
   }),
   getters: {
     getFollowing: (state) => {
-      return (uid) => state.following[uid];
+      return (uid: UserId) => state.following[uid];
     },
     getFollowers: (state) => {
-      return (uid) => state.followers[uid];
+      return (uid: UserId) => state.followers[uid];
     },
     getFollowingStatus: (state) => {
-      return (uid) => state.isFollowing[uid];
+      return (uid: UserId) => state.isFollowing[uid];
     },
     getError: (state) => {
       return state.error;
     },
   },
   actions: {
-    // fetch following list
-    async fetchFollowing(uid) {
+    async fetchFollowing(uid: UserId) {
       if (!uid) return;
-      const client = useSupabaseClient();
+      const client = useSupabaseClient<Database>();
       try {
         const { error, data } = await client
           .from("following")
@@ -32,56 +37,59 @@ export const useFollowingStore = defineStore("following", {
           .order("created_at", { ascending: false });
         if (data) {
           const user = useSupabaseUser();
+          const uidSelf = user.value?.id;
+          if (!uidSelf) return;
           this.following[uid] = data.map((obj) => obj.following_id);
-          if (uid === user.value.id) {
-            for (const id of this.following[uid]) {
+          if (uid === uidSelf) {
+            for (const id of this.following[uid] ?? []) {
               this.isFollowing[id] = true;
             }
           }
         }
         if (error) throw error;
       } catch (error) {
-        this.error = error.message;
+        this.error = errMsg(error);
       }
     },
-    // fetch follower list
-    async fetchFollowers(uid) {
+    async fetchFollowers(uid: UserId) {
       if (!uid) return;
-      const client = useSupabaseClient();
+      const client = useSupabaseClient<Database>();
       try {
         const { error, data } = await client
           .from("following")
-          .select()
+          .select(FOLLOWING_COLUMNS)
           .eq("following_id", uid)
           .order("created_at", { ascending: false });
-        if (data) this.followers[uid] = data.map((obj) => obj.following_id);
+        if (data)
+          this.followers[uid] = data.map((obj) => obj.following_id);
         if (error) throw error;
       } catch (error) {
-        this.error = error.message;
+        this.error = errMsg(error);
       }
     },
-    // check if an user is being follow by you
-    async checkIsFollowing(uid) {
+    async checkIsFollowing(uid: UserId) {
       const user = useSupabaseUser();
-      const client = useSupabaseClient();
+      const client = useSupabaseClient<Database>();
+      const myId = user.value?.id;
+      if (!myId) return;
       try {
         const { error, data } = await client
           .from("following")
-          .select()
-          .eq("follower_id", user.value.id)
+          .select(FOLLOWING_COLUMNS)
+          .eq("follower_id", myId)
           .eq("following_id", uid);
 
-        this.isFollowing[uid] = data.length > 0;
+        this.isFollowing[uid] = (data?.length ?? 0) > 0;
         if (error) throw error;
       } catch (error) {
-        this.error = error.message;
+        this.error = errMsg(error);
       }
     },
-    // do I need to explain?
-    async followUser(uid) {
+    async followUser(uid: UserId) {
       const user = useSupabaseUser();
-      const client = useSupabaseClient();
-      const myId = user.value.id;
+      const client = useSupabaseClient<Database>();
+      const myId = user.value?.id;
+      if (!myId) return;
       try {
         const { error } = await client.from("following").insert({
           follower_id: myId,
@@ -94,14 +102,14 @@ export const useFollowingStore = defineStore("following", {
         this.following[myId].push(uid);
         this.followers[uid].push(myId);
       } catch (error) {
-        this.error = error.message;
+        this.error = errMsg(error);
       }
     },
-    // cancelled
-    async unfollowUser(uid) {
+    async unfollowUser(uid: UserId) {
       const user = useSupabaseUser();
-      const client = useSupabaseClient();
-      const myId = user.value.id;
+      const client = useSupabaseClient<Database>();
+      const myId = user.value?.id;
+      if (!myId) return;
       try {
         const { error } = await client.from("following").delete().match({
           follower_id: myId,
@@ -120,7 +128,7 @@ export const useFollowingStore = defineStore("following", {
           );
         }
       } catch (error) {
-        this.error = error.message;
+        this.error = errMsg(error);
       }
     },
     clearFollowing() {

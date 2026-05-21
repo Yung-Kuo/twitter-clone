@@ -19,19 +19,20 @@ export interface Database {
           description: string | null;
           avatar_url: string | null;
           updated_at: string | null;
-          created_at?: string | null;
+          created_at: string | null;
         };
         Insert: Partial<Database["public"]["Tables"]["profiles"]["Row"]> & {
           id: string;
         };
         Update: Partial<Database["public"]["Tables"]["profiles"]["Row"]>;
+        Relationships: [];
       };
       posts: {
         Row: {
           id: string;
           user_id: string;
           text: string | null;
-          pictures: Json | null;
+          pictures: unknown | null;
           reply_to: string | null;
           type: string | null;
           edited: boolean | null;
@@ -41,6 +42,7 @@ export interface Database {
           user_id: string;
         };
         Update: Partial<Database["public"]["Tables"]["posts"]["Row"]>;
+        Relationships: [];
       };
       following: {
         Row: {
@@ -50,6 +52,7 @@ export interface Database {
         };
         Insert: Database["public"]["Tables"]["following"]["Row"];
         Update: Partial<Database["public"]["Tables"]["following"]["Row"]>;
+        Relationships: [];
       };
       bookmark: {
         Row: {
@@ -59,6 +62,7 @@ export interface Database {
         };
         Insert: Database["public"]["Tables"]["bookmark"]["Row"];
         Update: Partial<Database["public"]["Tables"]["bookmark"]["Row"]>;
+        Relationships: [];
       };
       likes: {
         Row: {
@@ -68,6 +72,7 @@ export interface Database {
         };
         Insert: Database["public"]["Tables"]["likes"]["Row"];
         Update: Partial<Database["public"]["Tables"]["likes"]["Row"]>;
+        Relationships: [];
       };
       reply: {
         Row: {
@@ -78,11 +83,13 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["reply"]["Row"]>;
         Update: Partial<Database["public"]["Tables"]["reply"]["Row"]>;
+        Relationships: [];
       };
     };
     Views: {
       posts_with_meta: {
         Row: Record<string, unknown>;
+        Relationships: [];
       };
     };
     Functions: Record<string, never>;
