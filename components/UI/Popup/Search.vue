@@ -1,5 +1,7 @@
 <script setup>
-const { showSearch, toggleSearch } = inject("useSearch");
+import { useSearchKey } from "~/composables/keys";
+
+const { showSearch, toggleSearch } = inject(useSearchKey);
 </script>
 <template>
   <UIPopupTransition>

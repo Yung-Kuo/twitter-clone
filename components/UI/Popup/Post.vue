@@ -1,10 +1,11 @@
 <script setup>
 import { usePostStore } from "~/stores/post";
+import { writePostKey } from "~/composables/keys";
+
 const user = useSupabaseUser();
 const postStore = usePostStore();
 const emit = defineEmits(["close"]);
-const { newPost, repost_pid, publishPost, publishQuote } =
-  inject("writePost");
+const { newPost, repost_pid, publishPost, publishQuote } = inject(writePostKey);
 
 onMounted(() => {
   newPost.value = "";

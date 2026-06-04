@@ -1,11 +1,12 @@
 <script setup>
 import { usePostStore } from "~/stores/post";
+import { popupReplyKey } from "~/composables/keys";
+
 const user = useSupabaseUser();
 const postStore = usePostStore();
 const emit = defineEmits(["close"]);
 
-// reply
-const { pid, publishReply } = inject("popupReply");
+const { pid, publishReply } = inject(popupReplyKey);
 const reply = ref("");
 
 const post = computed(() => postStore.getPost(pid.value));

@@ -1,14 +1,21 @@
-<script setup>
+<script setup lang="ts">
+import { useFollowMutation } from "~/queries/hooks/useFollowMutation";
 import { useFollowingStore } from "~/stores/following";
+
 const followingStore = useFollowingStore();
+const followMutation = useFollowMutation();
 const user = useSupabaseUser();
-const props = defineProps(["uid"]);
+
+const props = defineProps<{
+  uid?: string;
+}>();
+
 const following_hover = ref(false);
 </script>
 <template>
   <div v-if="props?.uid" class="min-w-max">
     <!-- self -->
-    <NuxtLink v-if="props.uid === user.id" to="/profile">
+    <NuxtLink v-if="props.uid === user?.id" to="/profile">
       <UIButton color="white"> Edit Profile </UIButton>
     </NuxtLink>
     <!-- other user -->
@@ -18,9 +25,10 @@ const following_hover = ref(false);
       :solid="!followingStore.getFollowingStatus(props?.uid)"
       :turn-red="followingStore.getFollowingStatus(props?.uid)"
       @click="
-        followingStore.getFollowingStatus(props.uid)
-          ? followingStore.unfollowUser(props.uid)
-          : followingStore.followUser(props.uid)
+        followMutation.mutate({
+          targetUid: props.uid,
+          following: Boolean(followingStore.getFollowingStatus(props.uid)),
+        })
       "
       @mouseenter="following_hover = true"
       @mouseleave="following_hover = false"

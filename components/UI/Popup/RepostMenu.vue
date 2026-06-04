@@ -1,4 +1,10 @@
 <script setup>
+import {
+  bindMenuElementKey,
+  menuPlacementClassKey,
+  toggleMenuKey,
+} from "~/composables/keys";
+
 const props = defineProps({
   pid: {
     type: String,
@@ -11,9 +17,9 @@ const props = defineProps({
 });
 const emit = defineEmits(["quote", "repost"]);
 
-const toggleMenu = inject("toggleMenu");
-const bindMenuElement = inject("bindMenuElement");
-const menuPlacementClass = inject("menuPlacementClass");
+const toggleMenu = inject(toggleMenuKey);
+const bindMenuElement = inject(bindMenuElementKey);
+const menuPlacementClass = inject(menuPlacementClassKey);
 
 const repost = {
   name: "Repost",

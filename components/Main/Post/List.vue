@@ -2,7 +2,7 @@
 const props = defineProps({
   postList: {
     type: Array,
-    required: true,
+    default: () => [],
   },
   showAuthorReply: {
     type: Boolean,

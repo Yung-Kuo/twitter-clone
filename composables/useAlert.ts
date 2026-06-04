@@ -1,7 +1,8 @@
-export default function () {
+export default function useAlert() {
   const alertMode = ref("");
   const alertMessage = ref("");
-  const errorTimeout = ref(null);
+  const errorTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
+
   function hasError() {
     if (errorTimeout.value) clearTimeout(errorTimeout.value);
     errorTimeout.value = setTimeout(() => {

@@ -1,13 +1,15 @@
-export default function useToggleMenu(layoutRefs) {
+import type { LayoutRefs, MenuType } from "~/composables/injection-types";
+
+export default function useToggleMenu(layoutRefs: LayoutRefs) {
   const showMenu = ref(false);
   const menu_pid = ref("");
-  const type = ref("");
-  const menuElements = shallowReactive({});
+  const type = ref<MenuType>("");
+  const menuElements = shallowReactive<Record<string, HTMLElement>>({});
 
-  function bindMenuElement(domId, el) {
+  function bindMenuElement(domId: string, el: HTMLElement | null) {
     if (!domId) return;
     if (el) menuElements[domId] = el;
-    else delete menuElements[domId];
+    else Reflect.deleteProperty(menuElements, domId);
   }
 
   const icon_id = computed(() => {
@@ -19,20 +21,21 @@ export default function useToggleMenu(layoutRefs) {
   const menu_id = computed(() => {
     if (!type.value) return "";
     if (type.value === "account") return "account_menu";
-    if (type.value === "post_action") return `${menu_pid.value}_post_action_menu`;
+    if (type.value === "post_action")
+      return `${menu_pid.value}_post_action_menu`;
     if (type.value === "repost") return `${menu_pid.value}_repost_menu`;
     return "";
   });
 
   const menuPlacementClass = ref("");
-  const accountMenuStyle = ref({});
+  const accountMenuStyle = ref<Record<string, string>>({});
 
   function resetMenuLayout() {
     menuPlacementClass.value = "";
     accountMenuStyle.value = {};
   }
 
-  function toggleMenu(pid, menuType) {
+  function toggleMenu(pid: string, menuType: MenuType) {
     if (pid !== menu_pid.value || type.value !== menuType)
       showMenu.value = false;
     menu_pid.value = pid;
@@ -46,7 +49,7 @@ export default function useToggleMenu(layoutRefs) {
     }
   }
 
-  function handleClickOutside(event) {
+  function handleClickOutside(event: MouseEvent) {
     if (!showMenu.value) return;
 
     const iconKey = icon_id.value;
@@ -57,10 +60,10 @@ export default function useToggleMenu(layoutRefs) {
     if (!icon || !menu) {
       return;
     }
-    if (icon.contains(event.target)) {
+    if (icon.contains(event.target as Node)) {
       return;
     }
-    if (menu.contains(event.target)) {
+    if (menu.contains(event.target as Node)) {
       return;
     }
     showMenu.value = false;

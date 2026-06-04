@@ -1,4 +1,11 @@
 <script setup>
+import {
+  bindProfileCardKey,
+  profileCardStyleKey,
+  useAlertKey,
+  useCollectionKey,
+} from "~/composables/keys";
+
 const {
   profileCardVis,
   hoveredUserId,
@@ -10,10 +17,10 @@ const {
   showPopupReply,
   showPopupEdit,
   editPost,
-} = inject("useCollection");
-const { alertMode, alertMessage } = inject("useAlert");
-const bindProfileCard = inject("bindProfileCard");
-const profileCardStyle = inject("profileCardStyle");
+} = inject(useCollectionKey);
+const { alertMode, alertMessage } = inject(useAlertKey);
+const bindProfileCard = inject(bindProfileCardKey);
+const profileCardStyle = inject(profileCardStyleKey);
 </script>
 <template>
   <div>

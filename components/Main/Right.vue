@@ -1,17 +1,24 @@
 <script setup>
-import { usePostStore } from "~/stores/post";
-const postStore = usePostStore();
+import { useProfileStore } from "~/stores/profile";
+import {
+  getRectKey,
+  handleWheelEventKey,
+  layoutRefsKey,
+  menuGetRectKey,
+} from "~/composables/keys";
 
-const layoutRefs = inject("layoutRefs");
+const profileStore = useProfileStore();
+
+const layoutRefs = inject(layoutRefsKey);
 const searchBarRef = ref(null);
 
 function bindRight(el) {
   layoutRefs.right.value = el;
 }
 
-const handleWheelEvent = inject("handleWheelEvent");
-const getRect = inject("getRect");
-const menuGetRect = inject("menuGetRect", () => null);
+const handleWheelEvent = inject(handleWheelEventKey);
+const getRect = inject(getRectKey);
+const menuGetRect = inject(menuGetRectKey, () => null);
 
 const props = defineProps({
   user_id: {
@@ -20,12 +27,12 @@ const props = defineProps({
   },
 });
 onMounted(async () => {
-  await postStore.fetchProfiles();
+  await profileStore.fetchProfiles();
 });
 
 const userProfileList = computed(() => {
   if (props?.user_id) return null;
-  else return postStore.getProfileList;
+  else return profileStore.getProfileList;
 });
 
 const search = ref("");

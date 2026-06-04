@@ -1,6 +1,14 @@
 <script setup>
-import { useProfileStore } from "~/stores/profile";
 import { usePostStore } from "~/stores/post";
+import { useFeedQueryWithStore } from "~/queries/hooks/useFeedQuery";
+import { useCurrentProfileQueryWithStore } from "~/queries/hooks/useCurrentProfileQuery";
+import { useMyEngagementQueryWithStore } from "~/queries/hooks/useMyEngagementQuery";
+import {
+  handleClickOutsideKey,
+  mainPageShiftedKey,
+  showPopupPostKey,
+} from "~/composables/keys";
+
 useSeoMeta({
   title: "Twitter Clone",
   description:
@@ -10,11 +18,11 @@ definePageMeta({
   middleware: ["auth"],
 });
 const user = useSupabaseUser();
-const store = useProfileStore();
 const postStore = usePostStore();
-const handleClickOutside = inject("handleClickOutside");
-const showPopupPost = inject("showPopupPost");
-const mainPageShifted = inject("mainPageShifted");
+
+const handleClickOutside = inject(handleClickOutsideKey);
+const showPopupPost = inject(showPopupPostKey);
+const mainPageShifted = inject(mainPageShiftedKey);
 
 const activeTab = ref("For You");
 
@@ -24,40 +32,23 @@ watchEffect(() => {
   }
 });
 
-watchEffect(async () => {
-  if (store.noProfile) {
-    await store.fetchProfile();
-  }
-});
+useCurrentProfileQueryWithStore();
+useMyEngagementQueryWithStore();
 
-onMounted(async () => {
-  const id = user.value?.id;
-  if (id) {
-    await postStore.fetchLikes(id);
-    await postStore.fetchBookmarks();
-  }
-});
-
-// Load different feed (immediate: load default "For You" on mount)
-watch(
-  activeTab,
-  async () => {
-    await fetchNewPost();
-  },
-  { immediate: true },
+const feedKind = computed(() =>
+  activeTab.value === "Following" ? "following" : "all",
 );
+useFeedQueryWithStore(feedKind);
 
 const postList = computed(() => {
-  if (activeTab.value === "Following") return postStore.getFollowingPosts;
-  if (activeTab.value === "For You") return postStore.getAllPosts;
+  if (activeTab.value === "Following") {
+    return postStore.getFollowingPosts ?? [];
+  }
+  if (activeTab.value === "For You") {
+    return postStore.getAllPosts ?? [];
+  }
   return [];
 });
-
-// Publish new post
-async function fetchNewPost() {
-  if (activeTab.value === "Following") await postStore.fetchFollowingPosts();
-  else if (activeTab.value === "For You") await postStore.fetchAllPosts();
-}
 </script>
 
 <template>

@@ -3,6 +3,8 @@ import { useProfileStore } from "~/stores/profile";
 import { usePostStore } from "~/stores/post";
 import { useReplyStore } from "~/stores/reply";
 import { useFollowingStore } from "~/stores/following";
+import { handleClickOutsideKey, showPopupPostKey } from "~/composables/keys";
+
 definePageMeta({
   middleware: ["auth"],
 });
@@ -13,8 +15,8 @@ const replyStore = useReplyStore();
 const followingStore = useFollowingStore();
 const route = useRoute();
 
-const handleClickOutside = inject("handleClickOutside");
-const showPopupPost = inject("showPopupPost");
+const handleClickOutside = inject(handleClickOutsideKey);
+const showPopupPost = inject(showPopupPostKey);
 
 onMounted(async () => {
   watchEffect(async () => {
@@ -23,7 +25,7 @@ onMounted(async () => {
     }
     if (profileStore.noProfile) {
       await profileStore.fetchProfile();
-      await postStore.fetchUserProfile(user.value.id);
+      await profileStore.fetchUserProfile(user.value.id);
     }
   });
   watchEffect(async () => {

@@ -1,9 +1,17 @@
-export default function useScroll(layoutRefs, scrollChrome) {
+import type { LayoutRefs, ScrollChrome } from "~/composables/injection-types";
+
+export default function useScroll(
+  layoutRefs: LayoutRefs,
+  scrollChrome: ScrollChrome,
+) {
   const route = useRoute();
-  const previousScrollTop = ref(null);
+  const previousScrollTop = ref<number | null>(null);
   const scroll_record = ref(0);
 
-  function handleScroll(event) {
+  function handleScroll(event: Event) {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+
     const centerEl = layoutRefs.center.value;
     const bottomEl = layoutRefs.bottom.value;
     const bannerEl = layoutRefs.banner.value;
@@ -11,19 +19,19 @@ export default function useScroll(layoutRefs, scrollChrome) {
       return;
     }
 
-    if (!previousScrollTop.value) {
-      previousScrollTop.value = event.target.scrollTop;
+    if (previousScrollTop.value === null) {
+      previousScrollTop.value = target.scrollTop;
     }
 
-    const scrollDistance = event.target.scrollTop - previousScrollTop.value;
+    const scrollDistance = target.scrollTop - previousScrollTop.value;
     scroll_record.value += scrollDistance;
-    previousScrollTop.value = event.target.scrollTop;
+    previousScrollTop.value = target.scrollTop;
 
     if (
       scroll_record.value > 50 &&
       isVisible(bottomEl) &&
-      event.target.scrollTop > 0 &&
-      event.target.scrollTop + window.innerHeight < centerEl.scrollHeight
+      target.scrollTop > 0 &&
+      target.scrollTop + window.innerHeight < centerEl.scrollHeight
     ) {
       previousScrollTop.value = null;
       scroll_record.value = 0;
@@ -36,7 +44,7 @@ export default function useScroll(layoutRefs, scrollChrome) {
     }
   }
 
-  function isVisible(element) {
+  function isVisible(element: HTMLElement) {
     return (
       element.offsetWidth > 0 &&
       element.offsetHeight > 0 &&

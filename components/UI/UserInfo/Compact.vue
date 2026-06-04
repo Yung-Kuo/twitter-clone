@@ -1,18 +1,21 @@
 <script setup>
-import { usePostStore } from "~/stores/post";
-const postStore = usePostStore();
+import { useProfileStore } from "~/stores/profile";
+import { profileCardKey } from "~/composables/keys";
+
+const profileStore = useProfileStore();
 const props = defineProps({
   user_id: {
     type: String,
     default: null,
   },
 });
-const { showProfileCard, hideProfileCard } = inject("profileCard");
+
+const { showProfileCard, hideProfileCard } = inject(profileCardKey);
 </script>
 <template>
   <div class="flex h-min w-full items-center gap-2">
     <!-- avatar -->
-    <NuxtLink :to="`/${postStore.getUsername(props.user_id)}`">
+    <NuxtLink :to="`/${profileStore.usernameById(props.user_id)}`">
       <span
         class="inline-flex"
         @mouseenter="showProfileCard($event.currentTarget, props.user_id)"
@@ -26,7 +29,7 @@ const { showProfileCard, hideProfileCard } = inject("profileCard");
     >
       <!-- name -->
       <NuxtLink
-        :to="`/${postStore.getUsername(props.user_id)}`"
+        :to="`/${profileStore.usernameById(props.user_id)}`"
         class="h-1/2 w-full overflow-y-hidden overflow-x-scroll"
       >
         <span
@@ -35,12 +38,12 @@ const { showProfileCard, hideProfileCard } = inject("profileCard");
             showProfileCard($event.currentTarget, props.user_id)
           "
           @mouseleave="hideProfileCard()"
-          >{{ postStore.getName(props.user_id) }}</span
+          >{{ profileStore.nameById(props.user_id) }}</span
         >
       </NuxtLink>
       <!-- username -->
       <NuxtLink
-        :to="`/${postStore.getUsername(props.user_id)}`"
+        :to="`/${profileStore.usernameById(props.user_id)}`"
         class="h-1/2 overflow-y-hidden overflow-x-scroll"
       >
         <span
@@ -49,10 +52,10 @@ const { showProfileCard, hideProfileCard } = inject("profileCard");
             showProfileCard($event.currentTarget, props.user_id)
           "
           @mouseleave="hideProfileCard()"
-          >@{{ postStore.getUsername(props.user_id) }}</span
+          >@{{ profileStore.usernameById(props.user_id) }}</span
         >
       </NuxtLink>
     </div>
-    <UIButtonFollow :uid="props.user_id" />
+    <UIButtonFollow v-if="props.user_id" :uid="props.user_id" />
   </div>
 </template>

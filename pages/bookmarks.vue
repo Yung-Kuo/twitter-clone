@@ -1,6 +1,7 @@
 <script setup>
 import { useProfileStore } from "~/stores/profile";
 import { usePostStore } from "~/stores/post";
+import { handleClickOutsideKey, showPopupPostKey } from "~/composables/keys";
 
 definePageMeta({
   middleware: ["auth"],
@@ -10,8 +11,8 @@ const profileStore = useProfileStore();
 const postStore = usePostStore();
 const user = useSupabaseUser();
 
-const handleClickOutside = inject("handleClickOutside");
-const showPopupPost = inject("showPopupPost");
+const handleClickOutside = inject(handleClickOutsideKey);
+const showPopupPost = inject(showPopupPostKey);
 
 watchEffect(() => {
   if (!user.value) {
@@ -45,7 +46,7 @@ const bookmarkList = computed(() => postStore.getBookmarkPosts);
     <MainBottom />
     <MainCenter>
       <template #title>Bookmarks</template>
-      <template #subtitle>@{{ postStore.getUsername(user.id) }}</template>
+      <template #subtitle>@{{ profileStore.usernameById(user.id) }}</template>
       <template #main>
         <MainPostList :post-list="bookmarkList" />
       </template>

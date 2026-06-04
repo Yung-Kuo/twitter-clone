@@ -1,16 +1,22 @@
-export default function useProfileCard(layoutRefs) {
-  const profileCardVis = ref(false);
-  const hoveredAnchorEl = shallowRef(null);
-  const hoveredUserId = ref(null);
-  const profileCardEl = shallowRef(null);
-  const profileCardStyle = ref({});
+import type { ComponentPublicInstance } from "vue";
+import type { LayoutRefs } from "~/composables/injection-types";
 
-  function bindProfileCard(instance) {
+export default function useProfileCard(layoutRefs: LayoutRefs) {
+  const profileCardVis = ref(false);
+  const hoveredAnchorEl = shallowRef<HTMLElement | null>(null);
+  const hoveredUserId = ref<string | null>(null);
+  const profileCardEl = shallowRef<HTMLElement | null>(null);
+  const profileCardStyle = ref<Record<string, string>>({});
+
+  function bindProfileCard(
+    instance: ComponentPublicInstance | HTMLElement | null,
+  ) {
     if (!instance) {
       profileCardEl.value = null;
       return;
     }
-    const el = instance.$el ?? instance;
+    const el =
+      instance instanceof HTMLElement ? instance : (instance.$el as unknown);
     profileCardEl.value = el instanceof HTMLElement ? el : null;
   }
 
@@ -40,7 +46,7 @@ export default function useProfileCard(layoutRefs) {
     });
   }
 
-  function showProfileCard(el, uid) {
+  function showProfileCard(el: HTMLElement | null, uid?: string | null) {
     if (el) hoveredAnchorEl.value = el;
     if (uid !== undefined && uid !== null) hoveredUserId.value = uid;
     profileCardVis.value = true;

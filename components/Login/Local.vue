@@ -1,7 +1,9 @@
 <script setup>
+import { useAlertKey } from "~/composables/keys";
+
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
-const { alertMode, alertMessage, hasError } = inject("useAlert");
+const { alertMode, alertMessage, hasError } = inject(useAlertKey);
 const loading = ref(false);
 // email & password
 const email = ref("");

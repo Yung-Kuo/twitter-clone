@@ -1,17 +1,17 @@
 <script setup>
 import { storeToRefs } from "pinia";
 import { useProfileStore } from "~/stores/profile";
-import { usePostStore } from "~/stores/post";
+import { handleClickOutsideKey, useAlertKey, useProfileCardKey } from "~/composables/keys";
+
 definePageMeta({
   middleware: ["auth"],
 });
 
 const user = useSupabaseUser();
 const store = useProfileStore();
-const postStore = usePostStore();
 const { getError } = storeToRefs(store);
-const { alertMode, alertMessage, hasError } = inject("useAlert");
-const handleClickOutside = inject("handleClickOutside");
+const { alertMode, alertMessage, hasError } = inject(useAlertKey);
+const handleClickOutside = inject(handleClickOutsideKey);
 const {
   profileCardVis,
   hoveredUserId,
@@ -19,7 +19,7 @@ const {
   hideProfileCard,
   bindProfileCard,
   profileCardStyle,
-} = inject("useProfileCard");
+} = inject(useProfileCardKey);
 
 const userProfile = reactive({});
 const firstEdit = ref(false);
@@ -103,7 +103,7 @@ async function updateProfile() {
     await onUpload();
   }
   await store.updateProfile(userProfile);
-  await postStore.downloadAvatar(userProfile.id, userProfile.avatar_url);
+  await store.downloadAvatarForUser(userProfile.id, userProfile.avatar_url);
   if (getError.value) {
     alertMode.value = "error";
     alertMessage.value = getError.value;

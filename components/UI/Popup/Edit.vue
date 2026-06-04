@@ -1,12 +1,12 @@
 <script setup>
 import { usePostStore } from "~/stores/post";
+import { useEditKey } from "~/composables/keys";
+
 const user = useSupabaseUser();
 const postStore = usePostStore();
 const emit = defineEmits(["close"]);
 
-// edit
-const { editPost, newText, publishEdit } =
-  inject("useEdit");
+const { editPost, newText, publishEdit } = inject(useEditKey);
 // reply
 const replyPost = computed(() => {
   if (editPost.value?.type === "reply" && editPost.value?.reply_to) {

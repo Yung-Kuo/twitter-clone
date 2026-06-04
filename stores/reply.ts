@@ -1,15 +1,22 @@
-import type { Database } from "#build/types/supabase-database";
-import { POST_COLUMNS } from "~/types/supabase-select";
+/**
+ * Owns: reply threads, counts, and user reply status. Fetches via queries/api.
+ */
 import { errMsg } from "~/utils/errMsg";
+import type { NewPostInput, PostRow } from "~/queries/api/posts";
+import {
+  countRepliesForPost,
+  fetchAuthorReplyOnPost,
+  fetchRepliesByUser,
+  fetchRepliesForPost,
+  fetchUserRepliedToPost,
+  getRepliesClient,
+  insertReplyPost,
+} from "~/queries/api/replies";
 import { usePostStore } from "~/stores/post";
 
-type PostRow = Database["public"]["Tables"]["posts"]["Row"];
 type PostId = string;
 
-export type NewReplyInput = Pick<
-  PostRow,
-  "text" | "pictures" | "reply_to" | "type"
->;
+export type { NewPostInput as NewReplyInput } from "~/queries/api/posts";
 
 export const useReplyStore = defineStore("reply", {
   state: () => ({
@@ -59,23 +66,17 @@ export const useReplyStore = defineStore("reply", {
     },
   },
   actions: {
-    async uploadReply(newReply: NewReplyInput) {
-      const client = useSupabaseClient<Database>();
+    async uploadReply(newReply: NewPostInput) {
+      const client = getRepliesClient();
       const user = useSupabaseUser();
       const uid = user.value?.id;
       if (!uid) return false;
       try {
-        const { error, data: row } = await client
-          .from("posts")
-          .insert({
-            user_id: uid,
-            text: newReply.text,
-            pictures: newReply.pictures,
-            reply_to: newReply.reply_to,
-            type: newReply.type,
-          })
-          .select(POST_COLUMNS)
-          .single();
+        const { error, data: row } = await insertReplyPost(
+          client,
+          uid,
+          newReply,
+        );
         const data = row as PostRow | null;
         if (error) throw error;
         if (data?.reply_to) {
@@ -117,14 +118,9 @@ export const useReplyStore = defineStore("reply", {
     },
     async fetchReplies(pid: PostId) {
       if (pid) {
-        const client = useSupabaseClient<Database>();
+        const client = getRepliesClient();
         try {
-          const { error, data } = await client
-            .from("posts")
-            .select(POST_COLUMNS)
-            .eq("type", "reply")
-            .eq("reply_to", pid)
-            .order("created_at", { ascending: true });
+          const { error, data } = await fetchRepliesForPost(client, pid);
           if (data?.length) {
             this.setReplies(data);
             this.postReplyId[pid] = data.map((reply) => reply.id);
@@ -139,14 +135,9 @@ export const useReplyStore = defineStore("reply", {
     },
     async fetchUserReplies(uid: PostId) {
       if (!uid) return;
-      const client = useSupabaseClient<Database>();
+      const client = getRepliesClient();
       try {
-        const { error, data } = await client
-          .from("posts")
-          .select(POST_COLUMNS)
-          .eq("type", "reply")
-          .eq("user_id", uid)
-          .order("created_at", { ascending: false });
+        const { error, data } = await fetchRepliesByUser(client, uid);
         if (data) {
           this.setReplies(data);
           this.userReplies[uid] = data.map((reply) => reply.id);
@@ -165,13 +156,9 @@ export const useReplyStore = defineStore("reply", {
     },
     async fetchReplyCount(pid: PostId) {
       if (pid) {
-        const client = useSupabaseClient<Database>();
+        const client = getRepliesClient();
         try {
-          const { error, count } = await client
-            .from("posts")
-            .select("*", { count: "exact", head: true })
-            .eq("reply_to", pid)
-            .eq("type", "reply");
+          const { error, count } = await countRepliesForPost(client, pid);
           if (count) {
             this.replyCount[pid] = count;
           }
@@ -183,18 +170,16 @@ export const useReplyStore = defineStore("reply", {
     },
     async fetchUserReplyStatus(pid: PostId) {
       if (pid) {
-        const client = useSupabaseClient<Database>();
+        const client = getRepliesClient();
         const user = useSupabaseUser();
         const uid = user.value?.id;
         if (!uid) return;
         try {
-          const { error, data } = await client
-            .from("posts")
-            .select("id")
-            .eq("type", "reply")
-            .eq("reply_to", pid)
-            .eq("user_id", uid)
-            .limit(1);
+          const { error, data } = await fetchUserRepliedToPost(
+            client,
+            pid,
+            uid,
+          );
           this.userHasReplied[pid] = (data?.length ?? 0) > 0;
           if (error) throw error;
         } catch (error) {
@@ -204,7 +189,7 @@ export const useReplyStore = defineStore("reply", {
     },
     async fetchAuthorReplyStatus(pid: PostId) {
       if (pid) {
-        const client = useSupabaseClient<Database>();
+        const client = getRepliesClient();
         let authorId = "";
         if (this.allReply.has(pid)) {
           authorId = this.allReply.get(pid)!.user_id;
@@ -215,13 +200,11 @@ export const useReplyStore = defineStore("reply", {
           authorId = p.user_id;
         }
         try {
-          const { error, data } = await client
-            .from("posts")
-            .select(POST_COLUMNS)
-            .eq("reply_to", pid)
-            .eq("user_id", authorId)
-            .order("created_at")
-            .limit(1);
+          const { error, data } = await fetchAuthorReplyOnPost(
+            client,
+            pid,
+            authorId,
+          );
           if (data?.length) {
             const rows = data as PostRow[];
             this.setReplies(rows);

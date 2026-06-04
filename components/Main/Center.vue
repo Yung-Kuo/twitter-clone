@@ -1,13 +1,23 @@
 <script setup>
-const layoutRefs = inject("layoutRefs");
-const scrollChrome = inject("scrollChrome");
-const mainPageShifted = inject("mainPageShifted");
+import {
+  getRectKey,
+  handleScrollKey,
+  handleWheelEventKey,
+  layoutRefsKey,
+  mainPageShiftedKey,
+  menuGetRectKey,
+  scrollChromeKey,
+} from "~/composables/keys";
+
+const layoutRefs = inject(layoutRefsKey);
+const scrollChrome = inject(scrollChromeKey);
+const mainPageShifted = inject(mainPageShiftedKey);
 const router = useRouter();
 const user = useSupabaseUser();
-const handleWheelEvent = inject("handleWheelEvent");
-const handleScroll = inject("handleScroll");
-const getRect = inject("getRect", () => null);
-const menuGetRect = inject("menuGetRect", () => null);
+const handleWheelEvent = inject(handleWheelEventKey);
+const handleScroll = inject(handleScrollKey);
+const getRect = inject(getRectKey, () => null);
+const menuGetRect = inject(menuGetRectKey, () => null);
 
 const props = defineProps({
   initialScroll: {

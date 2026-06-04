@@ -1,7 +1,17 @@
 <script setup>
 import { usePostStore } from "~/stores/post";
+import { useProfileStore } from "~/stores/profile";
 import { useReplyStore } from "~/stores/reply";
+import {
+  bindMenuElementKey,
+  clickReplyKey,
+  profileCardKey,
+  togglePostMenuKey,
+  writePostKey,
+} from "~/composables/keys";
+
 const postStore = usePostStore();
+const profileStore = useProfileStore();
 const replyStore = useReplyStore();
 const props = defineProps({
   post: {
@@ -16,18 +26,15 @@ const props = defineProps({
 const { post } = toRefs(props);
 
 // profile card
-const { showProfileCard, hideProfileCard } = inject("profileCard");
-// write post
+const { showProfileCard, hideProfileCard } = inject(profileCardKey);
 const {
   showPopupPost,
   repost_pid,
   publishRepost,
-} = inject("writePost");
-// toggle menu
-const { showMenu, menu_pid, type: menuType, toggleMenu } = inject("togglePostMenu");
-const bindMenuElement = inject("bindMenuElement");
-// action buttons
-const clickReply = inject("clickReply");
+} = inject(writePostKey);
+const { showMenu, menu_pid, type: menuType, toggleMenu } = inject(togglePostMenuKey);
+const bindMenuElement = inject(bindMenuElementKey);
+const clickReply = inject(clickReplyKey);
 const { clickLike, clickBookmark } = useLikeBookmark();
 
 const authorReplyId = computed(() =>
@@ -92,7 +99,7 @@ const date = computed(() => {
         <!-- left column / avatar -->
         <div class="flex w-min flex-col">
           <!-- avatar for show post -->
-          <NuxtLink :to="`/${postStore.getUsername(post?.user_id)}`">
+          <NuxtLink :to="`/${profileStore.usernameById(post?.user_id)}`">
             <span
               class="inline-flex noForward"
               @mouseenter="
@@ -131,9 +138,9 @@ const date = computed(() => {
                 "
                 @mouseleave="hideProfileCard()"
               >
-                <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
+                <NuxtLink :to="`/${profileStore.usernameById(post.user_id)}`">
                   <span class="noForward">
-                    {{ postStore.getName(post.user_id) }}
+                    {{ profileStore.nameById(post.user_id) }}
                   </span>
                 </NuxtLink>
               </div>
@@ -147,8 +154,8 @@ const date = computed(() => {
                   "
                   @mouseleave="hideProfileCard()"
                 >
-                  <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
-                    <span> @{{ postStore.getUsername(post.user_id) }}</span>
+                  <NuxtLink :to="`/${profileStore.usernameById(post.user_id)}`">
+                    <span> @{{ profileStore.usernameById(post.user_id) }}</span>
                   </NuxtLink>
                 </div>
               </div>
@@ -265,7 +272,7 @@ const date = computed(() => {
                         showMenu && menuType === 'repost' && menu_pid === post.id
                       "
                       :pid="post.id"
-                      :username="postStore.getUsername(post.user_id)"
+                      :username="profileStore.usernameById(post.user_id)"
                       @repost="publishRepost(post.id)"
                       @quote="
                         repost_pid = post.id;

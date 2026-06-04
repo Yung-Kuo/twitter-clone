@@ -1,0 +1,19 @@
+---
+description: Auto-build junior-to-senior curriculum — run next phase, verify, update status
+alwaysApply: false
+---
+
+# Curriculum auto-build
+
+When the user says **run auto-build**, **curriculum next**, **build next phase**, or pastes output from `npm run curriculum:next`:
+
+1. Run `npm run curriculum:next` (or `node scripts/curriculum/next.mjs`) to get the **next phase id** and prompt path.
+2. Read `docs/curriculum/AGENT_CONTRACT.md` and the phase file under `docs/curriculum/prompts/`.
+3. Implement **only** that phase. UI must not change.
+4. Run `npm run curriculum:verify`, `npm run build`, and `npm run typecheck` when TypeScript changed.
+5. Update `REFACTOR_STATUS.md` with what completed and what is next.
+6. One commit only if the user asked to commit; message: `refactor(phase<id>): …`.
+
+Do **not** skip phases in `curriculum.config.json`. Do **not** mark Phase 5 complete while `stores/*.ts` still contain `.from(`.
+
+If all required phases pass verification, say so and offer optional phase `2e` or `10`.

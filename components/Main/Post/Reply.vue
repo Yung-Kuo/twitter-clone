@@ -1,6 +1,8 @@
 <script setup>
 import { usePostStore } from "~/stores/post";
+import { useProfileStore } from "~/stores/profile";
 const postStore = usePostStore();
+const profileStore = useProfileStore();
 const post = defineProps({
   id: String,
   created_at: String,
@@ -27,7 +29,7 @@ const date = computed(() => {
     <div class="flex w-10 flex-col">
       <!-- avatar for show post -->
       <div class="noForward h-min w-min">
-        <NuxtLink :to="`/${postStore.getUsername(post?.user_id)}`">
+        <NuxtLink :to="`/${profileStore.usernameById(post?.user_id)}`">
           <UIAvatar :user_id="post?.user_id" size="small" />
         </NuxtLink>
       </div>
@@ -45,9 +47,9 @@ const date = computed(() => {
         <!-- user info -->
         <!-- name -->
         <div class="noForward flex h-5 items-center font-bold hover:underline">
-          <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
+          <NuxtLink :to="`/${profileStore.usernameById(post.user_id)}`">
             <span>
-              {{ postStore.getName(post.user_id) }}
+              {{ profileStore.nameById(post.user_id) }}
             </span>
           </NuxtLink>
         </div>
@@ -55,8 +57,8 @@ const date = computed(() => {
         <div class="flex h-5 text-sm text-zinc-500">
           <!-- username -->
           <div class="noForward">
-            <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
-              <span> @{{ postStore.getUsername(post.user_id) }}</span>
+            <NuxtLink :to="`/${profileStore.usernameById(post.user_id)}`">
+              <span> @{{ profileStore.usernameById(post.user_id) }}</span>
             </NuxtLink>
           </div>
           <div class="flex w-max">
@@ -88,9 +90,9 @@ const date = computed(() => {
       <div class="noForward cursor-default pb-4 pl-2 pt-2">
         <!-- replying to -->
         <span class="text-zinc-500">Replying to </span>
-        <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
+        <NuxtLink :to="`/${profileStore.usernameById(post.user_id)}`">
           <span class="text-sky-500"
-            >@{{ postStore.getUsername(post.user_id) }}</span
+            >@{{ profileStore.usernameById(post.user_id) }}</span
           >
         </NuxtLink>
       </div>

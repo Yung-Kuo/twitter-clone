@@ -1,5 +1,8 @@
-<script setup>
-const props = defineProps(["mode", "message"]);
+<script setup lang="ts">
+const props = defineProps<{
+  mode?: string;
+  message?: string;
+}>();
 </script>
 
 <template>

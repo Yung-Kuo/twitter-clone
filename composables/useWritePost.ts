@@ -1,14 +1,11 @@
-export default function () {
+export default function useWritePost() {
   const profileStore = useProfileStore();
   const postStore = usePostStore();
   const route = useRoute();
   const showPopupPost = ref(false);
-  // write new post
   const newPost = ref("");
-  // for repost
   const repost_pid = ref("");
 
-  // post
   async function publishPost() {
     const trimmed = newPost.value.trim();
     if (!trimmed) {
@@ -22,26 +19,26 @@ export default function () {
     });
     if (address) {
       newPost.value = "";
-      // navigate to post page if not at home page
       if (
         route.fullPath !== "/" &&
         route.fullPath !== `/${profileStore.getUsername}`
       )
         navigateTo(address);
       return true;
-    } else return false;
+    }
+    return false;
   }
-  // retweet
-  async function publishRepost(pid) {
+
+  async function publishRepost(pid: string) {
     const address = await postStore.uploadPost({
       text: pid,
+      pictures: [],
       reply_to: pid,
       type: "repost",
     });
     if (address) {
       newPost.value = "";
       repost_pid.value = "";
-      // navigate to post page if not at home page
       if (
         route.fullPath !== "/" &&
         route.fullPath !== `/${profileStore.getUsername}`
@@ -49,17 +46,17 @@ export default function () {
         navigateTo(address);
     }
   }
-  // quote tweet
+
   async function publishQuote() {
     const address = await postStore.uploadPost({
       text: newPost.value,
+      pictures: [],
       reply_to: repost_pid.value,
       type: "repost",
     });
     if (address) {
       newPost.value = "";
       repost_pid.value = "";
-      // navigate to post page if not at home page
       if (
         route.fullPath !== "/" &&
         route.fullPath !== `/${profileStore.getUsername}`

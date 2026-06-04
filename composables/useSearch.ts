@@ -1,4 +1,4 @@
-export default function () {
+export default function useSearch() {
   const showSearch = ref(false);
 
   function toggleSearch() {

@@ -1,7 +1,17 @@
 <script setup>
 import { usePostStore } from "~/stores/post";
+import { useProfileStore } from "~/stores/profile";
 import { useReplyStore } from "~/stores/reply";
+import {
+  bindMenuElementKey,
+  clickReplyKey,
+  profileCardKey,
+  togglePostMenuKey,
+  writePostKey,
+} from "~/composables/keys";
+
 const postStore = usePostStore();
+const profileStore = useProfileStore();
 const replyStore = useReplyStore();
 const props = defineProps({
   post: {
@@ -15,18 +25,15 @@ const props = defineProps({
 });
 const { post } = toRefs(props);
 // profile card
-const { showProfileCard, hideProfileCard } = inject("profileCard");
-// write post
+const { showProfileCard, hideProfileCard } = inject(profileCardKey);
 const {
   showPopupPost,
   repost_pid,
   publishRepost,
-} = inject("writePost");
-// toggle menu
-const { showMenu, menu_pid, type: menuType, toggleMenu } = inject("togglePostMenu");
-const bindMenuElement = inject("bindMenuElement");
-// action buttons
-const clickReply = inject("clickReply");
+} = inject(writePostKey);
+const { showMenu, menu_pid, type: menuType, toggleMenu } = inject(togglePostMenuKey);
+const bindMenuElement = inject(bindMenuElementKey);
+const clickReply = inject(clickReplyKey);
 const { clickLike, clickBookmark } = useLikeBookmark();
 
 watchEffect(async () => {
@@ -62,7 +69,7 @@ const date = computed(() => {
 <template>
   <MainPostHoverClickWrapper :post="post" :no-hover="props.noHover">
     <div
-      v-if="postStore.getProfile(post?.user_id)"
+      v-if="profileStore.profileById(post?.user_id)"
       class="flex h-min w-full px-3 tracking-wide text-zinc-200 transition-all hover:cursor-pointer 2xl:px-5"
     >
       <!-- left column / avatar -->
@@ -73,7 +80,7 @@ const date = computed(() => {
           @mouseenter="showProfileCard($event.currentTarget, post.user_id)"
           @mouseleave="hideProfileCard()"
         >
-          <NuxtLink :to="`/${postStore.getUsername(post?.user_id)}`">
+          <NuxtLink :to="`/${profileStore.usernameById(post?.user_id)}`">
             <UIAvatar :user_id="post?.user_id" size="small"/>
           </NuxtLink>
         </div>
@@ -92,7 +99,7 @@ const date = computed(() => {
           >
             <div class="font-bold hover:underline">
               <!-- name -->
-              <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
+              <NuxtLink :to="`/${profileStore.usernameById(post.user_id)}`">
                 <div
                   @mouseenter="
                     showProfileCard($event.currentTarget, post.user_id)
@@ -100,7 +107,7 @@ const date = computed(() => {
                   @mouseleave="hideProfileCard()"
                 >
                   <span>
-                    {{ postStore.getName(post.user_id) }}
+                    {{ profileStore.nameById(post.user_id) }}
                   </span>
                 </div>
               </NuxtLink>
@@ -108,14 +115,14 @@ const date = computed(() => {
             &ensp;
             <div class="flex text-sm text-zinc-500">
               <!-- username -->
-              <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
+              <NuxtLink :to="`/${profileStore.usernameById(post.user_id)}`">
                 <div
                   @mouseenter="
                     showProfileCard($event.currentTarget, post.user_id)
                   "
                   @mouseleave="hideProfileCard()"
                 >
-                  <span> @{{ postStore.getUsername(post.user_id) }}</span>
+                  <span> @{{ profileStore.usernameById(post.user_id) }}</span>
                 </div>
               </NuxtLink>
               <!-- timestamp -->
@@ -218,7 +225,7 @@ const date = computed(() => {
                   <UIPopupRepostMenu
                     v-if="showMenu && menuType === 'repost' && menu_pid === post.id"
                     :pid="menu_pid"
-                    :username="postStore.getUsername(post.user_id)"
+                    :username="profileStore.usernameById(post.user_id)"
                     @repost="publishRepost(menu_pid)"
                     @quote="
                       repost_pid = menu_pid;

@@ -1,17 +1,23 @@
 <script setup>
 import { usePostStore } from "~/stores/post";
 import { useFollowingStore } from "~/stores/following";
+import {
+  bindMenuElementKey,
+  menuPlacementClassKey,
+  selectEditPostKey,
+  toggleMenuKey,
+} from "~/composables/keys";
+
 const postStore = usePostStore();
 const followingStore = useFollowingStore();
 const user = useSupabaseUser();
 const props = defineProps(["pid", "uid"]);
 const route = useRoute();
 
-const toggleMenu = inject("toggleMenu");
-const bindMenuElement = inject("bindMenuElement");
-const menuPlacementClass = inject("menuPlacementClass");
-// edit
-const selectEditPost = inject("selectEditPost");
+const toggleMenu = inject(toggleMenuKey);
+const bindMenuElement = inject(bindMenuElementKey);
+const menuPlacementClass = inject(menuPlacementClassKey);
+const selectEditPost = inject(selectEditPostKey);
 
 const actionList = ref("");
 const edit = {

@@ -1,11 +1,11 @@
 <script setup>
-import { usePostStore } from "~/stores/post";
+import { useProfileStore } from "~/stores/profile";
 import { useFollowingStore } from "~/stores/following";
 const props = defineProps(["userId"]);
 const { userId } = toRefs(props);
-const postStore = usePostStore();
+const profileStore = useProfileStore();
 const followingStore = useFollowingStore();
-const userProfile = computed(() => postStore.getProfile(userId?.value));
+const userProfile = computed(() => profileStore.profileById(userId?.value));
 onMounted(async () => {
   watchEffect(async () => {
     if (!followingStore.getFollowing(userId.value)) {
@@ -31,7 +31,7 @@ onMounted(async () => {
       </NuxtLink>
       <!-- Extra layer of div to avoid following/follow button filling the full height because of flex -->
       <div class="h-min">
-        <UIButtonFollow :uid="userProfile?.id"/>
+        <UIButtonFollow v-if="userProfile?.id" :uid="userProfile.id" />
       </div>
     </div>
     <!-- name / username -->

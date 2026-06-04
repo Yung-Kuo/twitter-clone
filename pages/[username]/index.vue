@@ -3,6 +3,7 @@ import { useProfileStore } from "~/stores/profile";
 import { usePostStore } from "~/stores/post";
 import { useReplyStore } from "~/stores/reply";
 import { useFollowingStore } from "~/stores/following";
+import { handleClickOutsideKey, showPopupPostKey } from "~/composables/keys";
 
 definePageMeta({
   middleware: ["auth"],
@@ -16,8 +17,8 @@ const postStore = usePostStore();
 const replyStore = useReplyStore();
 const followingStore = useFollowingStore();
 
-const handleClickOutside = inject("handleClickOutside");
-const showPopupPost = inject("showPopupPost");
+const handleClickOutside = inject(handleClickOutsideKey);
+const showPopupPost = inject(showPopupPostKey);
 
 // storing non-self user profile
 const userProfile = computed(() => {
@@ -126,7 +127,10 @@ const postList = computed(() => {
           <div class="relative -top-32 w-full p-5 text-gray-200">
             <!-- action buttons -->
             <div class="relative -top-4 flex h-10 w-full justify-end">
-              <UIButtonFollow :uid="userProfile?.id"/>
+              <UIButtonFollow
+                v-if="userProfile?.id"
+                :uid="userProfile.id"
+              />
             </div>
             <!-- user info -->
             <div class="relative top-6 w-full">

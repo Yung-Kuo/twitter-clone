@@ -1,6 +1,8 @@
 <script setup>
 import { usePostStore } from "~/stores/post";
+import { useProfileStore } from "~/stores/profile";
 const postStore = usePostStore();
+const profileStore = useProfileStore();
 // const emit = defineEmits(["reply"]);
 const post = defineProps({
   id: String,
@@ -43,7 +45,7 @@ const date = computed(() => {
     <div class="flex h-min w-full">
       <!-- avatar -->
       <div class="noForward flex w-min items-center">
-        <NuxtLink :to="`/${postStore.getUsername(post?.user_id)}`">
+        <NuxtLink :to="`/${profileStore.usernameById(post?.user_id)}`">
           <UIAvatar :user_id="post.user_id" size="xsmall"/>
         </NuxtLink>
       </div>
@@ -53,9 +55,9 @@ const date = computed(() => {
       >
         <!-- name -->
         <div class="noForward flex h-5 items-center font-bold hover:underline">
-          <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
+          <NuxtLink :to="`/${profileStore.usernameById(post.user_id)}`">
             <span class="noForward">
-              {{ postStore.getName(post.user_id) }}
+              {{ profileStore.nameById(post.user_id) }}
             </span>
           </NuxtLink>
         </div>
@@ -63,9 +65,9 @@ const date = computed(() => {
         <div class="flex items-center text-sm text-zinc-500">
           <!-- username -->
           <div class="noForward">
-            <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
+            <NuxtLink :to="`/${profileStore.usernameById(post.user_id)}`">
               <span class="noForward">
-                @{{ postStore.getUsername(post.user_id) }}</span
+                @{{ profileStore.usernameById(post.user_id) }}</span
               >
             </NuxtLink>
           </div>

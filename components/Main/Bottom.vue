@@ -1,9 +1,16 @@
 <script setup>
 import { useProfileStore } from "~/stores/profile";
+import {
+  layoutRefsKey,
+  scrollChromeKey,
+  showPopupPostKey,
+  useSearchKey,
+} from "~/composables/keys";
+
 const store = useProfileStore();
 
-const layoutRefs = inject("layoutRefs");
-const scrollChrome = inject("scrollChrome");
+const layoutRefs = inject(layoutRefsKey);
+const scrollChrome = inject(scrollChromeKey);
 
 function bindBottom(el) {
   layoutRefs.bottom.value = el;
@@ -11,9 +18,9 @@ function bindBottom(el) {
 
 // Supabase
 const route = useRoute();
-const showPopupPost = inject("showPopupPost");
+const showPopupPost = inject(showPopupPostKey);
 const { showSearch, toggleSearch } = useSearch();
-provide("useSearch", { showSearch, toggleSearch });
+provide(useSearchKey, { showSearch, toggleSearch });
 </script>
 <template>
   <div

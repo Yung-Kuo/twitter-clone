@@ -1,22 +1,21 @@
-<script setup>
-const props = defineProps({
-  color: {
-    type: String,
-    default: "blue",
+<script setup lang="ts">
+type ButtonColor = "blue" | "orange" | "white";
+
+const props = withDefaults(
+  defineProps<{
+    color?: ButtonColor;
+    solid?: boolean;
+    active?: boolean;
+    turnRed?: boolean;
+  }>(),
+  {
+    color: "blue",
+    solid: false,
+    active: true,
+    turnRed: false,
   },
-  solid: {
-    type: Boolean,
-    default: false,
-  },
-  active: {
-    type: Boolean,
-    default: true,
-  },
-  turnRed: {
-    type: Boolean,
-    default: false,
-  },
-});
+);
+
 const button_style = ref("");
 const blue_solid =
   "px-5 py-2 rounded-full bg-sky-500 text-white hover:bg-sky-600 active:bg-sky-700 font-semibold";
@@ -33,30 +32,20 @@ const white_hollow =
 const white_hollow_red =
   "px-4 py-1 rounded-full border border-zinc-600 font-medium text-zinc-200 hover:bg-opacity-10 hover:bg-red-600 hover:border-red-800 hover:text-red-600 active:bg-opacity-20";
 
-onMounted(() => {
-  watchEffect(() => {
-    if (props.color === "blue") {
-      if (props.solid) {
-        button_style.value = blue_solid;
-      } else {
-        button_style.value = blue_hollow;
-      }
-    } else if (props.color === "orange") {
-      if (props.solid) {
-        button_style.value = orange_solid;
-      } else {
-        button_style.value = orange_hollow;
-      }
-    } else if (props.color === "white") {
-      if (props.solid) {
-        button_style.value = white_solid;
-      } else if (props.turnRed) {
-        button_style.value = white_hollow_red;
-      } else {
-        button_style.value = white_hollow;
-      }
+watchEffect(() => {
+  if (props.color === "blue") {
+    button_style.value = props.solid ? blue_solid : blue_hollow;
+  } else if (props.color === "orange") {
+    button_style.value = props.solid ? orange_solid : orange_hollow;
+  } else if (props.color === "white") {
+    if (props.solid) {
+      button_style.value = white_solid;
+    } else if (props.turnRed) {
+      button_style.value = white_hollow_red;
+    } else {
+      button_style.value = white_hollow;
     }
-  });
+  }
 });
 </script>
 

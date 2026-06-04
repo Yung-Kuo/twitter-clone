@@ -1,0 +1,100 @@
+{
+  "name": "junior-to-senior",
+  "uiSacred": true,
+  "sequential": true,
+  "statusFile": "REFACTOR_STATUS.md",
+  "phases": [
+    {
+      "id": "0",
+      "title": "Tooling & guardrails",
+      "verify": ["phase0"],
+      "prompt": null
+    },
+    {
+      "id": "1",
+      "title": "Bug fixes & code hygiene",
+      "verify": ["phase1"],
+      "prompt": null
+    },
+    {
+      "id": "2",
+      "title": "Declarative Vue",
+      "verify": ["phase2"],
+      "prompt": null
+    },
+    {
+      "id": "2e",
+      "title": "transition-all cleanup (optional)",
+      "optional": true,
+      "verify": ["phase2e"],
+      "prompt": "docs/curriculum/prompts/phase-2e.md"
+    },
+    {
+      "id": "3a",
+      "title": "Strict tsconfig + typed Supabase client",
+      "verify": ["phase3a"],
+      "prompt": "docs/curriculum/prompts/phase-3a.md"
+    },
+    {
+      "id": "3c",
+      "title": "Pinia stores TypeScript",
+      "verify": ["phase3c"],
+      "prompt": null
+    },
+    {
+      "id": "3d",
+      "title": "Composables TypeScript + InjectionKey",
+      "verify": ["phase3d"],
+      "prompt": "docs/curriculum/prompts/phase-3d.md"
+    },
+    {
+      "id": "3e",
+      "title": "Leaf components lang=ts",
+      "verify": ["phase3e"],
+      "prompt": "docs/curriculum/prompts/phase-3e.md"
+    },
+    {
+      "id": "4",
+      "title": "Profile single source of truth",
+      "verify": ["phase4"],
+      "prompt": "docs/curriculum/prompts/phase-4.md"
+    },
+    {
+      "id": "5",
+      "title": "TanStack Query migration",
+      "verify": ["phase5"],
+      "prompt": "docs/curriculum/prompts/phase-5.md"
+    },
+    {
+      "id": "6",
+      "title": "posts_with_meta + single-query feed",
+      "verify": ["phase6"],
+      "prompt": "docs/curriculum/prompts/phase-6.md"
+    },
+    {
+      "id": "7",
+      "title": "Zod boundaries + alert UX",
+      "verify": ["phase7"],
+      "prompt": "docs/curriculum/prompts/phase-7.md"
+    },
+    {
+      "id": "8",
+      "title": "Component decomposition + Floating UI",
+      "verify": ["phase8"],
+      "prompt": "docs/curriculum/prompts/phase-8.md"
+    },
+    {
+      "id": "9",
+      "title": "Tests pyramid",
+      "verify": ["phase9"],
+      "prompt": "docs/curriculum/prompts/phase-9.md"
+    },
+    {
+      "id": "10",
+      "title": "CI / perf / a11y stretch",
+      "optional": true,
+      "verify": ["phase10"],
+      "prompt": "docs/curriculum/prompts/phase-10.md"
+    }
+  ]
+}

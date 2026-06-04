@@ -1,8 +1,15 @@
-export default function useWheelSync(layoutRefs) {
-  function handleWheelEvent(event, scroll_at) {
+import type { LayoutRefs } from "~/composables/injection-types";
+
+export default function useWheelSync(layoutRefs: LayoutRefs) {
+  function handleWheelEvent(
+    event: WheelEvent,
+    scroll_at: "right" | "center",
+  ) {
+    const target = event.target;
     if (
-      typeof event.target?.closest === "function" &&
-      event.target.closest(".no-wheel-sync")
+      target instanceof Element &&
+      typeof target.closest === "function" &&
+      target.closest(".no-wheel-sync")
     ) {
       return;
     }

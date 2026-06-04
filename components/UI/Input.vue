@@ -1,25 +1,27 @@
-<script setup>
-const props = defineProps([
-  "id",
-  "type",
-  "flag",
-  "inputOverwrite",
-  "firstEdit",
-]);
+<script setup lang="ts">
+type InputType = "email" | "password" | "text" | string;
+
+const props = defineProps<{
+  id?: string;
+  type?: InputType;
+  flag?: boolean;
+  inputOverwrite?: boolean;
+  firstEdit?: boolean;
+}>();
+
 const { id, type, flag } = toRefs(props);
-const text = defineModel("text");
-// const flag = defineModel('flag');
-const emit = defineEmits(["update:text", "edited", "updateValid"]);
+const text = defineModel<string>("text");
+
+const emit = defineEmits<{
+  "update:text": [value: string];
+  edited: [];
+  updateValid: [valid: boolean];
+}>();
 
 onMounted(() => {
-  if (text.value) {
-    inputFocusFlag.value = true;
-  } else {
-    inputFocusFlag.value = false;
-  }
+  inputFocusFlag.value = !!text.value;
 });
 
-// input invalid class
 const inputValidClass = [
   "border-zinc-600",
   "focus-within:border-sky-500",
@@ -28,60 +30,44 @@ const inputValidClass = [
 ];
 const inputInvalidClass = ["border-orange-400", "ring-1", "ring-orange-400"];
 const inputValidFlag = ref(true);
+
 watch(text, (curVal) => {
-  // unvalid
   if (!curVal) inputValidFlag.value = false;
-  // focus
   if (curVal) inputFocusFlag.value = true;
 
-  if (type.value == "email") {
-    if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(curVal)) {
-      inputValidFlag.value = false;
-    } else {
-      inputValidFlag.value = true;
-    }
-  } else if (type.value == "password") {
-    if (!curVal || curVal.length < 4) {
-      inputValidFlag.value = false;
-    } else {
-      inputValidFlag.value = true;
-    }
-  } else if (type.value == "text") {
-    if (!curVal || curVal.length < 2) {
-      inputValidFlag.value = false;
-    } else {
-      inputValidFlag.value = true;
-    }
+  if (type.value === "email") {
+    inputValidFlag.value = !!(
+      curVal && /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(curVal)
+    );
+  } else if (type.value === "password") {
+    inputValidFlag.value = !!(curVal && curVal.length >= 4);
+  } else if (type.value === "text") {
+    inputValidFlag.value = !!(curVal && curVal.length >= 2);
   }
   emit("updateValid", inputValidFlag.value);
 });
 
 watch(flag, (curVal) => {
-  inputValidFlag.value = curVal;
+  if (curVal !== undefined) inputValidFlag.value = curVal;
 });
 
 function stopInputOverwrite() {
   emit("edited");
 }
 
-// input focusin/focusout class
-// ["text-xl", "sm:text-2xl", "pt-1"]
 const inputFocusInClass = "text-xl md:text-2xl pt-1";
 const inputFocusOutClass = ["text-2xl", "md:text-3xl", "pt-4", "md:pt-5"];
 
 const inputFocusFlag = ref(false);
-const inputEl = ref(null);
+const inputEl = ref<HTMLInputElement | null>(null);
 
 function inputFocusIn() {
   inputEl.value?.focus?.();
   inputFocusFlag.value = true;
 }
+
 function inputFocusOut() {
-  if (text.value) {
-    inputFocusFlag.value = true;
-  } else {
-    inputFocusFlag.value = false;
-  }
+  inputFocusFlag.value = !!text.value;
 }
 </script>
 
@@ -119,25 +105,4 @@ input:is(:-webkit-autofill, :autofill) {
   -webkit-text-fill-caret-color: white;
   caret-color: white;
 }
-
-/* input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-  -webkit-animation: autofill 0s forwards;
-  animation: autofill 0s forwards;
-}
-@keyframes autofill {
-  100% {
-    background: transparent !important;
-    color: inherit;
-  }
-}
-
-@-webkit-keyframes autofill {
-  100% {
-    background: transparent !important;
-    color: inherit;
-  }
-} */
 </style>

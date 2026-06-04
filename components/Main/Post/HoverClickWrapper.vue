@@ -1,4 +1,6 @@
 <script setup>
+import { clickPostKey } from "~/composables/keys";
+
 const props = defineProps({
   post: Object,
   noHover: {
@@ -12,8 +14,7 @@ const props = defineProps({
 });
 const { post } = toRefs(props);
 
-// click post
-const { target_post, clickPost, hoverPost } = inject("clickPost");
+const { target_post, clickPost, hoverPost } = inject(clickPostKey);
 </script>
 <template>
   <article

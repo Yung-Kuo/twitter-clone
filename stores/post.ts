@@ -1,32 +1,50 @@
+/**
+ * Owns: posts, feeds, likes, bookmarks, reposts, quotes — not profiles (see stores/profile.ts).
+ */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "#build/types/supabase-database";
-import { POST_COLUMNS, PROFILE_COLUMNS, REPLY_TABLE_COLUMNS } from "~/types/supabase-select";
+import {
+  countBookmarks,
+  countLikes,
+  countReposts,
+  deleteBookmark,
+  deleteLike,
+  deletePostRow,
+  fetchAllFeedPosts,
+  fetchBookmarksForUser,
+  fetchLikesForUser,
+  fetchPostById,
+  fetchPostsByIds,
+  fetchPostsByUser,
+  fetchPostsByUserIds,
+  fetchQuotesForPost,
+  fetchRepostsForPost,
+  getPostsClient,
+  insertBookmark,
+  insertLike,
+  insertPost,
+  insertReplyTableRow,
+  updatePostRow,
+  type BookmarkPick,
+  type LikePick,
+  type NewPostInput,
+  type PostEdit,
+  type PostRow,
+  type ReplyRow,
+} from "~/queries/api/posts";
 import { errMsg } from "~/utils/errMsg";
 import { useFollowingStore } from "~/stores/following";
+import { useProfileStore } from "~/stores/profile";
 import { useReplyStore } from "~/stores/reply";
 
-type PostRow = Database["public"]["Tables"]["posts"]["Row"];
-type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
-type ReplyRow = Database["public"]["Tables"]["reply"]["Row"];
-type BookmarkPick = Pick<Database["public"]["Tables"]["bookmark"]["Row"], "post_id">;
-type LikePick = Pick<Database["public"]["Tables"]["likes"]["Row"], "post_id">;
 type PostId = string;
 type UserId = string;
-
-type NewPostInput = Pick<
-  PostRow,
-  "text" | "pictures" | "reply_to" | "type"
->;
-
-type PostEdit = Pick<PostRow, "id" | "text">;
 
 export const usePostStore = defineStore("post", {
   state: () => ({
     userPosts: {} as Record<UserId, PostId[]>,
     allPosts: new Map<PostId, PostRow>(),
     allPostId: [] as PostId[],
-    userAvatars: {} as Record<UserId, string>,
-    userProfile: {} as Record<UserId, ProfileRow>,
     followingPid: [] as PostId[],
     bookmarks: [] as BookmarkPick[],
     bookmarkCount: {} as Record<PostId, number>,
@@ -103,29 +121,6 @@ export const usePostStore = defineStore("post", {
         return null;
       };
     },
-    getAvatarUrl(state) {
-      return (uid: UserId) => state.userProfile[uid]?.avatar_url;
-    },
-    getAvatar(state) {
-      return (uid: UserId) => state.userAvatars[uid];
-    },
-    getUsername(state) {
-      return (uid: UserId) => state.userProfile[uid]?.username;
-    },
-    getName(state) {
-      return (uid: UserId) => {
-        if (!uid) return null;
-        const p = state.userProfile[uid];
-        if (!p) return null;
-        return `${p.first_name} ${p.last_name}`;
-      };
-    },
-    getProfile(state) {
-      return (uid: UserId) => state.userProfile[uid];
-    },
-    getProfileList(state) {
-      return state.userProfile;
-    },
     getBookmarks(state) {
       return state.bookmarks;
     },
@@ -174,22 +169,12 @@ export const usePostStore = defineStore("post", {
   },
   actions: {
     async uploadPost(newPost: NewPostInput) {
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       const user = useSupabaseUser();
       const uid = user.value?.id;
       if (!uid) return false;
       try {
-        const { error, data } = await client
-          .from("posts")
-          .insert({
-            user_id: uid,
-            text: newPost.text,
-            pictures: newPost.pictures,
-            reply_to: newPost.reply_to,
-            type: newPost.type,
-          })
-          .select(POST_COLUMNS)
-          .single();
+        const { error, data } = await insertPost(client, uid, newPost);
         if (error) throw error;
         else if (data) {
           this.allPosts.set(data.id, data);
@@ -199,7 +184,8 @@ export const usePostStore = defineStore("post", {
           }
           this.userPosts[uid].unshift(data.id);
           this.followingPid.unshift(data.id);
-          const username = this.getUsername(uid);
+          const profileStore = useProfileStore();
+          const username = profileStore.usernameById(uid);
           const newPostAddress = `/${username}/post/${data.id}`;
           return newPostAddress;
         }
@@ -210,14 +196,9 @@ export const usePostStore = defineStore("post", {
       return false;
     },
     async updatePost(edit: PostEdit) {
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       try {
-        const { error, data } = await client
-          .from("posts")
-          .update({ text: edit.text, edited: true })
-          .eq("id", edit.id)
-          .select(POST_COLUMNS)
-          .single();
+        const { error, data } = await updatePostRow(client, edit);
         if (error) throw error;
         if (data) {
           this.allPosts.set(data.id, data);
@@ -237,15 +218,12 @@ export const usePostStore = defineStore("post", {
       const deleteThis = this.allPosts.get(pid);
       if (!deleteThis) return false;
       const replyStore = useReplyStore();
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       const user = useSupabaseUser();
       const uid = user.value?.id;
       if (!uid) return false;
       try {
-        const { error } = await client.from("posts").delete().match({
-          id: pid,
-          user_id: uid,
-        });
+        const { error } = await deletePostRow(client, pid, uid);
         if (error) throw error;
         else {
           this.allPosts.delete(pid);
@@ -260,22 +238,15 @@ export const usePostStore = defineStore("post", {
     },
     async setPosts(posts: PostRow[], client?: SupabaseClient<Database>) {
       const supabase = client ?? useSupabaseClient<Database>();
+      const profileStore = useProfileStore();
       for (const post of posts) {
         if (!this.allPostId.find((p) => p === post.id))
           this.allPostId.push(post.id);
         if (!this.allPosts.has(post.id)) {
           this.allPosts.set(post.id, post);
         }
-        if (!this.getProfile(post.user_id))
-          await this.fetchUserProfile(post.user_id, supabase);
-        const prof = this.userProfile[post.user_id];
-        if (!this.getAvatar(post.user_id) && prof?.avatar_url)
-          await this.downloadAvatar(
-            post.user_id,
-            prof.avatar_url,
-            supabase,
-          );
       }
+      await profileStore.ensureAuthorsForPosts(posts, supabase);
     },
     setReplies(posts: PostRow[]) {
       for (const post of posts) {
@@ -285,15 +256,10 @@ export const usePostStore = defineStore("post", {
       }
     },
     async fetchUserPosts(uid: UserId) {
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       if (!uid) return;
       try {
-        const { error, data } = await client
-          .from("posts")
-          .select(POST_COLUMNS)
-          .in("type", ["post", "repost"])
-          .eq("user_id", uid)
-          .order("created_at", { ascending: false });
+        const { error, data } = await fetchPostsByUser(client, uid);
 
         if (data) {
           for (const post of data) {
@@ -303,7 +269,7 @@ export const usePostStore = defineStore("post", {
             this.userPosts[uid].push(post.id);
           }
           await this.setPosts(data, client);
-          await this.fetchUserProfile(uid, client);
+          await useProfileStore().fetchUserProfile(uid, client);
         }
         if (error) throw error;
       } catch (error) {
@@ -311,13 +277,9 @@ export const usePostStore = defineStore("post", {
       }
     },
     async fetchAllPosts() {
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       try {
-        const { error, data } = await client
-          .from("posts")
-          .select(POST_COLUMNS)
-          .in("type", ["post", "repost"])
-          .order("created_at", { ascending: false });
+        const { error, data } = await fetchAllFeedPosts(client);
 
         if (data) {
           this.allPostId = [];
@@ -329,7 +291,7 @@ export const usePostStore = defineStore("post", {
       }
     },
     async fetchFollowingPosts() {
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       const user = useSupabaseUser();
       const uid = user.value?.id;
       if (!uid) return;
@@ -339,12 +301,10 @@ export const usePostStore = defineStore("post", {
       following_id.push(uid);
       if (following_id.length > 0) {
         try {
-          const { error, data } = await client
-            .from("posts")
-            .select(POST_COLUMNS)
-            .in("type", ["post", "repost"])
-            .in("user_id", following_id)
-            .order("created_at", { ascending: false });
+          const { error, data } = await fetchPostsByUserIds(
+            client,
+            following_id,
+          );
 
           if (data) {
             this.followingPid = [];
@@ -353,15 +313,8 @@ export const usePostStore = defineStore("post", {
               if (!this.allPosts.has(post.id)) {
                 this.allPosts.set(post.id, post);
               }
-              await this.fetchUserProfile(post.user_id, client);
-              const prof = this.userProfile[post.user_id];
-              if (prof?.avatar_url)
-                await this.downloadAvatar(
-                  post.user_id,
-                  prof.avatar_url,
-                  client,
-                );
             }
+            await useProfileStore().ensureAuthorsForPosts(data, client);
           }
           if (error) throw error;
         } catch (error) {
@@ -370,27 +323,15 @@ export const usePostStore = defineStore("post", {
       }
     },
     async fetchOnePost(pid: PostId) {
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       try {
-        const { error, data } = await client
-          .from("posts")
-          .select(POST_COLUMNS)
-          .eq("id", pid)
-          .single();
+        const { error, data } = await fetchPostById(client, pid);
         if (data) {
           const post = data;
           if (!this.allPosts.has(post.id)) {
             this.allPosts.set(post.id, post);
           }
-          if (!this.getProfile(post.user_id))
-            await this.fetchUserProfile(post.user_id, client);
-          const prof = this.userProfile[post.user_id];
-          if (!this.getAvatar(post.user_id) && prof?.avatar_url)
-            await this.downloadAvatar(
-              post.user_id,
-              prof.avatar_url,
-              client,
-            );
+          await useProfileStore().ensureAuthorsForPosts([post], client);
         }
         if (error) throw error;
       } catch (error) {
@@ -398,15 +339,9 @@ export const usePostStore = defineStore("post", {
       }
     },
     async fetchQuotes(pid: PostId) {
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       try {
-        const { error, data } = await client
-          .from("posts")
-          .select(POST_COLUMNS)
-          .eq("type", "repost")
-          .eq("reply_to", pid)
-          .neq("text", pid)
-          .order("created_at", { ascending: false });
+        const { error, data } = await fetchQuotesForPost(client, pid);
 
         if (data?.length) {
           this.quotes[pid] = data.map((post) => post.id);
@@ -414,16 +349,8 @@ export const usePostStore = defineStore("post", {
             if (!this.allPosts.has(post.id)) {
               this.allPosts.set(post.id, post);
             }
-            if (!this.getProfile(post.user_id))
-              await this.fetchUserProfile(post.user_id, client);
-            const prof = this.userProfile[post.user_id];
-            if (!this.getAvatar(post.user_id) && prof?.avatar_url)
-              await this.downloadAvatar(
-                post.user_id,
-                prof.avatar_url,
-                client,
-              );
           }
+          await useProfileStore().ensureAuthorsForPosts(data, client);
         }
         if (error) throw error;
       } catch (error) {
@@ -431,15 +358,9 @@ export const usePostStore = defineStore("post", {
       }
     },
     async fetchReposts(pid: PostId) {
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       try {
-        const { error, data } = await client
-          .from("posts")
-          .select(POST_COLUMNS)
-          .eq("type", "repost")
-          .eq("reply_to", pid)
-          .eq("text", pid)
-          .order("created_at", { ascending: false });
+        const { error, data } = await fetchRepostsForPost(client, pid);
 
         if (data?.length) {
           this.reposts[pid] = data.map((post) => post.id);
@@ -447,16 +368,8 @@ export const usePostStore = defineStore("post", {
             if (!this.allPosts.has(post.id)) {
               this.allPosts.set(post.id, post);
             }
-            if (!this.getProfile(post.user_id))
-              await this.fetchUserProfile(post.user_id, client);
-            const prof = this.userProfile[post.user_id];
-            if (!this.getAvatar(post.user_id) && prof?.avatar_url)
-              await this.downloadAvatar(
-                post.user_id,
-                prof.avatar_url,
-                client,
-              );
           }
+          await useProfileStore().ensureAuthorsForPosts(data, client);
         }
         if (error) throw error;
       } catch (error) {
@@ -465,90 +378,22 @@ export const usePostStore = defineStore("post", {
     },
     async fetchRepostCount(pid: PostId) {
       if (!pid) return;
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       try {
-        const { count, error } = await client
-          .from("posts")
-          .select("*", { count: "exact", head: true })
-          .eq("reply_to", pid)
-          .eq("type", "repost");
+        const { count, error } = await countReposts(client, pid);
         if (count) this.repostCount[pid] = count;
         if (error) throw error;
       } catch (error) {
         console.error(errMsg(error));
       }
     },
-    async downloadAvatar(
-      uid: UserId,
-      url: string,
-      client?: SupabaseClient<Database>,
-    ) {
-      const supabase = client ?? useSupabaseClient<Database>();
-      if (!url) return;
-      if (!this.userAvatars[uid]) {
-        try {
-          const { data, error } = await supabase.storage
-            .from("avatars")
-            .download(url);
-          if (error) throw error;
-          if (data) this.userAvatars[uid] = URL.createObjectURL(data);
-        } catch (error) {
-          console.error(errMsg(error));
-        }
-      }
-    },
-    async fetchProfiles() {
-      const client = useSupabaseClient<Database>();
-      try {
-        const { error, data } = await client
-          .from("profiles")
-          .select(PROFILE_COLUMNS);
-        if (data) {
-          for (const profile of data) {
-            this.userProfile[profile.id] = profile;
-          }
-        }
-        if (error) throw error;
-      } catch (error) {
-        console.error(errMsg(error));
-      }
-    },
-    async fetchUserProfile(
-      uid: UserId,
-      client?: SupabaseClient<Database>,
-    ) {
-      const supabase = client ?? useSupabaseClient<Database>();
-      if (!this.userProfile[uid] && uid) {
-        try {
-          const { data, error } = await supabase
-            .from("profiles")
-            .select(PROFILE_COLUMNS)
-            .eq("id", uid)
-            .single();
-          if (error) throw error;
-          if (data) this.userProfile[uid] = data;
-        } catch (error) {
-          console.error(errMsg(error));
-        }
-      }
-    },
-    setProfile(profile: ProfileRow) {
-      this.userProfile[profile.id] = profile;
-    },
     async bookmarkPost(pid: PostId) {
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       const user = useSupabaseUser();
       const uid = user.value?.id;
       if (!uid) return;
       try {
-        const { error, data } = await client
-          .from("bookmark")
-          .insert({
-            post_id: pid,
-            user_id: uid,
-          })
-          .select("post_id")
-          .single();
+        const { error, data } = await insertBookmark(client, pid, uid);
         if (data) {
           this.bookmarks.unshift(data);
           if (this.bookmarkCount[pid]) this.bookmarkCount[pid] += 1;
@@ -560,15 +405,12 @@ export const usePostStore = defineStore("post", {
       }
     },
     async unbookmarkPost(pid: PostId) {
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       const user = useSupabaseUser();
       const uid = user.value?.id;
       if (!uid) return;
       try {
-        const { error } = await client.from("bookmark").delete().match({
-          post_id: pid,
-          user_id: uid,
-        });
+        const { error } = await deleteBookmark(client, pid, uid);
         if (error) throw error;
         else {
           this.bookmarks = this.bookmarks.filter(
@@ -581,16 +423,12 @@ export const usePostStore = defineStore("post", {
       }
     },
     async fetchBookmarks() {
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       const user = useSupabaseUser();
       const uid = user.value?.id;
       if (!uid) return;
       try {
-        const { error, data } = await client
-          .from("bookmark")
-          .select("post_id")
-          .eq("user_id", uid)
-          .order("created_at", { ascending: false });
+        const { error, data } = await fetchBookmarksForUser(client, uid);
         if (data) this.bookmarks = data;
         if (error) throw error;
       } catch (error) {
@@ -598,7 +436,7 @@ export const usePostStore = defineStore("post", {
       }
     },
     async fetchBookmarkPosts() {
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       try {
         const map: PostId[] = [];
         for (const bookmark of this.bookmarks) {
@@ -607,26 +445,14 @@ export const usePostStore = defineStore("post", {
           }
         }
         if (map.length === 0) return;
-        const { error, data } = await client
-          .from("posts")
-          .select(POST_COLUMNS)
-          .in("id", map)
-          .order("created_at", { ascending: false });
+        const { error, data } = await fetchPostsByIds(client, map);
         if (data) {
           for (const post of data) {
             if (!this.allPosts.has(post.id)) {
               this.allPosts.set(post.id, post);
             }
-            if (!this.getProfile(post.user_id))
-              await this.fetchUserProfile(post.user_id, client);
-            const prof = this.userProfile[post.user_id];
-            if (!this.getAvatar(post.user_id) && prof?.avatar_url)
-              await this.downloadAvatar(
-                post.user_id,
-                prof.avatar_url,
-                client,
-              );
           }
+          await useProfileStore().ensureAuthorsForPosts(data, client);
         }
         if (error) throw error;
       } catch (error) {
@@ -635,12 +461,9 @@ export const usePostStore = defineStore("post", {
     },
     async fetchBookmarkCount(pid: PostId) {
       if (pid) {
-        const client = useSupabaseClient<Database>();
+        const client = getPostsClient();
         try {
-          const { error, count } = await client
-            .from("bookmark")
-            .select("*", { count: "exact", head: true })
-            .eq("post_id", pid);
+          const { error, count } = await countBookmarks(client, pid);
           if (count != null) this.bookmarkCount[pid] = count;
           if (error) throw error;
         } catch (error) {
@@ -649,19 +472,12 @@ export const usePostStore = defineStore("post", {
       }
     },
     async likePost(pid: PostId) {
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       const user = useSupabaseUser();
       const uid = user.value?.id;
       if (!uid) return;
       try {
-        const { error, data } = await client
-          .from("likes")
-          .insert({
-            post_id: pid,
-            user_id: uid,
-          })
-          .select("post_id")
-          .single();
+        const { error, data } = await insertLike(client, pid, uid);
         if (data) {
           if (!this.likes[uid]) this.likes[uid] = [];
           this.likes[uid].unshift(data);
@@ -674,15 +490,12 @@ export const usePostStore = defineStore("post", {
       }
     },
     async unlikePost(pid: PostId) {
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       const user = useSupabaseUser();
       const uid = user.value?.id;
       if (!uid) return;
       try {
-        const { error } = await client.from("likes").delete().match({
-          post_id: pid,
-          user_id: uid,
-        });
+        const { error } = await deleteLike(client, pid, uid);
         if (error) return error;
         else {
           if (!this.likes[uid]) this.likes[uid] = [];
@@ -696,13 +509,9 @@ export const usePostStore = defineStore("post", {
       }
     },
     async fetchLikes(uid: UserId) {
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       try {
-        const { error, data } = await client
-          .from("likes")
-          .select("post_id")
-          .eq("user_id", uid)
-          .order("created_at", { ascending: false });
+        const { error, data } = await fetchLikesForUser(client, uid);
 
         if (data) this.likes[uid] = data;
         if (error) throw error;
@@ -711,7 +520,7 @@ export const usePostStore = defineStore("post", {
       }
     },
     async fetchLikePosts(uid: UserId) {
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       if (!this.likes[uid]) return;
       try {
         const map: PostId[] = [];
@@ -721,27 +530,15 @@ export const usePostStore = defineStore("post", {
           }
         }
         if (map.length === 0) return;
-        const { error, data } = await client
-          .from("posts")
-          .select(POST_COLUMNS)
-          .in("id", map)
-          .order("created_at", { ascending: false });
+        const { error, data } = await fetchPostsByIds(client, map);
 
         if (data) {
           for (const post of data) {
             if (!this.allPosts.has(post.id)) {
               this.allPosts.set(post.id, post);
             }
-            if (!this.getProfile(post.user_id))
-              await this.fetchUserProfile(post.user_id, client);
-            const prof = this.userProfile[post.user_id];
-            if (!this.getAvatar(post.user_id) && prof?.avatar_url)
-              await this.downloadAvatar(
-                post.user_id,
-                prof.avatar_url,
-                client,
-              );
           }
+          await useProfileStore().ensureAuthorsForPosts(data, client);
         }
         if (error) throw error;
       } catch (error) {
@@ -750,12 +547,9 @@ export const usePostStore = defineStore("post", {
     },
     async fetchLikeCount(pid: PostId) {
       if (pid) {
-        const client = useSupabaseClient<Database>();
+        const client = getPostsClient();
         try {
-          const { error, count } = await client
-            .from("likes")
-            .select("*", { count: "exact", head: true })
-            .eq("post_id", pid);
+          const { error, count } = await countLikes(client, pid);
           if (count != null) this.likeCount[pid] = count;
           if (error) throw error;
         } catch (error) {
@@ -765,18 +559,11 @@ export const usePostStore = defineStore("post", {
     },
     async reply(pid: PostId, text: string) {
       const user = useSupabaseUser();
-      const client = useSupabaseClient<Database>();
+      const client = getPostsClient();
       const uid = user.value?.id;
       if (!uid) return;
       try {
-        const { error, data } = await client
-          .from("reply")
-          .insert({
-            user_id: uid,
-            text,
-          })
-          .select(REPLY_TABLE_COLUMNS)
-          .single();
+        const { error, data } = await insertReplyTableRow(client, uid, text);
         if (data) {
           if (!this.reply[pid]) this.reply[pid] = [];
           this.reply[pid].unshift(data);

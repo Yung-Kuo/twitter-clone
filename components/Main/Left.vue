@@ -3,6 +3,12 @@ import { useProfileStore } from "~/stores/profile";
 import { usePostStore } from "~/stores/post";
 import { useReplyStore } from "~/stores/reply";
 import { useFollowingStore } from "~/stores/following";
+import {
+  accountMenuStyleKey,
+  bindMenuElementKey,
+  toggleAccountMenuKey,
+} from "~/composables/keys";
+
 const store = useProfileStore();
 const postStore = usePostStore();
 const replyStore = useReplyStore();
@@ -14,9 +20,9 @@ const client = useSupabaseClient();
 const emit = defineEmits(["popupPost"]);
 const route = useRoute();
 // post action menu
-const { showMenu, type, toggleMenu, menuGetRect } = inject("toggleAccountMenu");
-const bindMenuElement = inject("bindMenuElement");
-const accountMenuStyle = inject("accountMenuStyle");
+const { showMenu, type, toggleMenu, menuGetRect } = inject(toggleAccountMenuKey);
+const bindMenuElement = inject(bindMenuElementKey);
+const accountMenuStyle = inject(accountMenuStyleKey);
 function stickyMenu() {
   if (showMenu.value && type.value === "account") {
     menuGetRect();

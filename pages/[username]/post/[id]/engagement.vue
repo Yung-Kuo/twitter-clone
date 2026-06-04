@@ -1,10 +1,12 @@
 <script setup>
 import { usePostStore } from "~/stores/post";
+import { handleClickOutsideKey, showPopupPostKey } from "~/composables/keys";
+
 const postStore = usePostStore();
 const route = useRoute();
 
-const handleClickOutside = inject("handleClickOutside");
-const showPopupPost = inject("showPopupPost");
+const handleClickOutside = inject(handleClickOutsideKey);
+const showPopupPost = inject(showPopupPostKey);
 const activeTab = ref("");
 const postList = computed(() => {
   if (activeTab.value === "Quotes") {

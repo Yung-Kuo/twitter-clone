@@ -1,8 +1,19 @@
 <script setup>
 import { usePostStore } from "~/stores/post";
+import { useProfileStore } from "~/stores/profile";
 import { useReplyStore } from "~/stores/reply";
+import {
+  bindMenuElementKey,
+  clickReplyKey,
+  popupReplyKey,
+  profileCardKey,
+  togglePostMenuKey,
+  writePostKey,
+} from "~/composables/keys";
+
 const user = useSupabaseUser();
 const postStore = usePostStore();
+const profileStore = useProfileStore();
 const replyStore = useReplyStore();
 const post = defineProps({
   id: String,
@@ -38,19 +49,16 @@ watchEffect(async () => {
 });
 
 // profile card
-const { showProfileCard, hideProfileCard } = inject("profileCard");
-// write post
+const { showProfileCard, hideProfileCard } = inject(profileCardKey);
 const {
   showPopupPost,
   repost_pid,
   publishRepost,
-} = inject("writePost");
-// toggle menu
-const { showMenu, menu_pid, type: menuType, toggleMenu } = inject("togglePostMenu");
-const bindMenuElement = inject("bindMenuElement");
-// reply
-const clickReply = inject("clickReply");
-const { publishReply } = inject("popupReply");
+} = inject(writePostKey);
+const { showMenu, menu_pid, type: menuType, toggleMenu } = inject(togglePostMenuKey);
+const bindMenuElement = inject(bindMenuElementKey);
+const clickReply = inject(clickReplyKey);
+const { publishReply } = inject(popupReplyKey);
 const reply = ref("");
 // action button
 const { clickLike, clickBookmark } = useLikeBookmark();
@@ -79,7 +87,7 @@ const date = computed(() => {
 </script>
 <template>
   <div
-    v-if="postStore.getProfile(post?.user_id)"
+    v-if="profileStore.profileById(post?.user_id)"
     class="w-full px-3 tracking-wide text-zinc-200 2xl:px-5"
   >
     <MainSection>
@@ -94,7 +102,7 @@ const date = computed(() => {
             "
             @mouseleave="hideProfileCard()"
           >
-            <NuxtLink :to="`/${postStore.getUsername(post?.user_id)}`">
+            <NuxtLink :to="`/${profileStore.usernameById(post?.user_id)}`">
               <UIAvatar :user_id="post.user_id" size="small" class=""/>
             </NuxtLink>
           </div>
@@ -108,9 +116,9 @@ const date = computed(() => {
               "
               @mouseleave="hideProfileCard()"
             >
-              <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
+              <NuxtLink :to="`/${profileStore.usernameById(post.user_id)}`">
                 <span>
-                  {{ postStore.getName(post.user_id) }}
+                  {{ profileStore.nameById(post.user_id) }}
                 </span>
               </NuxtLink>
             </div>
@@ -122,8 +130,8 @@ const date = computed(() => {
               "
               @mouseleave="hideProfileCard()"
             >
-              <NuxtLink :to="`/${postStore.getUsername(post.user_id)}`">
-                <span>@{{ postStore.getUsername(post.user_id) }}</span>
+              <NuxtLink :to="`/${profileStore.usernameById(post.user_id)}`">
+                <span>@{{ profileStore.usernameById(post.user_id) }}</span>
               </NuxtLink>
             </div>
           </div>
@@ -232,7 +240,7 @@ const date = computed(() => {
               <UIPopupRepostMenu
                 v-if="showMenu && menuType === 'repost' && menu_pid === post.id"
                 :pid="post.id"
-                :username="postStore.getUsername(post.user_id)"
+                :username="profileStore.usernameById(post.user_id)"
                 class="noForward"
                 @repost="publishRepost(post.id)"
                 @quote="
