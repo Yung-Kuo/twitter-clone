@@ -55,11 +55,12 @@ export const useReplyStore = defineStore("reply", {
     getReplyCount(state) {
       return (pid: PostId) => {
         const n = state.replyCount[pid];
-        return n != null && n > 0 ? n : null;
+        if (n != null) return n;
+        return null;
       };
     },
     checkReplied(state) {
-      return (pid: PostId) => state.userHasReplied[pid] || null;
+      return (pid: PostId) => state.userHasReplied[pid] ?? null;
     },
     checkAuthorReplied(state) {
       return (pid: PostId) => state.authorHasReplied[pid] || null;
@@ -170,6 +171,7 @@ export const useReplyStore = defineStore("reply", {
     },
     async fetchUserReplyStatus(pid: PostId) {
       if (pid) {
+        if (pid in this.userHasReplied) return;
         const client = getRepliesClient();
         const user = useSupabaseUser();
         const uid = user.value?.id;

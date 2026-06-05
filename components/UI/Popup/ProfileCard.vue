@@ -31,7 +31,10 @@ onMounted(async () => {
       </NuxtLink>
       <!-- Extra layer of div to avoid following/follow button filling the full height because of flex -->
       <div class="h-min">
-        <UIButtonFollow v-if="userProfile?.id" :uid="userProfile.id" />
+        <UIButtonFollow
+          v-if="userId && userProfile?.id"
+          :uid="userProfile.id"
+        />
       </div>
     </div>
     <!-- name / username -->

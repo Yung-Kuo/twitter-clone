@@ -117,7 +117,7 @@ export const usePostStore = defineStore("post", {
     getRepostCount(state) {
       return (pid: PostId) => {
         const n = state.repostCount[pid];
-        if (n != null && n > 0) return n;
+        if (n != null) return n;
         return null;
       };
     },
@@ -323,6 +323,7 @@ export const usePostStore = defineStore("post", {
       }
     },
     async fetchOnePost(pid: PostId) {
+      if (this.allPosts.has(pid)) return;
       const client = getPostsClient();
       try {
         const { error, data } = await fetchPostById(client, pid);

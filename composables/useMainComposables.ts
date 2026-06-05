@@ -29,6 +29,7 @@ import {
   useProfileCardKey,
   writePostKey,
 } from "~/composables/keys";
+import { registerAlertBridge } from "~/composables/alertBridge";
 import type { ScrollChrome } from "~/composables/injection-types";
 
 export default function useMainComposables() {
@@ -49,8 +50,9 @@ export default function useMainComposables() {
   };
   provide(layoutRefsKey, layoutRefs);
 
-  const { alertMode, alertMessage, hasError } = useAlert();
-  provide(useAlertKey, { alertMode, alertMessage, hasError });
+  const alert = useAlert();
+  registerAlertBridge(alert);
+  provide(useAlertKey, alert);
 
   const { handleWheelEvent } = useWheelSync(layoutRefs);
   provide(handleWheelEventKey, handleWheelEvent);

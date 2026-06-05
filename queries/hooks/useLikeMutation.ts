@@ -4,6 +4,10 @@ import {
   insertLike,
   getPostsClient,
 } from "~/queries/api/posts";
+import {
+  handleMutationError,
+  handleMutationSuccess,
+} from "~/queries/lib/mutationAlert";
 import { usePostStore } from "~/stores/post";
 
 export function useLikeMutation() {
@@ -47,6 +51,10 @@ export function useLikeMutation() {
         else postStore.likeCount[postId] = 1;
       }
     },
+    onSuccess: (_data, { liked }) => {
+      handleMutationSuccess(liked ? "Like removed" : "Post liked");
+    },
+    onError: handleMutationError,
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["me", "engagement"] });
     },

@@ -11,6 +11,9 @@ export default defineNuxtConfig({
   ],
 
   vite: {
+    optimizeDeps: {
+      include: ["zod"],
+    },
     vue: {
       script: {
         defineModel: true,

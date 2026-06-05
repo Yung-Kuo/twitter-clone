@@ -1,11 +1,14 @@
 <script setup>
+import { useAlertKey } from "~/composables/keys";
+
 useSeoMeta({
   title: "Twitter Clone",
   description:
     "This is a Twitter Clone built by Yung Kuo. Please choose a method to sign in or sign up.",
 });
-// alert module
-const { alertMode, alertMessage } = useAlert();
+const alert = useAlert();
+provide(useAlertKey, alert);
+const { alertMode, alertMessage } = alert;
 const OAuthSignIn = ref(true);
 </script>
 

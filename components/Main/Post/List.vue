@@ -12,7 +12,7 @@ const props = defineProps({
 </script>
 <template>
   <ul>
-    <li v-for="post in props.postList" :key="post.id">
+    <li v-for="post in props.postList ?? []" :key="post.id">
       <MainPost
         :post="post"
         :show-author-reply="props.showAuthorReply"

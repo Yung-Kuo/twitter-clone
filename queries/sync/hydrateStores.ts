@@ -1,18 +1,22 @@
-import type { PostRow, BookmarkPick, LikePick  } from "~/queries/api/posts";
+import type { BookmarkPick, LikePick } from "~/queries/api/posts";
+import type { PostWithMetaDTO } from "~/schemas/post";
+import { applyPostMetaRows } from "~/queries/sync/applyPostMeta";
+import { hydrateQuotedReposts } from "~/queries/sync/hydrateQuotedReposts";
 import { usePostStore } from "~/stores/post";
-import { useProfileStore } from "~/stores/profile";
 
 export async function hydrateFeedPosts(
   kind: "all" | "following",
-  posts: PostRow[],
+  rows: PostWithMetaDTO[],
 ) {
   const postStore = usePostStore();
-  const profileStore = useProfileStore();
-  const client = useSupabaseClient();
+  const posts = applyPostMetaRows(rows);
+  await hydrateQuotedReposts(posts);
 
   if (kind === "all") {
-    postStore.allPostId = [];
-    await postStore.setPosts(posts, client);
+    postStore.allPostId = posts.map((p) => p.id);
+    for (const post of posts) {
+      postStore.allPosts.set(post.id, post);
+    }
   } else {
     postStore.followingPid = posts.map((p) => p.id);
     for (const post of posts) {
@@ -20,7 +24,6 @@ export async function hydrateFeedPosts(
         postStore.allPosts.set(post.id, post);
       }
     }
-    await profileStore.ensureAuthorsForPosts(posts, client);
   }
 }
 

@@ -42,6 +42,7 @@
     "@vitest/coverage-v8": "^4.1.7",
     "@vue/test-utils": "^2.4.10",
     "eslint": "^10.3.0",
+    "happy-dom": "^20.10.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
     "nuxt": "^3.21.5",

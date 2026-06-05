@@ -27,16 +27,16 @@ const post = defineProps({
 });
 
 watchEffect(async () => {
-  if (!replyStore.getReplyCount(post.id)) {
+  if (replyStore.getReplyCount(post.id) == null) {
     await replyStore.fetchReplyCount(post.id);
   }
-  if (!postStore.getLikeCount(post.id)) {
+  if (postStore.getLikeCount(post.id) == null) {
     await postStore.fetchLikeCount(post.id);
   }
-  if (!postStore.getBookmarkCount(post.id)) {
+  if (postStore.getBookmarkCount(post.id) == null) {
     await postStore.fetchBookmarkCount(post.id);
   }
-  if (!postStore.getRepostCount(post.id)) {
+  if (postStore.getRepostCount(post.id) == null) {
     await postStore.fetchRepostCount(post.id);
   }
   await replyStore.fetchUserReplyStatus(post.id);

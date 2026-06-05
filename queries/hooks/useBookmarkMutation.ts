@@ -4,6 +4,10 @@ import {
   insertBookmark,
   getPostsClient,
 } from "~/queries/api/posts";
+import {
+  handleMutationError,
+  handleMutationSuccess,
+} from "~/queries/lib/mutationAlert";
 import { usePostStore } from "~/stores/post";
 
 export function useBookmarkMutation() {
@@ -43,6 +47,12 @@ export function useBookmarkMutation() {
         else postStore.bookmarkCount[postId] = 1;
       }
     },
+    onSuccess: (_data, { bookmarked }) => {
+      handleMutationSuccess(
+        bookmarked ? "Bookmark removed" : "Post bookmarked",
+      );
+    },
+    onError: handleMutationError,
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["me", "engagement"] });
     },

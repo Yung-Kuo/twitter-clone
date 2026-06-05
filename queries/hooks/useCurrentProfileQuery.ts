@@ -4,6 +4,7 @@ import {
   fetchProfileById,
   getProfilesClient,
 } from "~/queries/api/profiles";
+import { parseProfileRowNullable } from "~/schemas/parse";
 import { useProfileStore } from "~/stores/profile";
 
 export function useCurrentProfileQuery() {
@@ -18,9 +19,10 @@ export function useCurrentProfileQuery() {
       if (!uid) return null;
       const { data, error } = await fetchProfileById(getProfilesClient(), uid);
       if (error) throw error;
-      return data;
+      return parseProfileRowNullable(data);
     },
     enabled: computed(() => !!user.value?.id),
+    select: (profile) => profile,
   });
 }
 

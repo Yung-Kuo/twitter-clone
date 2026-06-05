@@ -1,5 +1,6 @@
-import type { ComponentPublicInstance, Ref, ShallowRef } from "vue";
+import type { ComponentPublicInstance, ComputedRef, Ref, ShallowRef } from "vue";
 import type { Database } from "#build/types/supabase-database";
+import type { AlertState } from "~/composables/alertState";
 
 export type PostRow = Database["public"]["Tables"]["posts"]["Row"];
 
@@ -18,8 +19,12 @@ export type LayoutRefs = {
 export type MenuType = "" | "account" | "post_action" | "repost";
 
 export type AlertInjection = {
-  alertMode: Ref<string>;
-  alertMessage: Ref<string>;
+  alertState: Ref<AlertState>;
+  alertMode: ComputedRef<string>;
+  alertMessage: ComputedRef<string>;
+  showError: (message: string) => void;
+  showSuccess: (message: string) => void;
+  clearAlert: () => void;
   hasError: () => void;
 };
 

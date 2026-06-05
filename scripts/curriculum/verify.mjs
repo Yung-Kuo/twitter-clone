@@ -222,8 +222,54 @@ const checks = {
   },
 
   phase6: () => {
-    const client = rgCount("posts_with_meta", ["*.vue", "*.ts", "*.js"]);
+    const client = rgCount("posts_with_meta", [
+      "**/*.vue",
+      "**/*.ts",
+      "**/*.js",
+      "supabase/**/*.sql",
+    ]);
     const items = [check("client_uses_view", client > 0, `${client} refs`)];
+    return { pass: items.every((i) => i.pass), items };
+  },
+
+  phase6b: () => {
+    const viewSql = rgCount("i_replied", ["supabase/**/*.sql"]);
+    const hydrate = rgCount("userHasReplied\\[", ["queries/sync/applyPostMeta.ts"]);
+    const mainPostFetch = rgCount("fetchUserReplyStatus", [
+      "components/Main/Post/index.vue",
+    ]);
+    const mainPostRepostFetch = rgCount("fetchOnePost", [
+      "components/Main/Post/index.vue",
+    ]);
+    const hydrateBatch = rgCount("hydrateQuotedReposts", [
+      "queries/sync/hydrateStores.ts",
+      "queries/hooks/useUserPostsQuery.ts",
+    ]);
+    const checkRepliedFix = rg("userHasReplied\\[pid\\] \\?\\?", ["stores/reply.ts"]);
+    const items = [
+      check("view_has_i_replied", viewSql > 0, `${viewSql} sql refs`),
+      check("hydrate_i_replied", hydrate > 0, `${hydrate} refs`),
+      check(
+        "mainpost_no_reply_status_fetch",
+        mainPostFetch === 0,
+        mainPostFetch ? `${mainPostFetch} in MainPost/index.vue` : "",
+      ),
+      check(
+        "checkReplied_handles_false",
+        !!checkRepliedFix,
+        "stores/reply.ts checkReplied should use ?? not ||",
+      ),
+      check(
+        "hydrate_quoted_reposts",
+        hydrateBatch > 0,
+        `${hydrateBatch} hydrateQuotedReposts refs`,
+      ),
+      check(
+        "mainpost_no_per_repost_fetch",
+        mainPostRepostFetch === 0,
+        mainPostRepostFetch ? `${mainPostRepostFetch} fetchOnePost in MainPost` : "",
+      ),
+    ];
     return { pass: items.every((i) => i.pass), items };
   },
 

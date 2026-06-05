@@ -88,7 +88,22 @@ export interface Database {
     };
     Views: {
       posts_with_meta: {
-        Row: Record<string, unknown>;
+        Row: {
+          id: string;
+          user_id: string;
+          text: string | null;
+          pictures: unknown | null;
+          reply_to: string | null;
+          type: string | null;
+          edited: boolean | null;
+          created_at: string;
+          author: Database["public"]["Tables"]["profiles"]["Row"] | null;
+          like_count: number;
+          reply_count: number;
+          repost_count: number;
+          bookmark_count: number;
+          i_replied: boolean;
+        };
         Relationships: [];
       };
     };

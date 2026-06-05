@@ -13,7 +13,7 @@ const props = defineProps<{
 const following_hover = ref(false);
 </script>
 <template>
-  <div v-if="props?.uid" class="min-w-max">
+  <div v-if="props.uid" class="min-w-max">
     <!-- self -->
     <NuxtLink v-if="props.uid === user?.id" to="/profile">
       <UIButton color="white"> Edit Profile </UIButton>
@@ -25,10 +25,11 @@ const following_hover = ref(false);
       :solid="!followingStore.getFollowingStatus(props?.uid)"
       :turn-red="followingStore.getFollowingStatus(props?.uid)"
       @click="
-        followMutation.mutate({
-          targetUid: props.uid,
-          following: Boolean(followingStore.getFollowingStatus(props.uid)),
-        })
+        props.uid &&
+          followMutation.mutate({
+            targetUid: props.uid,
+            following: Boolean(followingStore.getFollowingStatus(props.uid)),
+          })
       "
       @mouseenter="following_hover = true"
       @mouseleave="following_hover = false"

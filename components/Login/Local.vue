@@ -3,7 +3,7 @@ import { useAlertKey } from "~/composables/keys";
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
-const { alertMode, alertMessage, hasError } = inject(useAlertKey);
+const { showError } = inject(useAlertKey);
 const loading = ref(false);
 // email & password
 const email = ref("");
@@ -18,16 +18,12 @@ const buttonActiveFlag = computed(() => {
 async function _signUp() {
   if (!email.value) {
     emailValidFlag.value = false;
-    alertMode.value = "error";
-    alertMessage.value = "Please enter your email address!";
-    hasError();
+    showError("Please enter your email address!");
   } else if (!validateEmail()) {
     emailValidFlag.value = false;
   } else if (!password.value) {
     passwordValidFlag.value = false;
-    alertMode.value = "error";
-    alertMessage.value = "Please enter password!";
-    hasError();
+    showError("Please enter password!");
   } else {
     try {
       loading.value = true;
@@ -38,11 +34,9 @@ async function _signUp() {
       if (error) throw error;
       else alert("Check your email for verification");
     } catch (error) {
-      alertMode.value = "error";
-      alertMessage.value = error.message;
+      showError(error.message);
       emailValidFlag.value = false;
       passwordValidFlag.value = false;
-      hasError();
     } finally {
       loading.value = false;
     }
@@ -62,19 +56,13 @@ watch(
 async function login() {
   if (!email.value) {
     emailValidFlag.value = false;
-    alertMode.value = "error";
-    alertMessage.value = "Please enter your email address!";
-    hasError();
+    showError("Please enter your email address!");
   } else if (!validateEmail()) {
     emailValidFlag.value = false;
-    alertMode.value = "error";
-    alertMessage.value = "Please enter a valid email address";
-    hasError();
+    showError("Please enter a valid email address");
   } else if (!password.value) {
     passwordValidFlag.value = false;
-    alertMode.value = "error";
-    alertMessage.value = "Please enter password!";
-    hasError();
+    showError("Please enter password!");
   } else {
     try {
       loading.value = true;
@@ -86,11 +74,9 @@ async function login() {
       // watcher above will redirect to protected page
       // if (data) {}
     } catch (error) {
-      alertMode.value = "error";
-      alertMessage.value = error.message;
+      showError(error.message);
       emailValidFlag.value = false;
       passwordValidFlag.value = false;
-      hasError();
     } finally {
       loading.value = false;
     }

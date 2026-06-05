@@ -4,6 +4,10 @@ import {
   insertFollowing,
   getFollowingClient,
 } from "~/queries/api/following";
+import {
+  handleMutationError,
+  handleMutationSuccess,
+} from "~/queries/lib/mutationAlert";
 import { useFollowingStore } from "~/stores/following";
 
 export function useFollowMutation() {
@@ -52,5 +56,9 @@ export function useFollowMutation() {
         followingStore.followers[targetUid].push(myId);
       }
     },
+    onSuccess: (_data, { following }) => {
+      handleMutationSuccess(following ? "Unfollowed" : "Now following");
+    },
+    onError: handleMutationError,
   });
 }

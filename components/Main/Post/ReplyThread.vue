@@ -39,16 +39,16 @@ const { clickLike, clickBookmark } = useLikeBookmark();
 watchEffect(async () => {
   const id = post.value?.id;
   if (!id) return;
-  if (!replyStore.getReplyCount(id)) {
+  if (replyStore.getReplyCount(id) == null) {
     await replyStore.fetchReplyCount(id);
   }
-  if (!postStore.getLikeCount(id)) {
+  if (postStore.getLikeCount(id) == null) {
     await postStore.fetchLikeCount(id);
   }
-  if (!postStore.getBookmarkCount(id)) {
+  if (postStore.getBookmarkCount(id) == null) {
     await postStore.fetchBookmarkCount(id);
   }
-  if (!postStore.getRepostCount(id)) {
+  if (postStore.getRepostCount(id) == null) {
     await postStore.fetchRepostCount(id);
   }
   if (replyStore.checkReplied(id) === null) {

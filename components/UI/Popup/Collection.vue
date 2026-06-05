@@ -29,7 +29,7 @@ const profileCardStyle = inject(profileCardStyleKey);
     <!-- Profile Card -->
     <UIPopupTransition leave-active-class="delay-200">
       <UIPopupProfileCard
-        v-show="profileCardVis"
+        v-show="profileCardVis && hoveredUserId"
         :ref="bindProfileCard"
         :style="profileCardStyle"
         :user-id="hoveredUserId"

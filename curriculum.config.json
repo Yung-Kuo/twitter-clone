@@ -72,6 +72,12 @@
       "prompt": "docs/curriculum/prompts/phase-6.md"
     },
     {
+      "id": "6b",
+      "title": "Feed perf: i_replied, repost batch, profile dedupe",
+      "verify": ["phase6b"],
+      "prompt": "docs/curriculum/prompts/phase-6b.md"
+    },
+    {
       "id": "7",
       "title": "Zod boundaries + alert UX",
       "verify": ["phase7"],

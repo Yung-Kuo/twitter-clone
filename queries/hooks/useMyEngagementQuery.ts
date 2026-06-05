@@ -4,6 +4,7 @@ import {
   fetchLikesForUser,
   getPostsClient,
 } from "~/queries/api/posts";
+import { parseEngagementPayload } from "~/schemas/parse";
 import { hydrateBookmarks, hydrateLikes } from "~/queries/sync/hydrateStores";
 
 const engagementKey = ["me", "engagement"] as const;
@@ -22,12 +23,13 @@ export function useMyEngagementQuery() {
       ]);
       if (likesRes.error) throw likesRes.error;
       if (bookmarksRes.error) throw bookmarksRes.error;
-      return {
+      return parseEngagementPayload({
         likes: likesRes.data ?? [],
         bookmarks: bookmarksRes.data ?? [],
-      };
+      });
     },
     enabled: computed(() => !!user.value?.id),
+    select: (data) => data,
   });
 }
 

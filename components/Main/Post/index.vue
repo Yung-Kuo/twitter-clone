@@ -44,20 +44,17 @@ const authorReplyPost = computed(() => postStore.getPost(authorReplyId.value));
 watchEffect(async () => {
   const id = post.value?.id;
   if (!id) return;
-  if (!replyStore.getReplyCount(id)) {
+  if (replyStore.getReplyCount(id) == null) {
     await replyStore.fetchReplyCount(id);
   }
-  if (!postStore.getLikeCount(id)) {
+  if (postStore.getLikeCount(id) == null) {
     await postStore.fetchLikeCount(id);
   }
-  if (!postStore.getBookmarkCount(id)) {
+  if (postStore.getBookmarkCount(id) == null) {
     await postStore.fetchBookmarkCount(id);
   }
-  if (!postStore.getRepostCount(id)) {
+  if (postStore.getRepostCount(id) == null) {
     await postStore.fetchRepostCount(id);
-  }
-  if (replyStore.checkReplied(id) === null) {
-    await replyStore.fetchUserReplyStatus(id);
   }
 });
 
@@ -67,16 +64,6 @@ watchEffect(async () => {
     replyStore.checkAuthorReplied(post.value?.id) === null
   ) {
     await replyStore.fetchAuthorReplyStatus(post.value?.id);
-  }
-});
-
-watchEffect(async () => {
-  if (
-    post.value?.reply_to &&
-    post.value?.type === "repost" &&
-    !postStore.getPost(post.value?.reply_to)
-  ) {
-    await postStore.fetchOnePost(post.value?.reply_to);
   }
 });
 

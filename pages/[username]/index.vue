@@ -3,6 +3,7 @@ import { useProfileStore } from "~/stores/profile";
 import { usePostStore } from "~/stores/post";
 import { useReplyStore } from "~/stores/reply";
 import { useFollowingStore } from "~/stores/following";
+import { useUserPostsQueryWithStore } from "~/queries/hooks/useUserPostsQuery";
 import { handleClickOutsideKey, showPopupPostKey } from "~/composables/keys";
 
 definePageMeta({
@@ -49,13 +50,8 @@ onMounted(async () => {
     }
   });
 
-  // load feed
   watchEffect(async () => {
-    if (activeTab.value === "Posts") {
-      if (!postStore.getUserPosts(userProfile.value.id)) {
-        await postStore.fetchUserPosts(userProfile.value?.id);
-      }
-    } else if (activeTab.value === "Likes") {
+    if (activeTab.value === "Likes") {
       if (!postStore.getLikes(userProfile.value?.id)) {
         await postStore.fetchLikes(userProfile.value?.id);
         await postStore.fetchLikePosts(userProfile.value?.id);
@@ -81,17 +77,25 @@ onMounted(async () => {
   });
 });
 
-// Load different feed
 const activeTab = ref("Posts");
+
+const userPostsUid = computed(() =>
+  activeTab.value === "Posts" ? userProfile.value?.id : undefined,
+);
+useUserPostsQueryWithStore(userPostsUid);
+
 const postList = computed(() => {
-  if (!userProfile.value) return null;
+  if (!userProfile.value?.id) return [];
   if (activeTab.value === "Posts") {
-    return postStore.getUserPosts(userProfile.value.id);
-  } else if (activeTab.value === "Likes") {
-    return postStore.getLikePosts(userProfile.value.id);
-  } else if (activeTab.value === "Replies") {
-    return replyStore.getUserReplies(userProfile.value.id);
-  } else return null;
+    return postStore.getUserPosts(userProfile.value.id) ?? [];
+  }
+  if (activeTab.value === "Likes") {
+    return postStore.getLikePosts(userProfile.value.id) ?? [];
+  }
+  if (activeTab.value === "Replies") {
+    return replyStore.getUserReplies(userProfile.value.id) ?? [];
+  }
+  return [];
 });
 </script>
 <template>

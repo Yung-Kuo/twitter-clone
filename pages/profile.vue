@@ -10,7 +10,7 @@ definePageMeta({
 const user = useSupabaseUser();
 const store = useProfileStore();
 const { getError } = storeToRefs(store);
-const { alertMode, alertMessage, hasError } = inject(useAlertKey);
+const { showError, showSuccess, alertMode, alertMessage } = inject(useAlertKey);
 const handleClickOutside = inject(handleClickOutsideKey);
 const {
   profileCardVis,
@@ -34,9 +34,7 @@ watchEffect(async () => {
   if (store.noProfile) {
     await store.fetchProfile();
     if (getError.value) {
-      alertMode.value = "error";
-      alertMessage.value = getError.value;
-      hasError();
+      showError(getError.value);
     }
   }
 });
@@ -78,16 +76,13 @@ function onFileSelected(event) {
     fileExt.value = file.value.name.split(".").pop();
     filePath.value = `${Math.random()}.${fileExt.value}`;
   } catch (error) {
-    alertMode.value = "error";
-    alertMessage.value = error.message;
+    showError(error.message);
   }
 }
 async function onUpload() {
   await store.uploadAvatar(file.value, filePath.value);
   if (getError.value) {
-    alertMode.value = "error";
-    alertMessage.value = getError.value;
-    hasError();
+    showError(getError.value);
   } else {
     old_avatar_url.value = userProfile.avatar_url;
     userProfile.avatar_url = filePath.value;
@@ -105,18 +100,14 @@ async function updateProfile() {
   await store.updateProfile(userProfile);
   await store.downloadAvatarForUser(userProfile.id, userProfile.avatar_url);
   if (getError.value) {
-    alertMode.value = "error";
-    alertMessage.value = getError.value;
-    hasError();
+    showError(getError.value);
   } else {
     if (old_avatar_url.value) {
       store.deleteOldAvatar(old_avatar_url.value);
       old_avatar_url.value = null;
     }
     Object.assign(userProfile, store.getProfile);
-    alertMode.value = "notify";
-    alertMessage.value = "Your profile has been updated!";
-    hasError();
+    showSuccess("Your profile has been updated!");
   }
 }
 
