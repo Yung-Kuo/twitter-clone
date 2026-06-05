@@ -25,33 +25,46 @@ const small = "h-10 w-10";
 const medium = "h-16 w-16";
 const large = "h-36 w-36";
 
-onMounted(async () => {
+onMounted(() => {
   if (!size.value) imgSize.value = small;
   else if (size.value === "xsmall") imgSize.value = xsmall;
   else if (size.value === "small") imgSize.value = small;
   else if (size.value === "medium") imgSize.value = medium;
   else if (size.value === "large") imgSize.value = large;
-  const uid = user_id.value;
-  if (uid && !profileStore.avatarUrlById(uid))
-    await profileStore.fetchUserProfile(uid);
-  await loadAvatar(profileStore.avatarUrlById(uid ?? ""));
+  scheduleAvatarLoad(user_id.value);
 });
 
-watch(user_id, async (uid) => {
+watch(user_id, (uid) => {
+  scheduleAvatarLoad(uid);
+});
+
+function scheduleAvatarLoad(uid: string | null | undefined) {
   if (!uid) return;
-  if (!profileStore.avatarUrlById(uid)) await profileStore.fetchUserProfile(uid);
-  await loadAvatar(profileStore.avatarUrlById(uid));
-});
+  if (profileStore.displayAvatarSrc(uid)) return;
+  if (!profileStore.profileById(uid)) {
+    void profileStore.fetchUserProfile(uid).then(() => {
+      deferStorageAvatarDownload(uid);
+    });
+    return;
+  }
+  deferStorageAvatarDownload(uid);
+}
 
-async function loadAvatar(newPath: string | null | undefined) {
-  const uid = user_id.value;
-  if (newPath && uid) {
-    await profileStore.downloadAvatarForUser(uid, newPath);
+function deferStorageAvatarDownload(uid: string) {
+  if (profileStore.displayAvatarSrc(uid)) return;
+  const path = profileStore.avatarUrlById(uid);
+  if (!path) return;
+  const run = () => void profileStore.downloadAvatarForUser(uid, path);
+  if (typeof requestIdleCallback === "function") {
+    requestIdleCallback(run, { timeout: 3000 });
+  } else {
+    setTimeout(run, 50);
   }
 }
 
 const avatar_src = computed(() => {
-  return user_id.value ? profileStore.avatarById(user_id.value) : undefined;
+  const uid = user_id.value;
+  return uid ? profileStore.displayAvatarSrc(uid) : undefined;
 });
 </script>
 

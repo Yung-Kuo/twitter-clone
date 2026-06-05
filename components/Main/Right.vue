@@ -26,8 +26,13 @@ const props = defineProps({
     default: null,
   },
 });
-onMounted(async () => {
-  await profileStore.fetchProfiles();
+onMounted(() => {
+  const loadSidebarProfiles = () => void profileStore.fetchProfiles();
+  if (typeof requestIdleCallback === "function") {
+    requestIdleCallback(loadSidebarProfiles, { timeout: 2000 });
+  } else {
+    setTimeout(loadSidebarProfiles, 100);
+  }
 });
 
 const userProfileList = computed(() => {

@@ -73,7 +73,7 @@
     },
     {
       "id": "6b",
-      "title": "Feed perf: i_replied, repost batch, profile dedupe",
+      "title": "Feed perf: i_replied, repost batch, profiles, avatars",
       "verify": ["phase6b"],
       "prompt": "docs/curriculum/prompts/phase-6b.md"
     },

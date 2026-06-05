@@ -269,6 +269,26 @@ const checks = {
         mainPostRepostFetch === 0,
         mainPostRepostFetch ? `${mainPostRepostFetch} fetchOnePost in MainPost` : "",
       ),
+      check(
+        "sidebar_profiles_deferred",
+        !!rg("requestIdleCallback", ["components/Main/Right.vue"]),
+        "Right.vue should defer fetchProfiles",
+      ),
+      check(
+        "batch_author_profiles",
+        rgCount("fetchProfilesByIds", ["stores/profile.ts", "queries/api/profiles.ts"]) > 0,
+        "ensureAuthorsForPosts should batch profile fetches",
+      ),
+      check(
+        "avatar_absolute_url_fast_path",
+        rgCount("isAbsoluteAvatarUrl", ["queries/api/avatars.ts", "stores/profile.ts"]) > 0,
+        "external avatar URLs should skip storage download",
+      ),
+      check(
+        "profile_fetch_in_flight_dedupe",
+        rgCount("profileFetchesInFlight", ["stores/profile.ts"]) > 0,
+        "parallel fetchUserProfile calls should share one request",
+      ),
     ];
     return { pass: items.every((i) => i.pass), items };
   },

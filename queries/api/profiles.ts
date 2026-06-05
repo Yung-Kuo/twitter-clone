@@ -24,6 +24,16 @@ export async function fetchProfileById(
     .single();
 }
 
+export async function fetchProfilesByIds(
+  client: SupabaseClient<Database>,
+  ids: string[],
+) {
+  if (ids.length === 0) {
+    return { data: [] as ProfileRow[], error: null };
+  }
+  return client.from("profiles").select(PROFILE_COLUMNS).in("id", ids);
+}
+
 export async function fetchAllProfiles(client: SupabaseClient<Database>) {
   return client.from("profiles").select(PROFILE_COLUMNS);
 }

@@ -46,11 +46,17 @@ Plan: **Performance improvements** + **Phase 6b** in `.cursor/plans/junior-to-se
 
 **Done (6b-3):** `hydrateQuotedReposts` batches quoted repost posts after feed/user posts load; `MainPost` no longer per-row `fetchOnePost`; `fetchOnePost` no-ops when cached.
 
-**Still open (6b-4+):** extra profiles (`Main/Right`), avatar dedupe.
+**Done (6b-4):** `Main/Right` defers `fetchProfiles` via `requestIdleCallback`; `sidebarProfilesLoaded` guard; `ensureAuthorsForPosts` batches missing authors with `fetchProfilesByIds` (no per-user loop, no avatar downloads on hydrate).
+
+**Done (6b-5):** `isAbsoluteAvatarUrl` + `displayAvatarSrc`; in-flight dedupe in `downloadAvatarForUser`; `UIAvatar` defers storage blob downloads to idle time.
+
+**Done (6b-6):** `profileFetchesInFlight` dedupes parallel `fetchUserProfile` (7× same-user `/profiles` → 1); `UIAvatar` skips fetch when profile or `displayAvatarSrc` already cached.
+
+**Re-verify:** `npm run build && npm run preview` → HAR on `/` should show **≤1** `profiles?id=eq` per user id and deferred `/storage/v1/object/avatars/` requests.
 
 ## Active next steps (order matters)
 
-Phase **6b-3** (repost batch) or **8**. `npm run curriculum:next` for next unit.
+Phase **8** (component decomposition). `npm run curriculum:next` for next unit.
 
 - **Phase 9 (done):** `tests/unit/*` expanded; `e2e/happy-path.spec.ts`; `happy-dom` + `@vitejs/plugin-vue` for component tests.
 
@@ -61,7 +67,7 @@ Phase **6b-3** (repost batch) or **8**. `npm run curriculum:next` for next unit.
 | 4     | **Done**        | `useProfileStore` owns profiles by id; post store posts-only                                                                                                               |
 | 5     | **Done**        | TanStack Query on home feed, profile, engagement; mutations for like/bookmark/follow; API layer in `queries/api/*`                                                         |
 | 6     | **Done**        | Feed/user posts use `posts_with_meta`; counts on row; vue-query SSR dehydrate/hydrate                                                                                      |
-| 6b    | **Done**        | 6b-1 `i_replied`; 6b-3 batched quoted reposts — apply `20260605100000_posts_with_meta_i_replied.sql` in Supabase                                                           |
+| 6b    | **Done**        | 6b-1–6b-6 feed perf (incl. profile fetch dedupe) — apply `20260605100000_posts_with_meta_i_replied.sql` in Supabase                                                        |
 | 7     | **Done**        | Zod parse at query boundaries; alert discriminated union; mutation error/success toasts                                                                                    |
 | 8     | Not started     | PostHeader/Body/ActionBar, Floating UI                                                                                                                                     |
 | 9     | **Done**        | Unit tests (schemas, parse, keys, alert, mutationAlert); `e2e/happy-path.spec.ts` (skips auth without `E2E_EMAIL`/`E2E_PASSWORD`); `UIAlert` component test                |

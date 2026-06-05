@@ -7,6 +7,7 @@ import type { Database } from "#build/types/supabase-database";
 import type { PostRow } from "~/queries/api/posts";
 import {
   downloadAvatarBlob,
+  isAbsoluteAvatarUrl,
   removeAvatarFile,
   uploadAvatarFile,
 } from "~/queries/api/avatars";
@@ -14,6 +15,7 @@ import {
   fetchAllProfiles,
   fetchProfileById,
   fetchProfileByUsername,
+  fetchProfilesByIds,
   getProfilesClient,
   upsertProfile,
   type ProfileRow,
@@ -23,12 +25,16 @@ import { errMsg } from "~/utils/errMsg";
 
 type UserId = string;
 
+const avatarDownloadsInFlight = new Map<UserId, Promise<void>>();
+const profileFetchesInFlight = new Map<UserId, Promise<void>>();
+
 export const useProfileStore = defineStore("profile", {
   state: () => ({
     profiles: {} as Record<UserId, ProfileRow>,
     avatarByUserId: {} as Record<UserId, string>,
     profile: null as ProfileRow | null,
     avatar_src: "",
+    sidebarProfilesLoaded: false,
     loading: false,
     error: null as string | null,
   }),
@@ -57,6 +63,13 @@ export const useProfileStore = defineStore("profile", {
     },
     avatarUrlById: (state) => (uid: UserId) => state.profiles[uid]?.avatar_url,
     avatarById: (state) => (uid: UserId) => state.avatarByUserId[uid],
+    /** Blob URL, cached storage URL, or absolute avatar_url — no download required. */
+    displayAvatarSrc: (state) => (uid: UserId) => {
+      if (state.avatarByUserId[uid]) return state.avatarByUserId[uid];
+      const url = state.profiles[uid]?.avatar_url;
+      if (url && isAbsoluteAvatarUrl(url)) return url;
+      return undefined;
+    },
     noProfile: (state) => !state.profile,
     isLoading: (state) => state.loading,
     getError: (state) => state.error,
@@ -73,17 +86,28 @@ export const useProfileStore = defineStore("profile", {
       uid: UserId,
       client?: SupabaseClient<Database>,
     ) {
-      const supabase = client ?? getProfilesClient();
       if (!uid || this.profiles[uid]) return;
-      try {
-        const { data, error } = await fetchProfileById(supabase, uid);
-        if (error) throw error;
-        if (data) this.cacheProfile(data);
-      } catch (error) {
-        console.error(errMsg(error));
-      }
+      const inFlight = profileFetchesInFlight.get(uid);
+      if (inFlight) return inFlight;
+
+      const supabase = client ?? getProfilesClient();
+      const task = (async () => {
+        try {
+          if (this.profiles[uid]) return;
+          const { data, error } = await fetchProfileById(supabase, uid);
+          if (error) throw error;
+          if (data) this.cacheProfile(data);
+        } catch (error) {
+          console.error(errMsg(error));
+        } finally {
+          profileFetchesInFlight.delete(uid);
+        }
+      })();
+      profileFetchesInFlight.set(uid, task);
+      return task;
     },
     async fetchProfiles() {
+      if (this.sidebarProfilesLoaded) return;
       const client = getProfilesClient();
       try {
         const { error, data } = await fetchAllProfiles(client);
@@ -93,6 +117,7 @@ export const useProfileStore = defineStore("profile", {
           }
         }
         if (error) throw error;
+        this.sidebarProfilesLoaded = true;
       } catch (error) {
         console.error(errMsg(error));
       }
@@ -102,33 +127,53 @@ export const useProfileStore = defineStore("profile", {
       url: string,
       client?: SupabaseClient<Database>,
     ) {
-      const supabase = client ?? getProfilesClient();
-      if (!url || this.avatarByUserId[uid]) return;
-      try {
-        const { data, error } = await downloadAvatarBlob(supabase, url);
-        if (error) throw error;
-        if (data) this.avatarByUserId[uid] = URL.createObjectURL(data);
-      } catch (error) {
-        console.error(errMsg(error));
+      if (!url || this.displayAvatarSrc(uid)) return;
+      if (isAbsoluteAvatarUrl(url)) {
+        this.avatarByUserId[uid] = url;
+        return;
       }
+      const inFlight = avatarDownloadsInFlight.get(uid);
+      if (inFlight) return inFlight;
+
+      const supabase = client ?? getProfilesClient();
+      const task = (async () => {
+        try {
+          const { data, error } = await downloadAvatarBlob(supabase, url);
+          if (error) throw error;
+          if (data) this.avatarByUserId[uid] = URL.createObjectURL(data);
+        } catch (error) {
+          console.error(errMsg(error));
+        } finally {
+          avatarDownloadsInFlight.delete(uid);
+        }
+      })();
+      avatarDownloadsInFlight.set(uid, task);
+      return task;
     },
     async ensureAuthorsForPosts(
       posts: PostRow[],
       client?: SupabaseClient<Database>,
     ) {
       const supabase = client ?? getProfilesClient();
-      for (const post of posts) {
-        if (!this.profileById(post.user_id)) {
-          await this.fetchUserProfile(post.user_id, supabase);
+      const missing = [
+        ...new Set(
+          posts
+            .map((post) => post.user_id)
+            .filter((uid) => uid && !this.profileById(uid)),
+        ),
+      ];
+      if (missing.length === 0) return;
+
+      try {
+        const { data, error } = await fetchProfilesByIds(supabase, missing);
+        if (error) throw error;
+        if (data) {
+          for (const profile of data) {
+            this.cacheProfile(profile);
+          }
         }
-        const prof = this.profiles[post.user_id];
-        if (!this.avatarById(post.user_id) && prof?.avatar_url) {
-          await this.downloadAvatarForUser(
-            post.user_id,
-            prof.avatar_url,
-            supabase,
-          );
-        }
+      } catch (error) {
+        console.error(errMsg(error));
       }
     },
     async fetchOtherProfile(username: string | null = null) {

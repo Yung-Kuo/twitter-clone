@@ -1,6 +1,11 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "#build/types/supabase-database";
 
+/** OAuth / CDN avatars — use as `<img src>` directly; skip Supabase storage download. */
+export function isAbsoluteAvatarUrl(url: string) {
+  return /^https?:\/\//i.test(url);
+}
+
 export async function downloadAvatarBlob(
   client: SupabaseClient<Database>,
   avatarUrl: string,
