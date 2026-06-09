@@ -14,29 +14,26 @@ const props = defineProps({
 });
 const { post } = toRefs(props);
 
-const { target_post, clickPost, hoverPost } = inject(clickPostKey);
+const { target_post, hoveredPostId, syncHoveredPost, handleHoverLeave, clickPost } =
+  inject(clickPostKey);
 </script>
 <template>
   <article
-    :class="[post.id, props.hasRing ? null : '!ring-0']"
+    :data-post-id="post.id"
+    :class="[
+      post.id,
+      props.hasRing ? null : '!ring-0',
+      !props.noHover && hoveredPostId === post.id
+        ? 'bg-zinc-800 bg-opacity-30 ring-1 ring-zinc-800'
+        : null,
+    ]"
     class="stopHere flex w-full cursor-pointer text-zinc-200 transition-all"
-    @mouseenter="
-      target_post = post;
-      props.noHover ? null : hoverPost($event);
-    "
-    @mouseover="
-      target_post
-        ? null
-        : ((target_post = post), props.noHover ? null : hoverPost($event))
-    "
+    @mouseover="!props.noHover && syncHoveredPost($event)"
     @mouseleave="
-      target_post?.id === post.id ? (target_post = null) : null;
-      props.noHover ? null : hoverPost($event);
+      !props.noHover && handleHoverLeave($event, post.id);
+      target_post?.id === post.id && (target_post = null);
     "
-    @mousedown="
-      target_post ? null : (target_post = post);
-      target_post?.id === post.id ? clickPost($event) : null;
-    "
+    @mousedown="((target_post = post), clickPost($event))"
   >
     <slot />
   </article>

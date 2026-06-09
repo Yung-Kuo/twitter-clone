@@ -46,36 +46,40 @@ const date = computed(() => {
       <!-- avatar -->
       <div class="noForward flex w-min items-center">
         <NuxtLink :to="`/${profileStore.usernameById(post?.user_id)}`">
-          <UIAvatar :user_id="post.user_id" size="xsmall"/>
+          <UIAvatar :user_id="post.user_id" size="xsmall" />
         </NuxtLink>
       </div>
       <!-- user info -->
       <div
-        class="flex h-8 w-80 items-center overflow-x-scroll whitespace-nowrap px-2 leading-none"
+        class="flex h-8 w-full items-center overflow-hidden whitespace-nowrap px-2 leading-none"
       >
         <!-- name -->
-        <div class="noForward flex h-5 items-center font-bold hover:underline">
+        <div
+          class="noForward flex w-min font-bold hover:underline"
+          @mouseenter="showProfileCard($event.currentTarget, post.user_id)"
+          @mouseleave="hideProfileCard()"
+        >
           <NuxtLink :to="`/${profileStore.usernameById(post.user_id)}`">
-            <span class="noForward">
+            <span>
               {{ profileStore.nameById(post.user_id) }}
             </span>
           </NuxtLink>
         </div>
         &ensp;
-        <div class="flex items-center text-sm text-zinc-500">
-          <!-- username -->
-          <div class="noForward">
-            <NuxtLink :to="`/${profileStore.usernameById(post.user_id)}`">
-              <span class="noForward">
-                @{{ profileStore.usernameById(post.user_id) }}</span
-              >
-            </NuxtLink>
-          </div>
+        <div class="flex flex-grow overflow-x-scroll text-sm text-zinc-500">
           <div class="flex w-max">
-            <!-- timestamp -->
-            <pre> · {{ date }}</pre>
-            <!-- edited -->
-            <pre v-if="post.edited"> · edited</pre>
+            <!-- username -->
+            <div class="noForward">
+              <NuxtLink :to="`/${profileStore.usernameById(post.user_id)}`">
+                <span> @{{ profileStore.usernameById(post.user_id) }}</span>
+              </NuxtLink>
+            </div>
+            <div class="flex w-max">
+              <!-- timestamp -->
+              <pre> · {{ date }}</pre>
+              <!-- edited -->
+              <pre v-if="post.edited"> · edited</pre>
+            </div>
           </div>
         </div>
       </div>
@@ -88,9 +92,7 @@ const date = computed(() => {
       </div>
       <!-- repost / quote -->
       <div v-if="post.type === 'repost'" class="noForward">
-        <MainPostRefer
-          v-bind="postStore.getPost(post.reply_to)"
-        />
+        <MainPostRefer v-bind="postStore.getPost(post.reply_to)" />
       </div>
     </div>
   </MainPostHoverClickWrapper>

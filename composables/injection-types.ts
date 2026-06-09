@@ -86,8 +86,10 @@ export type EditInjection = {
 
 export type ClickPostInjection = {
   target_post: Ref<PostRow | null>;
+  hoveredPostId: Ref<string | null>;
+  syncHoveredPost: (event: MouseEvent) => void;
+  handleHoverLeave: (event: MouseEvent, postId: string) => void;
   clickPost: (event: MouseEvent) => Promise<void>;
-  hoverPost: (event: MouseEvent) => void;
 };
 
 export type CollectionInjection = {
