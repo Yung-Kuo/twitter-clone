@@ -19,7 +19,7 @@ onMounted(async () => {
 </script>
 <template>
   <div
-    class="absolute z-30 hidden h-80 w-72 rounded-2xl bg-black p-4 text-white shadow-3xl shadow-zinc-700 transition-all duration-100 md:block"
+    class="absolute z-30 hidden h-80 w-72 rounded-2xl bg-black p-4 text-white shadow-3xl shadow-zinc-700 transition-opacity duration-100 md:block"
   >
     <div class="flex justify-between">
       <NuxtLink :to="`/${userProfile?.username}`">

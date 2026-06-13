@@ -13,7 +13,7 @@ import {
 } from "~/queries/api/avatars";
 import {
   fetchAllProfiles,
-  fetchProfileById,
+  fetchProfileOnce,
   fetchProfileByUsername,
   fetchProfilesByIds,
   getProfilesClient,
@@ -27,6 +27,7 @@ type UserId = string;
 
 const avatarDownloadsInFlight = new Map<UserId, Promise<void>>();
 const profileFetchesInFlight = new Map<UserId, Promise<void>>();
+let sidebarProfilesInFlight: Promise<void> | undefined;
 
 export const useProfileStore = defineStore("profile", {
   state: () => ({
@@ -94,8 +95,7 @@ export const useProfileStore = defineStore("profile", {
       const task = (async () => {
         try {
           if (this.profiles[uid]) return;
-          const { data, error } = await fetchProfileById(supabase, uid);
-          if (error) throw error;
+          const data = await fetchProfileOnce(supabase, uid);
           if (data) this.cacheProfile(data);
         } catch (error) {
           console.error(errMsg(error));
@@ -108,19 +108,27 @@ export const useProfileStore = defineStore("profile", {
     },
     async fetchProfiles() {
       if (this.sidebarProfilesLoaded) return;
+      if (sidebarProfilesInFlight) return sidebarProfilesInFlight;
+
       const client = getProfilesClient();
-      try {
-        const { error, data } = await fetchAllProfiles(client);
-        if (data) {
-          for (const profile of data) {
-            this.cacheProfile(profile);
+      const task = (async () => {
+        try {
+          const { error, data } = await fetchAllProfiles(client);
+          if (data) {
+            for (const profile of data) {
+              this.cacheProfile(profile);
+            }
           }
+          if (error) throw error;
+          this.sidebarProfilesLoaded = true;
+        } catch (error) {
+          console.error(errMsg(error));
+        } finally {
+          sidebarProfilesInFlight = undefined;
         }
-        if (error) throw error;
-        this.sidebarProfilesLoaded = true;
-      } catch (error) {
-        console.error(errMsg(error));
-      }
+      })();
+      sidebarProfilesInFlight = task;
+      return task;
     },
     async downloadAvatarForUser(
       uid: UserId,
@@ -197,18 +205,12 @@ export const useProfileStore = defineStore("profile", {
       }
     },
     async fetchProfile() {
-      const client = getProfilesClient();
       const user = useSupabaseUser();
       const uid = user.value?.id;
       if (!uid) return;
       this.loading = true;
       try {
-        const { error, data } = await fetchProfileById(client, uid);
-        if (error) throw error;
-        if (data) {
-          this.profile = data;
-          this.cacheProfile(data);
-        }
+        await this.fetchUserProfile(uid);
       } catch (error) {
         this.error = errMsg(error);
       } finally {

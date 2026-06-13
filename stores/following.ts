@@ -36,7 +36,7 @@ export const useFollowingStore = defineStore("following", {
   },
   actions: {
     async fetchFollowing(uid: UserId) {
-      if (!uid) return;
+      if (!uid || uid in this.following) return;
       const client = getFollowingClient();
       try {
         const { error, data } = await fetchFollowingIds(client, uid);
@@ -57,7 +57,7 @@ export const useFollowingStore = defineStore("following", {
       }
     },
     async fetchFollowers(uid: UserId) {
-      if (!uid) return;
+      if (!uid || uid in this.followers) return;
       const client = getFollowingClient();
       try {
         const { error, data } = await fetchFollowerIds(client, uid);

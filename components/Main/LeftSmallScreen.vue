@@ -1,18 +1,27 @@
 <script setup>
+import { mainPageShiftedKey } from "~/composables/keys";
+
 const client = useSupabaseClient();
 const user = useSupabaseUser();
 const profileStore = useProfileStore();
 const postStore = usePostStore();
 const replyStore = useReplyStore();
 const followingStore = useFollowingStore();
+const mainPageShifted = inject(mainPageShiftedKey);
 
-onMounted(async () => {
-  if (!followingStore.getFollowing(user.value.id)) {
-    await followingStore.fetchFollowing(user.value.id);
+async function loadSocialCounts() {
+  const uid = user.value?.id;
+  if (!uid) return;
+  if (!(uid in followingStore.following)) {
+    await followingStore.fetchFollowing(uid);
   }
-  if (!followingStore.getFollowers(user.value.id)) {
-    await followingStore.fetchFollowers(user.value.id);
+  if (!(uid in followingStore.followers)) {
+    await followingStore.fetchFollowers(uid);
   }
+}
+
+watch(mainPageShifted, (open) => {
+  if (open) void loadSocialCounts();
 });
 
 async function signOut() {

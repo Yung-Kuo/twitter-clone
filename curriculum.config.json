@@ -78,6 +78,18 @@
       "prompt": "docs/curriculum/prompts/phase-6b.md"
     },
     {
+      "id": "6c",
+      "title": "Production load: SSR home prefetch + single profile fetch",
+      "verify": ["phase6c"],
+      "prompt": "docs/curriculum/prompts/phase-6c.md"
+    },
+    {
+      "id": "6d",
+      "title": "Perceived load: SSR feed paint + hydration dedupe",
+      "verify": ["phase6d"],
+      "prompt": "docs/curriculum/prompts/phase-6d.md"
+    },
+    {
       "id": "7",
       "title": "Zod boundaries + alert UX",
       "verify": ["phase7"],

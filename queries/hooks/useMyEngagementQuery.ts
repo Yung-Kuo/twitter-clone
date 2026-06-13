@@ -1,4 +1,6 @@
 import { useQuery } from "@tanstack/vue-query";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "#build/types/supabase-database";
 import {
   fetchBookmarksForUser,
   fetchLikesForUser,
@@ -7,26 +9,32 @@ import {
 import { parseEngagementPayload } from "~/schemas/parse";
 import { hydrateBookmarks, hydrateLikes } from "~/queries/sync/hydrateStores";
 
-const engagementKey = ["me", "engagement"] as const;
+export const engagementQueryKey = ["me", "engagement"] as const;
+
+export async function loadMyEngagement(
+  client: SupabaseClient<Database>,
+  uid: string,
+) {
+  const [likesRes, bookmarksRes] = await Promise.all([
+    fetchLikesForUser(client, uid),
+    fetchBookmarksForUser(client, uid),
+  ]);
+  if (likesRes.error) throw likesRes.error;
+  if (bookmarksRes.error) throw bookmarksRes.error;
+  return parseEngagementPayload({
+    likes: likesRes.data ?? [],
+    bookmarks: bookmarksRes.data ?? [],
+  });
+}
 
 export function useMyEngagementQuery() {
   const user = useSupabaseUser();
   return useQuery({
-    queryKey: engagementKey,
+    queryKey: engagementQueryKey,
     queryFn: async () => {
       const uid = user.value?.id;
       if (!uid) return { likes: [], bookmarks: [] };
-      const client = getPostsClient();
-      const [likesRes, bookmarksRes] = await Promise.all([
-        fetchLikesForUser(client, uid),
-        fetchBookmarksForUser(client, uid),
-      ]);
-      if (likesRes.error) throw likesRes.error;
-      if (bookmarksRes.error) throw bookmarksRes.error;
-      return parseEngagementPayload({
-        likes: likesRes.data ?? [],
-        bookmarks: bookmarksRes.data ?? [],
-      });
+      return loadMyEngagement(getPostsClient(), uid);
     },
     enabled: computed(() => !!user.value?.id),
     select: (data) => data,

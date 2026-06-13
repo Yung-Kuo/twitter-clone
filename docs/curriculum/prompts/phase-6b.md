@@ -48,4 +48,8 @@ npm run curriculum:verify -- --phase 6b
 
 Manual (`npm run build && npm run preview`): Network on `/` — **0** `type=eq.reply&reply_to=`; **≤1** `profiles?id=eq` per user id on feed path; storage avatar downloads deferred (idle) or skipped for Google URLs.
 
+## Next: Phase 6c (production “great”)
+
+Vercel HAR (`26-06-09`) still shows **~3.9s** before first API call and **3×** same-user profile fetch. See **`docs/curriculum/prompts/phase-6c.md`** — SSR home prefetch + profile consolidation.
+
 Update `REFACTOR_STATUS.md` when done.

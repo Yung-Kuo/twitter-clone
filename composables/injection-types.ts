@@ -89,7 +89,7 @@ export type ClickPostInjection = {
   hoveredPostId: Ref<string | null>;
   syncHoveredPost: (event: MouseEvent) => void;
   handleHoverLeave: (event: MouseEvent, postId: string) => void;
-  clickPost: (event: MouseEvent) => Promise<void>;
+  navigateToPost: (post: PostRow) => Promise<void>;
 };
 
 export type CollectionInjection = {

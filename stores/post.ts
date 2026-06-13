@@ -38,6 +38,8 @@ import { useProfileStore } from "~/stores/profile";
 import { useReplyStore } from "~/stores/reply";
 
 type PostId = string;
+
+const postFetchesInFlight = new Map<PostId, Promise<void>>();
 type UserId = string;
 
 export const usePostStore = defineStore("post", {
@@ -323,21 +325,30 @@ export const usePostStore = defineStore("post", {
       }
     },
     async fetchOnePost(pid: PostId) {
-      if (this.allPosts.has(pid)) return;
+      if (!pid || this.allPosts.has(pid)) return;
+      const inFlight = postFetchesInFlight.get(pid);
+      if (inFlight) return inFlight;
+
       const client = getPostsClient();
-      try {
-        const { error, data } = await fetchPostById(client, pid);
-        if (data) {
-          const post = data;
-          if (!this.allPosts.has(post.id)) {
-            this.allPosts.set(post.id, post);
+      const task = (async () => {
+        try {
+          if (this.allPosts.has(pid)) return;
+          const { error, data } = await fetchPostById(client, pid);
+          if (data) {
+            if (!this.allPosts.has(data.id)) {
+              this.allPosts.set(data.id, data);
+            }
+            await useProfileStore().ensureAuthorsForPosts([data], client);
           }
-          await useProfileStore().ensureAuthorsForPosts([post], client);
+          if (error) throw error;
+        } catch (error) {
+          console.error("error: ", errMsg(error));
+        } finally {
+          postFetchesInFlight.delete(pid);
         }
-        if (error) throw error;
-      } catch (error) {
-        console.error("error: ", errMsg(error));
-      }
+      })();
+      postFetchesInFlight.set(pid, task);
+      return task;
     },
     async fetchQuotes(pid: PostId) {
       const client = getPostsClient();

@@ -5,7 +5,7 @@ Read `docs/curriculum/AGENT_CONTRACT.md` first.
 ## Goal
 
 - GitHub Action: `lint`, `typecheck`, `vitest` on PR (`.github/workflows/curriculum.yml`).
-- Optional Lighthouse CI on preview route.
+- Optional Lighthouse CI on preview route (after **Phase 6c** SSR prefetch — meaningful LCP/FCP scores).
 - Incremental `eslint-plugin-vuejs-accessibility`.
 - Document observability hook for client errors (no vendor lock-in in app code).
 

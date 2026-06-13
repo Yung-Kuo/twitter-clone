@@ -1,5 +1,13 @@
+<script setup>
+import { useCurrentProfileQueryWithStore } from "~/queries/hooks/useCurrentProfileQuery";
+
+useCurrentProfileQueryWithStore();
+</script>
+
 <template>
-  <slot />
+  <div>
+    <slot />
+  </div>
 </template>
 <style>
 /*  google font

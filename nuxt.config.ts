@@ -1,5 +1,15 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const rootDir = fileURLToPath(new URL(".", import.meta.url));
+
 export default defineNuxtConfig({
+  // Dev: avoid Vite 7 race resolving #app-manifest after a production build
+  experimental: {
+    appManifest: false,
+  },
+
   modules: [
     "@nuxt/eslint",
     "@nuxtjs/tailwindcss",
@@ -11,6 +21,15 @@ export default defineNuxtConfig({
   ],
 
   vite: {
+    resolve: {
+      alias: {
+        // SSR dev: Vite 7 environment API omits Nuxt's #app-manifest alias on server
+        "#app-manifest": resolve(
+          rootDir,
+          "node_modules/mocked-exports/lib/empty.mjs",
+        ),
+      },
+    },
     optimizeDeps: {
       include: ["zod"],
     },

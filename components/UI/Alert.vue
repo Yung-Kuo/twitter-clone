@@ -8,8 +8,8 @@ const props = defineProps<{
 <template>
   <transition
     enter-from-class="-translate-y-40"
-    enter-active-class="transition-all duration-200 ease-out"
-    leave-active-class="transition-all duration-200 ease-in"
+    enter-active-class="transition-transform duration-200 ease-out"
+    leave-active-class="transition-transform duration-200 ease-in"
     leave-to-class="-translate-y-40"
   >
     <div

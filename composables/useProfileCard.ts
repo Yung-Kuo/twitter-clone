@@ -1,5 +1,6 @@
 import type { ComponentPublicInstance } from "vue";
 import type { LayoutRefs } from "~/composables/injection-types";
+import { positionFloatingElement } from "~/composables/useFloatingPosition";
 
 export default function useProfileCard(layoutRefs: LayoutRefs) {
   const profileCardVis = ref(false);
@@ -22,27 +23,25 @@ export default function useProfileCard(layoutRefs: LayoutRefs) {
 
   function getRect() {
     if (!profileCardVis.value) return;
-    nextTick(() => {
+    nextTick(async () => {
       const centerEl = layoutRefs.center.value;
       const card = profileCardEl.value;
       const anchor = hoveredAnchorEl.value;
       if (!centerEl || !card || !anchor) return;
 
       const centerRect = centerEl.getBoundingClientRect();
-      const cardRect = card.getBoundingClientRect();
-      const rect = anchor.getBoundingClientRect();
+      const placement =
+        anchor.getBoundingClientRect().bottom + card.offsetHeight + 16 <
+        centerRect.height
+          ? "bottom"
+          : "top";
 
-      if (rect.top + rect.height + cardRect.height + 16 < centerRect.height) {
-        profileCardStyle.value = {
-          top: `${rect.top + rect.height + 16}px`,
-          left: `${rect.left + rect.width / 2 - cardRect.width / 2}px`,
-        };
-      } else {
-        profileCardStyle.value = {
-          top: `${rect.top - cardRect.height - 20}px`,
-          left: `${rect.left + rect.width / 2 - cardRect.width / 2}px`,
-        };
-      }
+      profileCardStyle.value = await positionFloatingElement(
+        anchor,
+        card,
+        placement,
+        placement === "bottom" ? 16 : 20,
+      );
     });
   }
 

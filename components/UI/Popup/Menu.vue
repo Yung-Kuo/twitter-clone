@@ -87,14 +87,14 @@ function assignActionList() {
   <div class="relative z-10 -translate-x-40 translate-y-2">
     <div
       :ref="(el) => bindMenuElement(`${props.pid}_post_action_menu`, el)"
-      class="absolute flex h-max w-48 flex-col rounded-xl bg-black text-zinc-200 shadow-3xl shadow-zinc-700 transition-all duration-200"
+      class="absolute flex h-max w-48 flex-col rounded-xl bg-black text-zinc-200 shadow-3xl shadow-zinc-700 transition-opacity duration-200"
       :class="menuPlacementClass"
     >
       <ul>
         <li
           v-for="(action, idx) in actionList"
           :key="idx"
-          class="flex h-10 w-full cursor-pointer items-center px-5 transition-all duration-200 first:rounded-t-xl first:pt-1 last:rounded-b-xl last:pb-1 hover:bg-zinc-700 hover:bg-opacity-30 active:bg-opacity-40"
+          class="flex h-10 w-full cursor-pointer items-center px-5 transition-colors duration-200 first:rounded-t-xl first:pt-1 last:rounded-b-xl last:pb-1 hover:bg-zinc-700 hover:bg-opacity-30 active:bg-opacity-40"
           @mousedown="action.function"
         >
           <span>{{ action.name }}</span>

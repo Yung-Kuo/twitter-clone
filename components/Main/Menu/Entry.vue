@@ -3,7 +3,7 @@
     <!-- for small screen -->
     <div
       v-if="$slots.smMenu"
-      class="flex w-min items-center justify-start rounded-full pr-10 transition-all md:hidden"
+      class="flex w-min items-center justify-start rounded-full pr-10 transition-colors md:hidden"
     >
       <IconsBadge size="large">
         <slot name="smMenu" />
@@ -21,7 +21,7 @@
     <!-- for large screen -->
     <div
       v-if="$slots.lgMenu"
-      class="hidden h-min items-center rounded-full transition-all hover:bg-zinc-900 active:bg-zinc-800 xl:flex"
+      class="hidden h-min items-center rounded-full transition-colors hover:bg-zinc-900 active:bg-zinc-800 xl:flex"
     >
       <IconsBadge size="large" no-hover>
         <slot name="lgMenu" />

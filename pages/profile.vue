@@ -163,11 +163,11 @@ const buttonActiveFlag = computed(() => {
                   />
                 </div>
                 <div
-                  class="z-10 col-start-1 row-start-1 rounded-full transition-all hover:bg-slate-900 hover:bg-opacity-60"
+                  class="z-10 col-start-1 row-start-1 rounded-full transition-colors hover:bg-slate-900 hover:bg-opacity-60"
                 >
                   <label for="avatar" class="mb-8">
                     <span
-                      class="flex h-full w-full cursor-pointer items-center justify-center text-transparent transition-all hover:text-white"
+                      class="flex h-full w-full cursor-pointer items-center justify-center text-transparent transition-colors hover:text-white"
                     >
                       <IconsEdit class="text-4xl"/>
                     </span>
@@ -215,7 +215,7 @@ const buttonActiveFlag = computed(() => {
             <!-- description -->
 
             <div
-              class="no-wheel-sync flex max-h-[20em] min-h-[8em] grow flex-col overflow-y-scroll rounded-md border-2 border-zinc-600 transition-all focus-within:border-sky-500 focus-within:ring-1 focus-within:ring-sky-500"
+              class="no-wheel-sync flex max-h-[20em] min-h-[8em] grow flex-col overflow-y-scroll rounded-md border-2 border-zinc-600 transition-colors transition-shadow focus-within:border-sky-500 focus-within:ring-1 focus-within:ring-sky-500"
             >
               <UITextarea v-model="userProfile.description" for-profile />
             </div>

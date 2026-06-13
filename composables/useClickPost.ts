@@ -1,14 +1,8 @@
 import type { PostRow } from "~/composables/injection-types";
 
 function innermostPostId(el: HTMLElement | null): string | null {
-  let node: HTMLElement | null = el;
-  while (node) {
-    if (node.classList?.contains("stopHere") && node.dataset.postId) {
-      return node.dataset.postId;
-    }
-    node = node.parentElement;
-  }
-  return null;
+  const node = el?.closest?.("[data-post-id]");
+  return node?.getAttribute("data-post-id") ?? null;
 }
 
 export default function useClickPost() {
@@ -22,8 +16,9 @@ export default function useClickPost() {
 
   function handleHoverLeave(event: MouseEvent, postId: string) {
     const related = event.relatedTarget as HTMLElement | null;
-    if (related?.closest?.(".stopHere")) {
-      hoveredPostId.value = innermostPostId(related);
+    const relatedId = innermostPostId(related);
+    if (relatedId) {
+      hoveredPostId.value = relatedId;
       return;
     }
     if (hoveredPostId.value === postId) {
@@ -31,20 +26,17 @@ export default function useClickPost() {
     }
   }
 
-  async function clickPost(event: MouseEvent) {
-    const post = target_post.value;
-    if (!post) return;
-
-    let el = event.target as HTMLElement | null;
-    while (el?.parentElement) {
-      if (el.classList?.contains("noForward")) return;
-      else if (el.classList?.contains(post.id)) break;
-      el = el.parentElement;
-    }
-    navigateTo(
-      `/${profileStore.usernameById(post.user_id)}/post/${post.id}`,
-    );
+  async function navigateToPost(post: PostRow) {
+    const username = profileStore.usernameById(post.user_id);
+    if (!username) return;
+    await navigateTo(`/${username}/post/${post.id}`);
   }
 
-  return { target_post, hoveredPostId, syncHoveredPost, handleHoverLeave, clickPost };
+  return {
+    target_post,
+    hoveredPostId,
+    syncHoveredPost,
+    handleHoverLeave,
+    navigateToPost,
+  };
 }

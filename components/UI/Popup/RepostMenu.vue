@@ -54,7 +54,7 @@ onMounted(() => {
 <template>
   <div
     :ref="(el) => bindMenuElement(`${props.pid}_repost_menu`, el)"
-    class="absolute z-10 flex h-min w-max flex-col rounded-xl bg-black text-zinc-200 shadow-3xl shadow-zinc-700 transition-all duration-200"
+    class="absolute z-10 flex h-min w-max flex-col rounded-xl bg-black text-zinc-200 shadow-3xl shadow-zinc-700 transition-opacity duration-200"
     :class="menuPlacementClass"
   >
     <ul>

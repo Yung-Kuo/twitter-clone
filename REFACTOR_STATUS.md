@@ -4,8 +4,6 @@ Source curriculum: Cursor plan **junior-to-senior-curriculum** (`.cursor/plans/j
 
 ## Auto-build (agent-driven)
 
-Manual appendix checklists are replaced by scripts + Agent prompts:
-
 ```bash
 npm run curriculum:next    # next phase + copy-paste message
 npm run curriculum:verify    # pass/fail per phase
@@ -15,64 +13,93 @@ npm run curriculum:verify    # pass/fail per phase
 - Prompts: `docs/curriculum/prompts/phase-*.md`
 - Config: `curriculum.config.json`
 
-Say **“Run auto-build”** in Cursor Agent or paste output from `curriculum:next`.
+## Active next steps
 
-## Done in this branch
+Required curriculum is **complete** (Phases 0–9 pass `curriculum:verify`). Optional **Phase 2e** is done. Next optional: **Phase 10** (CI gate).
 
-- **Phase 0:** ESLint (`@nuxt/eslint`), Husky + lint-staged, Vitest, `.editorconfig`, `types/database.types.ts`, scripts (`lint`, `test`, `typecheck`, `e2e`).
-- **Phase 1:** Fixed `following` follow/unfollow `finally` mutations; removed duplicate `getAvatar`; profile state uses `null` / booleans; `likePost` initializes `likes` array; removed `console.log` noise; fixed `useScroll` brace bug; hidden Sign Up (invisible, non-interactive); template `&nbsp;` parse fix; `publishReply` awaits `uploadReply`.
-- **Phase 5 (done):** TanStack Query hooks (`queries/hooks/*`, `queries/api/*`); Pinia stores have no `.from()`; home feed + profile + engagement via `useFeedQueryWithStore`, `useCurrentProfileQueryWithStore`, `useMyEngagementQueryWithStore` on `pages/index.vue`; like/bookmark/follow via mutation hooks.
-- **Phase 6 (done):** Home + profile Posts tabs load via `posts_with_meta`; counts hydrated in Pinia.
-- **Phase 6b-1 (done):** `i_replied` on view — apply `supabase/migrations/20260605100000_posts_with_meta_i_replied.sql` in Supabase.
-- **Phase 7 (done):** Zod at query boundaries (`schemas/parse.ts`, feed/profile/engagement hooks); `useAlert` discriminated union (`kind: idle | success | error`); `queries/lib/mutationAlert.ts` for like/bookmark/follow toasts; login provides `useAlertKey` for Local auth form.
-- **Phase 2 (core DOM):** Central `layoutRefs` + `scrollChrome` + `mainPageShifted` via `useMainComposables`; `useScroll` / `useWheelSync` / `useToggleMenu` / `useProfileCard` avoid `document` / `getElementById` / `querySelector`; `:class`/`:style` for banner bottom and menus; profile card anchored with `HTMLElement` + `bindProfileCard`; `Collection.vue` alerts inject fix; `/profile` uses shared injected composables (no duplicate Pinia/menu instances); moved `watchEffect` out of `onMounted` where touched (`index`, `profile`, bookmarks, post list/reply/Single`).
-- Remaining Phase 2: **`classList`** only in `useClickPost.js` (explicit Phase 8 per curriculum); **`transition-all`** grep cleanup (2e) optional if you want zero tailwind shorthand.
-- **Phase 3d (done):** All `composables/*.ts`; `composables/keys.ts` + `InjectionKey` inject keys.
-- **Phase 3e (done):** Leaf UI: `Avatar`, `Button/Follow`, `Button/index`, `Input`, `Alert` use `<script setup lang="ts">` with typed props/models/emits.
-- **Phase 3 (complete):** Stores + composables + leaf components typed; `npm run typecheck` + `npm run build` pass.
-- **Phase 4 (done):** Profile data in `useProfileStore` (`profiles`, `avatarByUserId`, `ensureAuthorsForPosts`, …). `usePostStore` no longer queries `profiles` or holds `userProfile` / `userAvatars`.
+```bash
+npm run curriculum:next    # → Phase 10
+```
 
-## Performance (Phases 5–6 + 6b)
+## Regression fixes (post–6d HAR `26-06-13 00-54-58`)
 
-Plan: **Performance improvements** + **Phase 6b** in `.cursor/plans/junior-to-senior-curriculum_79a052bd.plan.md`.
+| Issue                                | Fix                                                                                                |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| 9× duplicate `posts` fetches on feed | Removed per-card `fetchOnePost` from `Refer.vue` / `Single.vue`; use `postStore.getPost(reply_to)` |
+| Parallel duplicate fetches           | `postFetchesInFlight` in-flight dedupe in `stores/post.ts`                                         |
+| Redundant quoted hydrate             | `hydrateQuotedReposts` skips when all quoted IDs already cached                                    |
+| Per-post count N+1 on feed           | Removed count `watchEffect` from `Main/Post/index.vue` (meta from `applyPostMetaRows`)             |
 
-**Done (6):** ~4 core round-trips + 1× `posts_with_meta`; per-post count fetches eliminated on feed.
+**Re-verify:** `npm run preview` → hard refresh `/` → expect ≤6 Supabase calls, 1× per URL, SSR feed populated, no per-repost `posts?id=eq` storm.
 
-**Done (6b-1):** `i_replied` on `posts_with_meta` (`supabase/migrations/20260605100000_posts_with_meta_i_replied.sql`); hydrated in `applyPostMetaRows`; removed `fetchUserReplyStatus` from `MainPost/index.vue`; fixed `checkReplied` getter (`??` not `||`); early-return in `fetchUserReplyStatus` when cached.
+## Phase 2e — full checklist (done)
 
-**Apply in Supabase:** run new migration if view predates `i_replied`: `supabase db push` or SQL editor.
+- [x] Zero `transition-all` in `*.vue` / `*.js` — replaced with `transition-colors`, `transition-transform`, `transition-opacity` (and targeted arbitrary properties where needed, e.g. `UI/Input` label)
+- [x] `npm run curriculum:verify -- --phase 2e` + `npm run build` pass
 
-**Verify:** `npm run preview` → hard refresh `/` → **0** `type=eq.reply&reply_to=` requests; **1** `posts_with_meta`.
+## Phase 8 — full checklist (done)
 
-**Done (6b-3):** `hydrateQuotedReposts` batches quoted repost posts after feed/user posts load; `MainPost` no longer per-row `fetchOnePost`; `fetchOnePost` no-ops when cached.
+- [x] `MainPostHeader`, `MainPostBody`, `MainPostActionBar` extracted; wired in `index.vue`, `Single.vue`, `Refer.vue`
+- [x] `@floating-ui/vue` via `composables/useFloatingPosition.ts` in `useProfileCard` / `useToggleMenu`
+- [x] `noForward` / `stopHere` / `classList` click gating removed (`useClickPost.ts`, `@click.stop`, `MainPostInteractive`)
+- [x] `UIModal` + slot pattern in `Collection.vue` (replaces repeated backdrop blocks)
 
-**Done (6b-4):** `Main/Right` defers `fetchProfiles` via `requestIdleCallback`; `sidebarProfilesLoaded` guard; `ensureAuthorsForPosts` batches missing authors with `fetchProfilesByIds` (no per-user loop, no avatar downloads on hydrate).
+## Phase 9 — full checklist (done)
 
-**Done (6b-5):** `isAbsoluteAvatarUrl` + `displayAvatarSrc`; in-flight dedupe in `downloadAvatarForUser`; `UIAvatar` defers storage blob downloads to idle time.
+- [x] Unit tests: `tests/unit/*` (schemas, parse, keys, alert, profiles, avatars, hydrate)
+- [x] Component tests: `PostHeader`, `PostActionBar`, `Follow`, `Input`, `Avatar`, `Alert`
+- [x] E2E: `e2e/happy-path.spec.ts` (skips auth without `E2E_EMAIL` / `E2E_PASSWORD`)
+- [x] `npm test` + `curriculum:verify --phase 9` pass
 
-**Done (6b-6):** `profileFetchesInFlight` dedupes parallel `fetchUserProfile` (7× same-user `/profiles` → 1); `UIAvatar` skips fetch when profile or `displayAvatarSrc` already cached.
+## Performance baselines
 
-**Re-verify:** `npm run build && npm run preview` → HAR on `/` should show **≤1** `profiles?id=eq` per user id and deferred `/storage/v1/object/avatars/` requests.
+### Vercel (`26-06-09 19-37-01`) — pre-6c
 
-## Active next steps (order matters)
+| Signal   | Value                             |
+| -------- | --------------------------------- |
+| API      | 12 Supabase, 1× `posts_with_meta` |
+| `onLoad` | 3.4s                              |
 
-Phase **8** (component decomposition). `npm run curriculum:next` for next unit.
+### Preview (`26-06-12 16-00-10`) — post-6c
 
-- **Phase 9 (done):** `tests/unit/*` expanded; `e2e/happy-path.spec.ts`; `happy-dom` + `@vitejs/plugin-vue` for component tests.
+| Signal        | Value               |
+| ------------- | ------------------- |
+| `onLoad`      | 1.96s               |
+| SSR post list | empty (fixed in 6d) |
 
-| Phase | Status          | Notes                                                                                                                                                                      |
-| ----- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2     | **Mostly done** | No `document`/`querySelector` under app sources; menu/post/profile positioning uses refs + reactive layout state; **`classList` remains in `useClickPost`** until Phase 8. |
-| 3     | **Done**        | Stores, composables, leaf UI `lang="ts"`.                                                                                                                                  |
-| 4     | **Done**        | `useProfileStore` owns profiles by id; post store posts-only                                                                                                               |
-| 5     | **Done**        | TanStack Query on home feed, profile, engagement; mutations for like/bookmark/follow; API layer in `queries/api/*`                                                         |
-| 6     | **Done**        | Feed/user posts use `posts_with_meta`; counts on row; vue-query SSR dehydrate/hydrate                                                                                      |
-| 6b    | **Done**        | 6b-1–6b-6 feed perf (incl. profile fetch dedupe) — apply `20260605100000_posts_with_meta_i_replied.sql` in Supabase                                                        |
-| 7     | **Done**        | Zod parse at query boundaries; alert discriminated union; mutation error/success toasts                                                                                    |
-| 8     | Not started     | PostHeader/Body/ActionBar, Floating UI                                                                                                                                     |
-| 9     | **Done**        | Unit tests (schemas, parse, keys, alert, mutationAlert); `e2e/happy-path.spec.ts` (skips auth without `E2E_EMAIL`/`E2E_PASSWORD`); `UIAlert` component test                |
-| 10    | Optional        | CI gate, a11y, perf (curriculum stretch)                                                                                                                                   |
+### Preview (`26-06-13 00-54-58`) — post-6d, pre-regression-fix
 
-## Housekeeping
+| Signal          | Value                                        |
+| --------------- | -------------------------------------------- |
+| `onLoad`        | 2.39s                                        |
+| SSR feed        | populated                                    |
+| Client Supabase | 9× `posts` (Refer `fetchOnePost` regression) |
 
-- **ESLint:** Run `npx eslint . --fix` and fix remaining issues (Vue style warnings) when convenient.
+### Target after regression fix
+
+| Signal                   | Target         |
+| ------------------------ | -------------- |
+| `onLoad`                 | &lt;2.5s       |
+| SSR feed                 | populated      |
+| Client Supabase          | ≤6, 1× per URL |
+| `posts?id=eq` per repost | 0 on home feed |
+
+## Phase status
+
+| Phase | Status   | Notes                                                     |
+| ----- | -------- | --------------------------------------------------------- |
+| 0     | **Done** | ESLint, Husky, Vitest, types, scripts                     |
+| 1     | **Done** | Bug fixes, no `console.log`                               |
+| 2     | **Done** | Declarative layout refs; no imperative DOM                |
+| 2e    | **Done** | Zero `transition-all`; specific transition utilities      |
+| 3     | **Done** | Stores, composables, leaf UI typed                        |
+| 4     | **Done** | Profile single source in `useProfileStore`                |
+| 5     | **Done** | TanStack Query + API layer                                |
+| 6     | **Done** | `posts_with_meta` feed                                    |
+| 6b    | **Done** | i_replied, batch quoted reposts, profile/avatar dedupe    |
+| 6c    | **Done** | SSR home prefetch + `fetchProfileOnce`                    |
+| 6d    | **Done** | SSR feed sync, hydration dedupe, deferred LeftSmallScreen |
+| 7     | **Done** | Zod + discriminated alert                                 |
+| 8     | **Done** | Post decomposition, floating-ui, UIModal/Collection       |
+| 9     | **Done** | Unit + component + e2e tests                              |
+| 10    | Optional | CI workflow stretch                                       |

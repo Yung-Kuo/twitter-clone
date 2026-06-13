@@ -146,15 +146,8 @@ export default function useMainComposables() {
   });
   provide(selectEditPostKey, selectEditPost);
 
-  const { target_post, hoveredPostId, syncHoveredPost, handleHoverLeave, clickPost } =
-    useClickPost();
-  provide(clickPostKey, {
-    target_post,
-    hoveredPostId,
-    syncHoveredPost,
-    handleHoverLeave,
-    clickPost,
-  });
+  const clickPost = useClickPost();
+  provide(clickPostKey, clickPost);
 
   provide(useCollectionKey, {
     profileCardVis,

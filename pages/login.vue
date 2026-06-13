@@ -31,17 +31,17 @@ const OAuthSignIn = ref(true);
           <!-- twitter-clone logo -->
           <div class="grid grid-cols-1 grid-rows-1 pb-16">
             <h1
-              class="z-20 col-start-1 row-start-1 text-5xl font-bold text-gray-400 transition-all sm:text-6xl"
+              class="z-20 col-start-1 row-start-1 text-5xl font-bold text-gray-400 transition-colors sm:text-6xl"
             >
               twitter-clone
             </h1>
             <h1
-              class="z-10 col-start-1 row-start-1 translate-x-1 translate-y-1 text-5xl font-bold text-gray-600 transition-all sm:text-6xl"
+              class="z-10 col-start-1 row-start-1 translate-x-1 translate-y-1 text-5xl font-bold text-gray-600 transition-colors sm:text-6xl"
             >
               twitter-clone
             </h1>
             <h1
-              class="col-start-1 row-start-1 translate-x-2 translate-y-2 text-5xl font-bold text-gray-700 transition-all sm:text-6xl"
+              class="col-start-1 row-start-1 translate-x-2 translate-y-2 text-5xl font-bold text-gray-700 transition-colors sm:text-6xl"
             >
               twitter-clone
             </h1>
@@ -71,16 +71,16 @@ const OAuthSignIn = ref(true);
           <!-- top banner -->
           <!-- go back to social login -->
           <div
-            class="group sticky left-0 top-0 z-20 flex h-16 w-full cursor-pointer rounded-none bg-zinc-200 text-black transition-all md:rounded-t-xl md:hover:bg-zinc-200 2xl:h-20"
+            class="group sticky left-0 top-0 z-20 flex h-16 w-full cursor-pointer rounded-none bg-zinc-200 text-black transition-colors md:rounded-t-xl md:hover:bg-zinc-200 2xl:h-20"
             @mousedown="OAuthSignIn = !OAuthSignIn"
           >
             <div
-              class="flex h-full items-center transition-all md:group-hover:-translate-x-4"
+              class="flex h-full items-center transition-transform md:group-hover:-translate-x-4"
             >
-              <div class="mx-4 text-2xl transition-all md:mx-8 2xl:text-4xl">
+              <div class="mx-4 text-2xl transition-colors md:mx-8 2xl:text-4xl">
                 <IconsBack />
               </div>
-              <span class="text-2xl font-bold transition-all 2xl:text-3xl"
+              <span class="text-2xl font-bold transition-colors 2xl:text-3xl"
                 >Back to Social Login</span
               >
             </div>
@@ -90,7 +90,7 @@ const OAuthSignIn = ref(true);
             <div class="flex w-5/6 flex-col gap-5 pb-16 xl:w-4/6">
               <div class="w-full py-5">
                 <p
-                  class="w-full font-light text-red-400 transition-all 2xl:text-lg"
+                  class="w-full font-light text-red-400 transition-colors 2xl:text-lg"
                 >
                   * For existing users only. New users please use social login
                   methods.

@@ -29,11 +29,6 @@ function stickyMenu() {
   }
 }
 onMounted(() => {
-  watchEffect(() => {
-    if (!store.getProfile) {
-      store.fetchProfile();
-    }
-  });
   window.addEventListener("resize", stickyMenu);
 });
 onBeforeUnmount(() => {
@@ -163,20 +158,20 @@ async function signOut() {
           <div
             v-if="showMenu && type === 'account'"
             :ref="(el) => bindMenuElement('account_menu', el)"
-            class="absolute z-10 h-28 w-60 -translate-y-32 rounded-xl bg-black py-2 text-xl text-zinc-200 shadow-3xl shadow-zinc-700 transition-all"
+            class="absolute z-10 h-28 w-60 -translate-y-32 rounded-xl bg-black py-2 text-xl text-zinc-200 shadow-3xl shadow-zinc-700 transition-opacity"
             :style="accountMenuStyle"
           >
             <!-- edit profile -->
             <NuxtLink to="/profile">
               <div
-                class="flex h-1/2 w-full items-center justify-start p-5 transition-all hover:bg-zinc-900 active:bg-zinc-800"
+                class="flex h-1/2 w-full items-center justify-start p-5 transition-colors hover:bg-zinc-900 active:bg-zinc-800"
               >
                 Edit Profile
               </div>
             </NuxtLink>
             <!-- sign out -->
             <div
-              class="flex h-1/2 w-full items-center justify-start p-5 transition-all hover:bg-zinc-900 active:bg-zinc-800"
+              class="flex h-1/2 w-full items-center justify-start p-5 transition-colors hover:bg-zinc-900 active:bg-zinc-800"
               @click="signOut()"
             >
               Sign Out

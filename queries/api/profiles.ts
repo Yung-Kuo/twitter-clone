@@ -13,6 +13,33 @@ export function getProfilesClient() {
   return useSupabaseClient<Database>();
 }
 
+const profileOnceInFlight = new Map<
+  string,
+  Promise<ProfileRow | null>
+>();
+
+/** One in-flight `/profiles?id=eq` per uid — shared by store, vue-query, and SSR prefetch. */
+export async function fetchProfileOnce(
+  client: SupabaseClient<Database>,
+  uid: string,
+): Promise<ProfileRow | null> {
+  if (!uid) return null;
+  const pending = profileOnceInFlight.get(uid);
+  if (pending) return pending;
+
+  const task = (async () => {
+    const { data, error } = await fetchProfileById(client, uid);
+    if (error) throw error;
+    return data;
+  })();
+  profileOnceInFlight.set(uid, task);
+  try {
+    return await task;
+  } finally {
+    profileOnceInFlight.delete(uid);
+  }
+}
+
 export async function fetchProfileById(
   client: SupabaseClient<Database>,
   uid: string,

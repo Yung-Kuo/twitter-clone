@@ -70,22 +70,26 @@ const date = computed(() => {
   <MainPostHoverClickWrapper :post="post" :no-hover="props.noHover">
     <div
       v-if="profileStore.profileById(post?.user_id)"
-      class="flex h-min w-full px-3 tracking-wide text-zinc-200 transition-all hover:cursor-pointer 2xl:px-5"
+      class="flex h-min w-full px-3 tracking-wide text-zinc-200 transition-colors hover:cursor-pointer 2xl:px-5"
     >
       <!-- left column / avatar -->
       <div class="flex w-min cursor-default flex-col">
         <!-- avatar for show post -->
-        <div
-          class="noForward rounded-full"
+        <MainPostInteractive
+          class="rounded-full"
           @mouseenter="showProfileCard($event.currentTarget, post.user_id)"
           @mouseleave="hideProfileCard()"
         >
-          <NuxtLink :to="`/${profileStore.usernameById(post?.user_id)}`">
+          <NuxtLink
+            :to="`/${profileStore.usernameById(post?.user_id)}`"
+            @click.stop
+            @mousedown.stop
+          >
             <UIAvatar :user_id="post?.user_id" size="small"/>
           </NuxtLink>
-        </div>
+        </MainPostInteractive>
         <!-- thread -->
-        <div class="noForward flex w-full flex-grow justify-center">
+        <div class="flex w-full flex-grow justify-center">
           <span class="h-full border border-zinc-800"/>
         </div>
       </div>
@@ -95,7 +99,7 @@ const date = computed(() => {
         <div class="flex h-5 w-full items-center pl-2">
           <!-- user info -->
           <div
-            class="noForward flex items-center overflow-x-scroll whitespace-nowrap"
+            class="flex items-center overflow-x-scroll whitespace-nowrap"
           >
             <div class="font-bold hover:underline">
               <!-- name -->
@@ -135,18 +139,17 @@ const date = computed(() => {
           <!-- spacing -->
           <div class="grow"/>
           <!-- post action -->
-          <div class="flex flex-col">
+          <MainPostInteractive class="flex flex-col">
             <!-- icon -->
             <div class="flex h-min items-center text-zinc-500">
               <div
                 :ref="(el) => bindMenuElement(`${post.id}_menu_icon`, el)"
-                class="flex noForward"
+                class="flex"
               >
                 <IconsBadge
                   size="small"
                   color="blue"
                   :clicked="menu_pid === post.id && menuType === 'post_action'"
-                  class="noForward"
                   @mousedown="toggleMenu(post.id, 'post_action')"
                 >
                   <IconsMore />
@@ -162,11 +165,10 @@ const date = computed(() => {
                 "
                 :pid="post.id"
                 :uid="post.user_id"
-                class="noForward"
               />
             </UIPopupTransition>
             <!-- </div> -->
-          </div>
+          </MainPostInteractive>
         </div>
         <!-- middle section -->
         <div class="flex w-full flex-col gap-2 pl-2">
@@ -177,16 +179,16 @@ const date = computed(() => {
           </div>
 
           <!-- repost / quote -->
-          <div v-if="post.type === 'repost'">
+          <MainPostInteractive v-if="post.type === 'repost'">
             <MainPostRefer v-bind="post"/>
-          </div>
+          </MainPostInteractive>
         </div>
         <!-- lower section -->
         <div class="flex justify-between pb-4 pt-2 text-zinc-500">
           <!-- action buttons -->
-          <div class="flex grow justify-between">
+          <MainPostInteractive class="flex grow justify-between">
             <!-- Reply -->
-            <div class="noForward flex items-center">
+            <div class="flex items-center">
               <IconsBadge
                 size="small"
                 color="blue"
@@ -202,7 +204,7 @@ const date = computed(() => {
               >
             </div>
             <!-- Repost -->
-            <div class="noForward flex">
+            <div class="flex">
               <div class="flex items-center">
                 <div
                   :ref="(el) => bindMenuElement(`${post.id}_repost_menu_icon`, el)"
@@ -236,7 +238,7 @@ const date = computed(() => {
               </div>
             </div>
             <!-- Like -->
-            <div class="noForward flex items-center">
+            <div class="flex items-center">
               <IconsBadge
                 size="small"
                 color="red"
@@ -252,7 +254,7 @@ const date = computed(() => {
               >
             </div>
             <!-- Bookmark -->
-            <div class="noForward flex items-center">
+            <div class="flex items-center">
               <IconsBadge
                 size="small"
                 color="blue"
@@ -267,13 +269,13 @@ const date = computed(() => {
                 >{{ postStore.getBookmarkCount(post.id) }}</span
               >
             </div>
-          </div>
+          </MainPostInteractive>
           <!-- Share -->
-          <div class="noForward flex items-center pl-1">
+          <MainPostInteractive class="flex items-center pl-1">
             <IconsBadge size="small" color="blue">
               <IconsShare />
             </IconsBadge>
-          </div>
+          </MainPostInteractive>
         </div>
       </div>
     </div>

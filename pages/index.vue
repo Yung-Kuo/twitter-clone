@@ -1,7 +1,6 @@
 <script setup>
 import { usePostStore } from "~/stores/post";
 import { useFeedQueryWithStore } from "~/queries/hooks/useFeedQuery";
-import { useCurrentProfileQueryWithStore } from "~/queries/hooks/useCurrentProfileQuery";
 import { useMyEngagementQueryWithStore } from "~/queries/hooks/useMyEngagementQuery";
 import {
   handleClickOutsideKey,
@@ -32,7 +31,6 @@ watchEffect(() => {
   }
 });
 
-useCurrentProfileQueryWithStore();
 useMyEngagementQueryWithStore();
 
 const feedKind = computed(() =>
@@ -53,7 +51,7 @@ const postList = computed(() => {
 
 <template>
   <div
-    class="flex h-screen w-screen transition-all"
+    class="flex h-screen w-screen transition-transform"
     :class="{
       'translate-x-[20rem]': mainPageShifted,
       'md:translate-x-0': mainPageShifted,

@@ -21,12 +21,19 @@ const {
 const { alertMode, alertMessage } = inject(useAlertKey);
 const bindProfileCard = inject(bindProfileCardKey);
 const profileCardStyle = inject(profileCardStyleKey);
+
+function closePopups() {
+  showPopupPost.value = false;
+  showPopupReply.value = false;
+  showPopupEdit.value = false;
+  newPost.value = null;
+  repost_pid.value = null;
+  editPost.value = null;
+}
 </script>
 <template>
   <div>
-    <!-- Alert -->
     <UIAlert :mode="alertMode" :message="alertMessage" />
-    <!-- Profile Card -->
     <UIPopupTransition leave-active-class="delay-200">
       <UIPopupProfileCard
         v-show="profileCardVis && hoveredUserId"
@@ -37,22 +44,10 @@ const profileCardStyle = inject(profileCardStyleKey);
         @mouseleave="hideProfileCard()"
       />
     </UIPopupTransition>
-    <!-- Backdrop -->
-    <UIPopupTransition>
-      <UIPopupBackdrop
-        v-show="showPopupPost || showPopupReply || showPopupEdit"
-        @mousedown="
-          showPopupPost = false;
-          showPopupReply = false;
-          showPopupEdit = false;
-          newPost = null;
-          repost_pid = null;
-          editPost = null;
-        "
-      />
-    </UIPopupTransition>
-    <!-- Post -->
-    <UIPopupTransition>
+    <UIModal
+      :open="showPopupPost || showPopupReply || showPopupEdit"
+      @close="closePopups"
+    >
       <UIPopupPost
         v-if="showPopupPost"
         @close="
@@ -60,13 +55,7 @@ const profileCardStyle = inject(profileCardStyleKey);
           repost_pid = null;
         "
       />
-    </UIPopupTransition>
-    <!-- Reply -->
-    <UIPopupTransition>
       <UIPopupReply v-if="showPopupReply" @close="showPopupReply = false" />
-    </UIPopupTransition>
-    <!-- Edit -->
-    <UIPopupTransition>
       <UIPopupEdit
         v-if="showPopupEdit"
         @close="
@@ -74,6 +63,6 @@ const profileCardStyle = inject(profileCardStyleKey);
           editPost = null;
         "
       />
-    </UIPopupTransition>
+    </UIModal>
   </div>
 </template>

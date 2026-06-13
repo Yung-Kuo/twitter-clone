@@ -29,11 +29,9 @@ onMounted(() => {
           </div>
           <!-- repost -->
           <!-- refer post -->
-          <div v-if="repost_pid" class="noForward w-full">
-            <MainPostRefer
-              v-bind="postStore.getPost(repost_pid)"
-            />
-          </div>
+          <MainPostInteractive v-if="repost_pid" class="w-full">
+            <MainPostRefer v-bind="postStore.getPost(repost_pid)" />
+          </MainPostInteractive>
         </div>
       </div>
     </template>

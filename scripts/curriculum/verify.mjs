@@ -241,6 +241,10 @@ const checks = {
     const mainPostRepostFetch = rgCount("fetchOnePost", [
       "components/Main/Post/index.vue",
     ]);
+    const referFetchOnePost = rgCount("fetchOnePost", [
+      "components/Main/Post/Refer.vue",
+    ]);
+    const postFetchDedupe = rgCount("postFetchesInFlight", ["stores/post.ts"]);
     const hydrateBatch = rgCount("hydrateQuotedReposts", [
       "queries/sync/hydrateStores.ts",
       "queries/hooks/useUserPostsQuery.ts",
@@ -270,6 +274,16 @@ const checks = {
         mainPostRepostFetch ? `${mainPostRepostFetch} fetchOnePost in MainPost` : "",
       ),
       check(
+        "refer_no_per_repost_fetch",
+        referFetchOnePost === 0,
+        referFetchOnePost ? `${referFetchOnePost} fetchOnePost in Refer.vue` : "",
+      ),
+      check(
+        "fetch_one_post_in_flight_dedupe",
+        postFetchDedupe > 0,
+        "fetchOnePost should dedupe parallel requests",
+      ),
+      check(
         "sidebar_profiles_deferred",
         !!rg("requestIdleCallback", ["components/Main/Right.vue"]),
         "Right.vue should defer fetchProfiles",
@@ -293,6 +307,89 @@ const checks = {
     return { pass: items.every((i) => i.pass), items };
   },
 
+  phase6c: () => {
+    const leftFetchProfile = rgCount("fetchProfile\\(", ["components/Main/Left.vue"]);
+    const currentQueryDirect = rg("fetchProfileById\\(getProfilesClient", [
+      "queries/hooks/useCurrentProfileQuery.ts",
+    ]);
+    const profileOnce =
+      rgCount("fetchProfileOnce", ["queries/api/profiles.ts", "stores/profile.ts"]) > 0;
+    const prefetchHome = fileExists("queries/server/prefetchHome.ts");
+    const indexServerPrefetch =
+      rgCount("prefetchHomePage|prefetchHome", [
+        "pages/index.vue",
+        "plugins/prefetch-home.server.ts",
+        "queries/server/prefetchHome.ts",
+        "queries/server/prefetchHomePage.server.ts",
+      ]) > 0;
+    const items = [
+      check(
+        "left_no_redundant_fetchProfile",
+        leftFetchProfile === 0,
+        leftFetchProfile
+          ? `${leftFetchProfile} fetchProfile() in Left.vue — use query hook`
+          : "",
+      ),
+      check(
+        "current_profile_shared_fetch",
+        !currentQueryDirect || profileOnce,
+        "useCurrentProfileQuery should not bypass shared profile dedupe",
+      ),
+      check("prefetch_home_module", prefetchHome, "queries/server/prefetchHome.ts"),
+      check(
+        "index_ssr_prefetch",
+        indexServerPrefetch,
+        "pages/index.vue should prefetch home queries on server",
+      ),
+    ];
+    return { pass: items.every((i) => i.pass), items };
+  },
+
+  phase6d: () => {
+    const leftSmallPath = path.join(root, "components/Main/LeftSmallScreen.vue");
+    const leftSmall = fs.existsSync(leftSmallPath)
+      ? fs.readFileSync(leftSmallPath, "utf8")
+      : "";
+    const leftSmallEager =
+      leftSmall.includes("onMounted") && leftSmall.includes("fetchFollowing");
+    const feedHookPath = path.join(root, "queries/hooks/useFeedQuery.ts");
+    const feedHook = fs.existsSync(feedHookPath)
+      ? fs.readFileSync(feedHookPath, "utf8")
+      : "";
+    const ssrAwaitFeed =
+      (feedHook.includes("import.meta.server") &&
+        feedHook.includes("hydrateFeedPosts")) ||
+      rgCount("syncFeedToStore|await hydrateFeedPosts", ["pages/index.vue"]) > 0;
+    const dedupe = rgCount(
+      "hydrateQuotedInFlight|hydrateFeedInFlight|feedStoreSynced|syncFeedToStore",
+      [
+        "queries/sync/hydrateQuotedReposts.ts",
+        "queries/sync/hydrateStores.ts",
+        "queries/hooks/useFeedQuery.ts",
+      ],
+    );
+    const items = [
+      check(
+        "leftsmall_no_eager_following",
+        !leftSmallEager,
+        leftSmallEager
+          ? "LeftSmallScreen should defer fetchFollowing until drawer opens (6d-3)"
+          : "",
+      ),
+      check(
+        "ssr_await_feed_store",
+        ssrAwaitFeed,
+        "SSR should await hydrateFeedPosts (import.meta.server) or syncFeedToStore (6d-1)",
+      ),
+      check(
+        "hydration_dedupe",
+        dedupe > 0,
+        "Add in-flight or skip-if-synced guards for hydrate paths (6d-2)",
+      ),
+    ];
+    return { pass: items.every((i) => i.pass), items };
+  },
+
   phase7: () => {
     const alert = fs.existsSync(path.join(root, "composables/useAlert.js"))
       ? fs.readFileSync(path.join(root, "composables/useAlert.js"), "utf8")
@@ -307,16 +404,51 @@ const checks = {
 
   phase8: () => {
     const hits = rgCount("noForward|stopHere");
-    const items = [check("no_click_class_gates", hits === 0, hits ? `${hits} matches` : "")];
+    const classListClick = rgCount("classList\\.", ["composables/useClickPost.ts"]);
+    const floatingUi =
+      rgCount("floating-ui", [
+        "composables/useProfileCard.ts",
+        "composables/useToggleMenu.ts",
+        "composables/useFloatingPosition.ts",
+      ]) > 0;
+    const collectionModal = rgCount("UIModal", ["components/UI/Popup/Collection.vue"]) > 0;
+    const referFetch = rgCount("fetchOnePost", ["components/Main/Post/Refer.vue"]);
+    const items = [
+      check("no_click_class_gates", hits === 0, hits ? `${hits} matches` : ""),
+      check("useClickPost_no_classList", classListClick === 0),
+      check("post_header_extracted", fileExists("components/Main/Post/Header.vue")),
+      check("post_body_extracted", fileExists("components/Main/Post/Body.vue")),
+      check("post_action_bar_extracted", fileExists("components/Main/Post/ActionBar.vue")),
+      check("floating_ui_positioning", floatingUi),
+      check("ui_modal_exists", fileExists("components/UI/Modal.vue")),
+      check("collection_uses_modal", collectionModal),
+      check(
+        "refer_no_fetch_one_post",
+        referFetch === 0,
+        referFetch ? `${referFetch} fetchOnePost in Refer.vue` : "",
+      ),
+    ];
     return { pass: items.every((i) => i.pass), items };
   },
 
   phase9: () => {
     const test = run("npm test");
     const e2eHappy = fileExists("e2e/happy-path.spec.ts");
+    const postHeaderTest = fileExists("tests/components/PostHeader.spec.ts");
+    const postActionBarTest = fileExists("tests/components/PostActionBar.spec.ts");
+    const followTest = fileExists("tests/components/Follow.spec.ts");
+    const inputTest = fileExists("tests/components/Input.spec.ts");
+    const avatarTest =
+      fileExists("tests/components/Avatar.spec.ts") ||
+      rgCount("UIAvatar", ["tests/**/*.ts"]) > 0;
     const items = [
       check("npm_test", test.ok, test.error || ""),
       check("e2e_happy_path", e2eHappy),
+      check("post_header_component_test", postHeaderTest),
+      check("post_action_bar_component_test", postActionBarTest),
+      check("follow_component_test", followTest),
+      check("input_component_test", inputTest),
+      check("avatar_component_test", avatarTest),
     ];
     return { pass: items.every((i) => i.pass), items };
   },

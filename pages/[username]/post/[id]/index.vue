@@ -101,7 +101,7 @@ function scrollToTarget() {
       <template #title>Post</template>
       <template #main>
         <!-- upper section -->
-        <MainSection class="noForward">
+        <MainSection>
           <!-- reply thread -->
           <!-- <ul v-if="thread.length > 0">
             <li v-for="threadPost in thread" :key="threadPost.id">

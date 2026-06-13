@@ -1,4 +1,5 @@
 import type { LayoutRefs, MenuType } from "~/composables/injection-types";
+import { positionFloatingElement } from "~/composables/useFloatingPosition";
 
 export default function useToggleMenu(layoutRefs: LayoutRefs) {
   const showMenu = ref(false);
@@ -74,7 +75,7 @@ export default function useToggleMenu(layoutRefs: LayoutRefs) {
 
   function menuGetRect() {
     if (!showMenu.value) return;
-    nextTick(() => {
+    nextTick(async () => {
       const centerEl = layoutRefs.center.value;
       const bottomEl = layoutRefs.bottom.value;
       if (!centerEl) return;
@@ -83,7 +84,7 @@ export default function useToggleMenu(layoutRefs: LayoutRefs) {
       const bottomRect = bottomEl?.getBoundingClientRect?.() ?? {
         width: 0,
         height: 0,
-        top: 0,
+        top: centerRect.height,
       };
 
       const menuKey = menu_id.value;
@@ -92,32 +93,33 @@ export default function useToggleMenu(layoutRefs: LayoutRefs) {
       const icon = iconKey ? menuElements[iconKey] : null;
       if (!menu || !icon) return;
 
-      const menuRect = menu.getBoundingClientRect();
-      const iconRect = icon.getBoundingClientRect();
-
       resetMenuLayout();
 
       if (type.value === "account") {
-        accountMenuStyle.value = {
-          top: `${iconRect.top}px`,
-          left: `${iconRect.left}px`,
-        };
+        accountMenuStyle.value = await positionFloatingElement(
+          icon,
+          menu,
+          "bottom",
+          0,
+        );
       } else if (type.value === "post_action") {
-        if (
+        const overflows =
           bottomRect.width > 0
-            ? iconRect.top + iconRect.height + 10 + menuRect.height >
+            ? icon.getBoundingClientRect().bottom + menu.offsetHeight + 10 >
               bottomRect.top
-            : iconRect.top + iconRect.height + 10 + menuRect.height >
-              centerRect.height
-        ) {
+            : icon.getBoundingClientRect().bottom + menu.offsetHeight + 10 >
+              centerRect.height;
+        if (overflows) {
           menuPlacementClass.value = "-translate-x-10 -translate-y-32";
         }
       } else if (type.value === "repost") {
-        if (
+        const overflows =
           bottomRect.width > 0
-            ? iconRect.top + menuRect.height > bottomRect.top
-            : iconRect.top + menuRect.height > centerRect.height
-        ) {
+            ? icon.getBoundingClientRect().top + menu.offsetHeight >
+              bottomRect.top
+            : icon.getBoundingClientRect().top + menu.offsetHeight >
+              centerRect.height;
+        if (overflows) {
           menuPlacementClass.value = "-translate-y-40 -translate-x-10";
         }
       }

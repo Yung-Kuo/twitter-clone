@@ -26,18 +26,21 @@ const date = computed(() => {
 <template>
   <MainPostHoverClickWrapper :post="post" no-hover class="tracking-wide">
     <!-- left column / avatar -->
-    <div class="flex w-10 flex-col">
-      <!-- avatar for show post -->
-      <div class="noForward h-min w-min">
-        <NuxtLink :to="`/${profileStore.usernameById(post?.user_id)}`">
+    <MainPostInteractive class="flex w-10 flex-col">
+      <div class="h-min w-min">
+        <NuxtLink
+          :to="`/${profileStore.usernameById(post?.user_id)}`"
+          @click.stop
+          @mousedown.stop
+        >
           <UIAvatar :user_id="post?.user_id" size="small" />
         </NuxtLink>
       </div>
       <!-- thread -->
-      <div class="noForward flex w-full grow cursor-default justify-center">
+      <div class="flex w-full grow cursor-default justify-center">
         <span class="h-full border border-zinc-800"/>
       </div>
-    </div>
+    </MainPostInteractive>
     <!-- right column -->
     <div class="flex w-[calc(100%-2.5rem)] flex-col">
       <!-- upper section -->
@@ -46,7 +49,7 @@ const date = computed(() => {
       >
         <!-- user info -->
         <!-- name -->
-        <div class="noForward flex h-5 items-center font-bold hover:underline">
+        <div class="flex h-5 items-center font-bold hover:underline">
           <NuxtLink :to="`/${profileStore.usernameById(post.user_id)}`">
             <span>
               {{ profileStore.nameById(post.user_id) }}
@@ -56,7 +59,7 @@ const date = computed(() => {
         &ensp;
         <div class="flex h-5 text-sm text-zinc-500">
           <!-- username -->
-          <div class="noForward">
+          <div class="">
             <NuxtLink :to="`/${profileStore.usernameById(post.user_id)}`">
               <span> @{{ profileStore.usernameById(post.user_id) }}</span>
             </NuxtLink>
@@ -80,14 +83,12 @@ const date = computed(() => {
           }}</pre>
         </div>
         <!-- repost / quote -->
-        <div v-if="post.type === 'repost'" class="z-20 w-full">
-          <MainPostRefer
-            v-bind="postStore.getPost(post.reply_to)"
-          />
-        </div>
+        <MainPostInteractive v-if="post.type === 'repost'" class="z-20 w-full">
+          <MainPostRefer v-bind="postStore.getPost(post.reply_to)" />
+        </MainPostInteractive>
       </div>
       <!-- lower section -->
-      <div class="noForward cursor-default pb-4 pl-2 pt-2">
+      <MainPostInteractive class="cursor-default pb-4 pl-2 pt-2">
         <!-- replying to -->
         <span class="text-zinc-500">Replying to </span>
         <NuxtLink :to="`/${profileStore.usernameById(post.user_id)}`">
@@ -95,7 +96,7 @@ const date = computed(() => {
             >@{{ profileStore.usernameById(post.user_id) }}</span
           >
         </NuxtLink>
-      </div>
+      </MainPostInteractive>
     </div>
   </MainPostHoverClickWrapper>
 </template>

@@ -74,13 +74,13 @@ function inputFocusOut() {
 <template>
   <div
     tabindex="0"
-    class="grid h-16 w-full grid-cols-1 grid-rows-1 overflow-hidden rounded-md border-2 transition-all md:h-20"
+    class="grid h-16 w-full grid-cols-1 grid-rows-1 overflow-hidden rounded-md border-2 transition-colors transition-shadow md:h-20"
     :class="inputValidFlag ? inputValidClass : inputInvalidClass"
     @focusin="inputFocusIn"
     @focusout="inputFocusOut"
   >
     <div
-      class="z-10 col-start-1 row-start-1 h-full w-max px-2 text-zinc-500 transition-all"
+      class="z-10 col-start-1 row-start-1 h-full w-max px-2 text-zinc-500 transition-[font-size,padding-top,color]"
       :class="inputFocusFlag ? inputFocusInClass : inputFocusOutClass"
     >
       <span><slot /></span>

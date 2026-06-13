@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/vue-query";
 import { qk } from "~/queries/keys";
 import {
-  fetchProfileById,
+  fetchProfileOnce,
   getProfilesClient,
 } from "~/queries/api/profiles";
 import { parseProfileRowNullable } from "~/schemas/parse";
@@ -17,8 +17,7 @@ export function useCurrentProfileQuery() {
     queryFn: async () => {
       const uid = user.value?.id;
       if (!uid) return null;
-      const { data, error } = await fetchProfileById(getProfilesClient(), uid);
-      if (error) throw error;
+      const data = await fetchProfileOnce(getProfilesClient(), uid);
       return parseProfileRowNullable(data);
     },
     enabled: computed(() => !!user.value?.id),
