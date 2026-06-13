@@ -74,7 +74,7 @@ function inputFocusOut() {
 <template>
   <div
     tabindex="0"
-    class="grid h-16 w-full grid-cols-1 grid-rows-1 overflow-hidden rounded-md border-2 transition-colors transition-shadow md:h-20"
+    class="grid h-16 w-full grid-cols-1 grid-rows-1 overflow-hidden rounded-md border-2 transition md:h-20"
     :class="inputValidFlag ? inputValidClass : inputInvalidClass"
     @focusin="inputFocusIn"
     @focusout="inputFocusOut"

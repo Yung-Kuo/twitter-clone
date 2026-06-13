@@ -76,7 +76,7 @@ function changeColor() {
 </script>
 <template>
   <div
-    class="flex cursor-pointer items-center justify-center rounded-full transition-colors transition-opacity"
+    class="flex cursor-pointer items-center justify-center rounded-full transition"
     :class="[sizeClass, colorClass]"
   >
     <slot />

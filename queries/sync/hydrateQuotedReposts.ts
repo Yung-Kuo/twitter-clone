@@ -19,6 +19,8 @@ export function collectQuotedRepostIds(posts: PostRow[]): string[] {
 export async function hydrateQuotedReposts(posts: PostRow[]) {
   const ids = collectQuotedRepostIds(posts);
   if (ids.length === 0) return;
+
+  const postStore = usePostStore();
   if (ids.every((id) => postStore.allPosts.has(id))) return;
 
   const key = [...ids].sort().join(",");
@@ -28,7 +30,6 @@ export async function hydrateQuotedReposts(posts: PostRow[]) {
   if (inFlight) return inFlight;
 
   const client = getPostsClient();
-  const postStore = usePostStore();
   const profileStore = useProfileStore();
 
   const task = (async () => {

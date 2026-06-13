@@ -26,12 +26,13 @@ const props = defineProps({
 const { post } = toRefs(props);
 // profile card
 const { showProfileCard, hideProfileCard } = inject(profileCardKey);
+const { showPopupPost, repost_pid, publishRepost } = inject(writePostKey);
 const {
-  showPopupPost,
-  repost_pid,
-  publishRepost,
-} = inject(writePostKey);
-const { showMenu, menu_pid, type: menuType, toggleMenu } = inject(togglePostMenuKey);
+  showMenu,
+  menu_pid,
+  type: menuType,
+  toggleMenu,
+} = inject(togglePostMenuKey);
 const bindMenuElement = inject(bindMenuElementKey);
 const clickReply = inject(clickReplyKey);
 const { clickLike, clickBookmark } = useLikeBookmark();
@@ -85,12 +86,12 @@ const date = computed(() => {
             @click.stop
             @mousedown.stop
           >
-            <UIAvatar :user_id="post?.user_id" size="small"/>
+            <UIAvatar :user_id="post?.user_id" size="small" />
           </NuxtLink>
         </MainPostInteractive>
         <!-- thread -->
         <div class="flex w-full flex-grow justify-center">
-          <span class="h-full border border-zinc-800"/>
+          <span class="h-full border border-zinc-800" />
         </div>
       </div>
       <!-- right column -->
@@ -98,9 +99,7 @@ const date = computed(() => {
         <!-- upper section -->
         <div class="flex h-5 w-full items-center pl-2">
           <!-- user info -->
-          <div
-            class="flex items-center overflow-x-scroll whitespace-nowrap"
-          >
+          <div class="flex items-center overflow-x-scroll whitespace-nowrap">
             <div class="font-bold hover:underline">
               <!-- name -->
               <NuxtLink :to="`/${profileStore.usernameById(post.user_id)}`">
@@ -137,7 +136,7 @@ const date = computed(() => {
             </div>
           </div>
           <!-- spacing -->
-          <div class="grow"/>
+          <div class="grow" />
           <!-- post action -->
           <MainPostInteractive class="flex flex-col">
             <!-- icon -->
@@ -180,7 +179,7 @@ const date = computed(() => {
 
           <!-- repost / quote -->
           <MainPostInteractive v-if="post.type === 'repost'">
-            <MainPostRefer v-bind="post"/>
+            <MainPostRefer v-bind="post" />
           </MainPostInteractive>
         </div>
         <!-- lower section -->
@@ -207,7 +206,9 @@ const date = computed(() => {
             <div class="flex">
               <div class="flex items-center">
                 <div
-                  :ref="(el) => bindMenuElement(`${post.id}_repost_menu_icon`, el)"
+                  :ref="
+                    (el) => bindMenuElement(`${post.id}_repost_menu_icon`, el)
+                  "
                   class="flex"
                 >
                   <IconsBadge
@@ -225,7 +226,9 @@ const date = computed(() => {
               <div class="relative">
                 <UIPopupTransition>
                   <UIPopupRepostMenu
-                    v-if="showMenu && menuType === 'repost' && menu_pid === post.id"
+                    v-if="
+                      showMenu && menuType === 'repost' && menu_pid === post.id
+                    "
                     :pid="menu_pid"
                     :username="profileStore.usernameById(post.user_id)"
                     @repost="publishRepost(menu_pid)"

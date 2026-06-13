@@ -46,7 +46,7 @@ function layoutRefBinder(key, el) {
     <div class="relative md:w-5/6 xl:w-5/8 2xl:w-7/12">
       <div
         :ref="(el) => layoutRefBinder('banner', el)"
-        class="absolute left-0 top-0 z-20 flex w-full flex-col bg-black bg-opacity-20 backdrop-blur-md transition-colors transition-transform duration-300"
+        class="absolute left-0 top-0 z-20 flex w-full flex-col bg-black bg-opacity-20 backdrop-blur-md transition duration-300"
         :class="{
           'border-b border-zinc-800 md:border-b-2': $slots.nav,
           '-translate-y-24': scrollChrome.bannerLift === 'home',

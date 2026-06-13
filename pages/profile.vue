@@ -1,7 +1,11 @@
 <script setup>
 import { storeToRefs } from "pinia";
 import { useProfileStore } from "~/stores/profile";
-import { handleClickOutsideKey, useAlertKey, useProfileCardKey } from "~/composables/keys";
+import {
+  handleClickOutsideKey,
+  useAlertKey,
+  useProfileCardKey,
+} from "~/composables/keys";
 
 definePageMeta({
   middleware: ["auth"],
@@ -146,7 +150,7 @@ const buttonActiveFlag = computed(() => {
       </UIPopupTransition>
     </div>
     <!-- navigation -->
-    <MainLeft/>
+    <MainLeft />
     <MainCenter>
       <template #title>Edit Profile</template>
       <template #main>
@@ -169,7 +173,7 @@ const buttonActiveFlag = computed(() => {
                     <span
                       class="flex h-full w-full cursor-pointer items-center justify-center text-transparent transition-colors hover:text-white"
                     >
-                      <IconsEdit class="text-4xl"/>
+                      <IconsEdit class="text-4xl" />
                     </span>
                     <input
                       id="avatar"
@@ -215,7 +219,7 @@ const buttonActiveFlag = computed(() => {
             <!-- description -->
 
             <div
-              class="no-wheel-sync flex max-h-[20em] min-h-[8em] grow flex-col overflow-y-scroll rounded-md border-2 border-zinc-600 transition-colors transition-shadow focus-within:border-sky-500 focus-within:ring-1 focus-within:ring-sky-500"
+              class="no-wheel-sync flex max-h-[20em] min-h-[8em] grow flex-col overflow-y-scroll rounded-md border-2 border-zinc-600 transition-[border-color,box-shadow] focus-within:border-sky-500 focus-within:ring-1 focus-within:ring-sky-500"
             >
               <UITextarea v-model="userProfile.description" for-profile />
             </div>

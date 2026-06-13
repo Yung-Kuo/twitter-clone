@@ -51,7 +51,7 @@ watchEffect(() => {
 
 <template>
   <button
-    class="flex items-center justify-center whitespace-nowrap transition-colors transition-shadow"
+    class="flex items-center justify-center whitespace-nowrap transition"
     :class="{ [button_style]: true, grayscale: !props.active }"
   >
     <span>
