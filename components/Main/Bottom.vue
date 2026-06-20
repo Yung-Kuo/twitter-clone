@@ -25,10 +25,10 @@ provide(useSearchKey, { showSearch, toggleSearch });
 <template>
   <div
     :ref="bindBottom"
-    class="absolute bottom-0 left-0 z-20 flex h-14 w-full justify-between border-t border-zinc-800 bg-black bg-opacity-20 text-zinc-200 transition-[opacity,backdrop-filter] duration-500 md:hidden"
+    class="fixed bottom-0 left-0 z-20 flex h-14 w-full justify-between border-t border-zinc-800 bg-black bg-opacity-20 text-zinc-200 transition-[opacity,backdrop-filter] duration-500 md:hidden"
     :class="
       scrollChrome.bottomMuted
-        ? 'backdrop-blur-0 opacity-50'
+        ? 'opacity-50 backdrop-blur-0'
         : 'backdrop-blur-md'
     "
   >
